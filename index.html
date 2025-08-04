@@ -25,6 +25,11 @@
       section, header { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
       #screenshots img { width: 8rem !important; }
       #features .grid { grid-template-columns: 1fr !important; }
+      #howitworks .grid { grid-template-columns: 1fr !important; }
+      #howitworks .p-6 { margin-bottom: 1rem; }
+      #screenshots .flex { flex-wrap: nowrap !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+      #screenshots img { min-width: 8rem !important; max-width: 60vw !important; }
+      .max-w-4xl, .max-w-3xl { max-width: 100vw !important; }
     }
     @media (max-width: 400px) {
       header h1 { font-size: 1.3rem; }
@@ -158,7 +163,7 @@
     <div class="max-w-4xl mx-auto text-center mb-12">
       <h2 class="text-3xl font-bold fade" data-delay="100">Screenshots</h2>
     </div>
-    <div class="max-w-4xl mx-auto overflow-x-auto snap-x snap-mandatory flex space-x-6 px-4">
+    <div class="max-w-4xl mx-auto overflow-x-auto snap-x snap-mandatory flex space-x-6 px-4" style="scroll-padding-left: 1rem;">
       <img src="assets/1.JPG" class="snap-start w-64 rounded-xl shadow-lg fade" data-delay="200" alt="Main Dashboard">
       <img src="assets/2.JPG" class="snap-start w-64 rounded-xl shadow-lg fade" data-delay="300" alt="Terms List">
       <img src="assets/3.JPG" class="snap-start w-64 rounded-xl shadow-lg fade" data-delay="400" alt="Courses List">
