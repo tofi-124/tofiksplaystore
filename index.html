@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tofik personal playstore – APK Download</title>
+
+  <!-- Tailwind + Google Fonts + Material Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Roboto', sans-serif; }
+    /* SVG blob behind hero */
+    .blob { position: absolute; top: -50px; right: -100px; z-index: -1; }
+    /* fade-in on scroll */
+    .fade { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .fade.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- NAV -->
+  <nav class="fixed w-full bg-white shadow-md z-20">
+    <div class="max-w-4xl mx-auto flex items-center justify-between p-4">
+      <a href="#" class="text-2xl font-bold text-indigo-600">Tofik personal playstore</a>
+      <div class="space-x-6">
+        <a href="#features" class="hover:text-indigo-600">Features</a>
+        <a href="#screenshots" class="hover:text-indigo-600">Screenshots</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="relative pt-24 pb-32 overflow-hidden">
+    <!-- decorative blob -->
+    <svg class="blob w-96 h-96 text-indigo-100" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path fill="currentColor" d="M55,-53.4C70.1,-39,80.8,-19.5,79.3,0.8C77.7,21.1,64,42.2,45.4,55.2C26.7,68.2,2.1,73.1,-19.1,67C-40.2,60.9,-57.1,43.8,-64.9,22.3C-72.7,0.8,-71.4,-24.2,-58,-38.9C-44.7,-53.6,-22.3,-58,-0.6,-57.1C21.2,-56.1,42.4,-50.5,55,-53.4Z" transform="translate(100 100)" />
+    </svg>
+
+    <div class="max-w-4xl mx-auto text-center px-4">
+      <h1 class="text-5xl font-extrabold text-gray-900 mb-4 fade" data-delay="100">Download the Capstone project for Tofik Mohammed</h1>
+      <p class="text-lg text-gray-600 mb-8 fade" data-delay="200">
+        Hosted on GitHub pages
+      </p>
+      <a id="download"
+         href="downloads/test.pdf" download
+         class="inline-flex items-center px-6 py-3 bg-green-600 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-transform transform hover:-translate-y-1 fade"
+         data-delay="300">
+        <span class="material-icons mr-2">download</span>
+        Install APK
+      </a>
+    </div>
+  </header>
+
+  <!-- FEATURES -->
+  <section id="features" class="py-24 bg-white">
+    <div class="max-w-4xl mx-auto text-center mb-12">
+      <h2 class="text-3xl font-bold mb-2 fade" data-delay="100">Features</h2>
+      <p class="text-gray-600 fade" data-delay="200">Everything you need to stay productive—built for Android.</p>
+    </div>
+    <div class="max-w-4xl mx-auto grid gap-8 md:grid-cols-2">
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="300">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">wifi_off</span>
+          <h3 class="text-xl font-semibold">Offline-First</h3>
+        </div>
+        <p class="text-gray-600">Your tasks are always available, no internet needed. Sync when you’re back online.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="400">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">security</span>
+          <h3 class="text-xl font-semibold">End-to-End Encryption</h3>
+        </div>
+        <p class="text-gray-600">All data is encrypted on device and in transit—your privacy, guaranteed.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="500">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">palette</span>
+          <h3 class="text-xl font-semibold">Dark & Light Themes</h3>
+        </div>
+        <p class="text-gray-600">Seamlessly switch themes or follow system settings for eye-friendly use.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="600">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">widgets</span>
+          <h3 class="text-xl font-semibold">Home Screen Widgets</h3>
+        </div>
+        <p class="text-gray-600">Add tasks or view your list right from your launcher—no app open required.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREENSHOTS -->
+  <section id="screenshots" class="py-24">
+    <div class="max-w-4xl mx-auto text-center mb-12">
+      <h2 class="text-3xl font-bold fade" data-delay="100">Screenshots</h2>
+    </div>
+    <div class="max-w-4xl mx-auto overflow-x-auto snap-x snap-mandatory flex space-x-6 px-4">
+      <img src="assets/1.jfif" class="snap-start w-64 rounded-xl shadow-lg fade" data-delay="200" alt="">
+      <img src="assets/2.jfif" class="snap-start w-64 rounded-xl shadow-lg fade" data-delay="300" alt="">
+      <img src="assets/3.jfif" class="snap-start w-64 rounded-xl shadow-lg fade" data-delay="400" alt="">
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-800 text-gray-400 py-12">
+    <div class="max-w-4xl mx-auto text-center space-y-4">
+      <p class="fade" data-delay="100">&copy; 2025 Tofiks Capstone project.</p>
+    </div>
+  </footer>
+
+  <!-- tiny JS to trigger fade-in -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const appear = el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 50) el.classList.add('visible');
+      };
+
+      document.querySelectorAll('.fade').forEach(el => {
+        // staggered delays
+        const d = el.dataset.delay || 0;
+        setTimeout(() => appear(el), d);
+      });
+
+      window.addEventListener('scroll', () => {
+        document.querySelectorAll('.fade:not(.visible)').forEach(appear);
+      });
+    });
+  </script>
+</body>
+</html>
