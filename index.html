@@ -24,7 +24,7 @@
       nav .flex { width: 100%; justify-content: space-between; align-items: center; }
       #menuBtn { display: none !important; }
       .mobile-menu { display: none !important; }
-      header { padding-top: 6rem !important; } /* Increased from pt-24 to account for taller nav */
+      header { padding-top: 8rem !important; } /* Increased from pt-24 to account for taller nav */
       header h1 { font-size: 1.75rem !important; line-height: 1.2; }
       header p { font-size: 0.95rem !important; }
       header .mb-4 { margin-bottom: 0.75rem !important; }
@@ -34,8 +34,6 @@
       #features .grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
       #howitworks .grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
       #howitworks .max-w-3xl { padding-left: 1rem; padding-right: 1rem; }
-      #screenshots .overflow-x-auto { padding-left: 1rem; padding-right: 1rem; }
-      #screenshots img { width: 12rem !important; min-width: 12rem !important; }
       .max-w-4xl, .max-w-3xl { max-width: 100% !important; padding-left: 0.5rem; padding-right: 0.5rem; }
       .text-3xl { font-size: 1.5rem !important; }
       .text-xl { font-size: 1.1rem !important; }
@@ -43,7 +41,7 @@
       footer div { padding: 0 1rem; }
     }
     @media (max-width: 400px) {
-      header { padding-top: 7rem !important; } /* Even more space for very small screens */
+      header { padding-top: 9rem !important; } /* Even more space for very small screens */
       header h1 { font-size: 1.3rem !important; }
       header p { font-size: 0.875rem !important; }
       .text-3xl { font-size: 1.25rem !important; }
@@ -66,7 +64,7 @@
         <a href="#installation" class="hover:text-indigo-600">Installation</a>
         <a href="#features" class="hover:text-indigo-600">Features</a>
         <a href="#howitworks" class="hover:text-indigo-600">How It Works</a>
-        <a href="#screenshots" class="hover:text-indigo-600">Screenshots</a>
+        <a href="#demo" class="hover:text-indigo-600">Demo Video</a>
       </div>
       <button id="menuBtn" class="md:hidden block ml-4 text-indigo-600 focus:outline-none">
         <span class="material-icons">menu</span>
@@ -76,26 +74,24 @@
       <a href="#installation" class="block px-4 py-2 hover:bg-gray-100">Installation</a>
       <a href="#features" class="block px-4 py-2 hover:bg-gray-100">Features</a>
       <a href="#howitworks" class="block px-4 py-2 hover:bg-gray-100">How It Works</a>
-      <a href="#screenshots" class="block px-4 py-2 hover:bg-gray-100">Screenshots</a>
+      <a href="#demo" class="block px-4 py-2 hover:bg-gray-100">Demo Video</a>
     </div>
   </nav>
 
   <!-- HERO -->
-  <header class="relative pt-24 pb-32 overflow-hidden">
-    <!-- decorative blob -->
-
+  <header class="relative pt-32 pb-24 overflow-hidden bg-gradient-to-br from-indigo-50 to-white">
     <div class="max-w-4xl mx-auto text-center px-4">
-      <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 fade" data-delay="100">Student Scheduler App</h1>
-      <p class="text-lg text-gray-600 mb-4 fade" data-delay="200">
+      <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 fade" data-delay="100">Student Scheduler App</h1>
+      <p class="text-lg text-gray-600 mb-6 max-w-3xl mx-auto fade" data-delay="200">
         A cross-platform mobile application for managing academic terms, courses, and assessments.<br>
         Built as a capstone project for WGU using .NET MAUI and SQLite.
       </p>
-      <div class="mb-6 fade" data-delay="250">
-        <span class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium">Android</span>
+      <div class="mb-8 fade" data-delay="250">
+        <span class="inline-block bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-medium">Android App</span>
       </div>
       <a id="download"
          href="downloads/app.apk" download
-         class="inline-flex items-center px-6 py-3 bg-green-600 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-transform transform hover:-translate-y-1 fade"
+         class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:bg-green-700 fade"
          data-delay="300">
         <span class="material-icons mr-2">download</span>
         Download APK
@@ -241,15 +237,30 @@
     </div>
   </section>
 
-  <!-- SCREENSHOTS -->
-  <section id="screenshots" class="py-24">
+  <!-- DEMO VIDEO -->
+  <section id="demo" class="py-24 bg-gray-50">
     <div class="max-w-4xl mx-auto text-center mb-12">
-      <h2 class="text-3xl font-bold fade" data-delay="100">Screenshots</h2>
+      <h2 class="text-3xl font-bold fade" data-delay="100">App Demo</h2>
+      <p class="text-gray-600 fade" data-delay="200">Watch how the Student Scheduler App works in action</p>
     </div>
-    <div class="max-w-4xl mx-auto overflow-x-auto snap-x snap-mandatory flex space-x-6 px-4" style="scroll-padding-left: 1rem;">
-      <img src="assets/1.JPG" class="snap-start w-64 rounded-xl shadow-lg fade" data-delay="200" alt="Main Dashboard">
-      <img src="assets/2.JPG" class="snap-start w-64 rounded-xl shadow-lg fade" data-delay="300" alt="Terms List">
-      <img src="assets/3.JPG" class="snap-start w-64 rounded-xl shadow-lg fade" data-delay="400" alt="Courses List">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="bg-white rounded-2xl shadow-xl p-8 fade" data-delay="300">
+        <div class="aspect-video bg-gray-100 rounded-xl overflow-hidden">
+          <!-- Replace YOUR_YOUTUBE_VIDEO_ID with your actual YouTube video ID -->
+          <iframe 
+            class="w-full h-full" 
+            src="https://www.youtube.com/embed/YOUR_YOUTUBE_VIDEO_ID" 
+            title="Student Scheduler App Demo" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="mt-6 text-center">
+          <h3 class="text-xl font-semibold text-gray-900 mb-2">Complete App Walkthrough</h3>
+          <p class="text-gray-600">See all the features in action, from managing terms to generating reports.</p>
+        </div>
+      </div>
     </div>
   </section>
 
