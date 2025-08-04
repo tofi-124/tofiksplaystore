@@ -24,6 +24,7 @@
       nav .flex { width: 100%; justify-content: space-between; align-items: center; }
       #menuBtn { display: none !important; }
       .mobile-menu { display: none !important; }
+      header { padding-top: 6rem !important; } /* Increased from pt-24 to account for taller nav */
       header h1 { font-size: 1.75rem !important; line-height: 1.2; }
       header p { font-size: 0.95rem !important; }
       header .mb-4 { margin-bottom: 0.75rem !important; }
@@ -42,6 +43,7 @@
       footer div { padding: 0 1rem; }
     }
     @media (max-width: 400px) {
+      header { padding-top: 7rem !important; } /* Even more space for very small screens */
       header h1 { font-size: 1.3rem !important; }
       header p { font-size: 0.875rem !important; }
       .text-3xl { font-size: 1.25rem !important; }
