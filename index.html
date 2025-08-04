@@ -18,21 +18,34 @@
     /* Responsive tweaks */
     @media (max-width: 640px) {
       nav .space-x-6 { display: none; }
+      nav a { font-size: 1rem; }
+      nav .text-2xl { font-size: 1.25rem; }
       .mobile-menu { display: block !important; }
-      header h1 { font-size: 2rem; }
-      header p { font-size: 1rem; }
-      .blob { width: 200px !important; height: 200px !important; top: -30px; right: -30px; }
-      section, header { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
-      #screenshots img { width: 8rem !important; }
-      #features .grid { grid-template-columns: 1fr !important; }
-      #howitworks .grid { grid-template-columns: 1fr !important; }
-      #howitworks .p-6 { margin-bottom: 1rem; }
-      #screenshots .flex { flex-wrap: nowrap !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
-      #screenshots img { min-width: 8rem !important; max-width: 60vw !important; }
-      .max-w-4xl, .max-w-3xl { max-width: 100vw !important; }
+      header h1 { font-size: 1.75rem !important; line-height: 1.2; }
+      header p { font-size: 0.95rem !important; }
+      header .mb-4 { margin-bottom: 0.75rem !important; }
+      .blob { width: 150px !important; height: 150px !important; top: -20px; right: -20px; }
+      section, header { padding-left: 1rem !important; padding-right: 1rem !important; }
+      .py-24 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+      #features .grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
+      #howitworks .grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
+      #howitworks .max-w-3xl { padding-left: 1rem; padding-right: 1rem; }
+      #screenshots .overflow-x-auto { padding-left: 1rem; padding-right: 1rem; }
+      #screenshots img { width: 12rem !important; min-width: 12rem !important; }
+      .max-w-4xl, .max-w-3xl { max-width: 100% !important; padding-left: 0.5rem; padding-right: 0.5rem; }
+      .text-3xl { font-size: 1.5rem !important; }
+      .text-xl { font-size: 1.1rem !important; }
+      footer .space-y-6 { gap: 1rem !important; }
+      footer div { padding: 0 1rem; }
     }
     @media (max-width: 400px) {
-      header h1 { font-size: 1.3rem; }
+      header h1 { font-size: 1.3rem !important; }
+      header p { font-size: 0.875rem !important; }
+      .text-3xl { font-size: 1.25rem !important; }
+      .text-xl { font-size: 1rem !important; }
+      nav .text-2xl { font-size: 1.1rem !important; }
+      .p-6 { padding: 1rem !important; }
+      footer { font-size: 0.875rem; }
     }
   </style>
 </head>
@@ -44,6 +57,7 @@
       <a href="#" class="text-2xl font-bold text-indigo-600">Tofik personal playstore</a>
       <div class="space-x-6">
         <a href="#features" class="hover:text-indigo-600">Features</a>
+        <a href="#howitworks" class="hover:text-indigo-600">How It Works</a>
         <a href="#screenshots" class="hover:text-indigo-600">Screenshots</a>
       </div>
       <button id="menuBtn" class="md:hidden block ml-4 text-indigo-600 focus:outline-none">
@@ -52,6 +66,7 @@
     </div>
     <div id="mobileMenu" class="mobile-menu hidden md:hidden bg-white border-t">
       <a href="#features" class="block px-4 py-2 hover:bg-gray-100">Features</a>
+      <a href="#howitworks" class="block px-4 py-2 hover:bg-gray-100">How It Works</a>
       <a href="#screenshots" class="block px-4 py-2 hover:bg-gray-100">Screenshots</a>
     </div>
   </nav>
@@ -134,8 +149,6 @@
     </div>
   </section>
 
-  <!-- SCREENSHOTS -->
-  <section id="screenshots" class="py-24">
   <!-- HOW IT WORKS -->
   <section id="howitworks" class="py-24 bg-gray-50">
     <div class="max-w-4xl mx-auto text-center mb-12">
@@ -160,6 +173,9 @@
       </div>
     </div>
   </section>
+
+  <!-- SCREENSHOTS -->
+  <section id="screenshots" class="py-24">
     <div class="max-w-4xl mx-auto text-center mb-12">
       <h2 class="text-3xl font-bold fade" data-delay="100">Screenshots</h2>
     </div>
@@ -187,10 +203,6 @@
       <div class="fade" data-delay="300">
         <strong>Technologies Used:</strong><br>
         .NET MAUI · C# · SQLite · MVVM Architecture · Tailwind CSS
-      </div>
-      <div class="fade text-xs mt-4" data-delay="350">
-        <strong>DO NOT DISTRIBUTE OR PUBLICLY POST SOLUTIONS TO THESE LABS. MAKE ALL FORKS OF THIS REPOSITORY WITH SOLUTION CODE PRIVATE.</strong>
-        <br>Please refer to the student code of conduct and ethical expectations for College of IT students for specifics.
       </div>
     </div>
   </footer>
