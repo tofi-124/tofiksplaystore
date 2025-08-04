@@ -81,13 +81,15 @@
   <!-- HERO -->
   <header class="relative pt-32 pb-24 overflow-hidden bg-gradient-to-br from-indigo-50 to-white">
     <div class="max-w-4xl mx-auto text-center px-4">
-      <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 fade" data-delay="100">Student Scheduler App</h1>
+      <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 fade" data-delay="100">Student Scheduler Mobile Application</h1>
       <p class="text-lg text-gray-600 mb-6 max-w-3xl mx-auto fade" data-delay="200">
-        A cross-platform mobile application for managing academic terms, courses, and assessments.<br>
-        Built as a capstone project for WGU using .NET MAUI and SQLite.
+        A comprehensive .NET MAUI mobile application for managing academic terms, courses, and assessments with user authentication, notifications, and data sharing capabilities.<br>
+        Built with .NET MAUI 9.0, SQLite, and modern security features.
       </p>
       <div class="mb-8 fade" data-delay="250">
-        <span class="inline-block bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-medium">Android App</span>
+        <span class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium mr-2">Android</span>
+        <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium mr-2">.NET MAUI 9.0</span>
+        <span class="inline-block bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">SQLite</span>
       </div>
       <a id="download"
          href="downloads/com.companyname.tm_capstoned424-Signed.apk" download
@@ -190,51 +192,72 @@
   <!-- FEATURES -->
   <section id="features" class="py-24 bg-white">
     <div class="max-w-4xl mx-auto text-center mb-12">
-      <h2 class="text-3xl font-bold mb-2 fade" data-delay="100">Features</h2>
-      <p class="text-gray-600 fade" data-delay="200">Everything you need to stay productive—built for students.</p>
+      <h2 class="text-3xl font-bold mb-2 fade" data-delay="100">Key Features</h2>
+      <p class="text-gray-600 fade" data-delay="200">A comprehensive academic management solution with advanced security and user experience.</p>
     </div>
-    <div class="max-w-4xl mx-auto grid gap-8 md:grid-cols-2">
+    <div class="max-w-4xl mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-3">
       <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="300">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">security</span>
+          <h3 class="text-xl font-semibold">User Authentication</h3>
+        </div>
+        <p class="text-gray-600">Secure registration & login with SHA256+salt hashing, user data isolation, and session management.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="350">
         <div class="flex items-center mb-4">
           <span class="material-icons text-indigo-600 text-3xl mr-3">event</span>
           <h3 class="text-xl font-semibold">Term Management</h3>
         </div>
-        <p class="text-gray-600">Organize academic terms with start/end dates.</p>
+        <p class="text-gray-600">Create, edit, and delete academic terms with start/end dates and complete course overview.</p>
       </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="350">
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="400">
         <div class="flex items-center mb-4">
           <span class="material-icons text-indigo-600 text-3xl mr-3">school</span>
           <h3 class="text-xl font-semibold">Course Tracking</h3>
         </div>
-        <p class="text-gray-600">Add/manage courses, instructors, and schedules.</p>
-      </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="400">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">assignment</span>
-          <h3 class="text-xl font-semibold">Assessment Planning</h3>
-        </div>
-        <p class="text-gray-600">Track assignments, exams, and due dates.</p>
+        <p class="text-gray-600">Manage courses with status tracking, instructor info, detailed notes, and sharing capabilities.</p>
       </div>
       <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="450">
         <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">bar_chart</span>
-          <h3 class="text-xl font-semibold">Academic Reports</h3>
+          <span class="material-icons text-indigo-600 text-3xl mr-3">assignment</span>
+          <h3 class="text-xl font-semibold">Assessment Management</h3>
         </div>
-        <p class="text-gray-600">Generate and export comprehensive academic summaries.</p>
+        <p class="text-gray-600">Track Performance & Objective Assessments with start/end dates and progress monitoring.</p>
       </div>
       <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="500">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">notifications</span>
+          <h3 class="text-xl font-semibold">Smart Notifications</h3>
+        </div>
+        <p class="text-gray-600">Local notifications for course dates and assessment reminders with customizable alerts.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="550">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">bar_chart</span>
+          <h3 class="text-xl font-semibold">Reports & Analytics</h3>
+        </div>
+        <p class="text-gray-600">Comprehensive dashboard with progress tracking, academic statistics, and export capabilities.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="600">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">share</span>
+          <h3 class="text-xl font-semibold">Data Sharing</h3>
+        </div>
+        <p class="text-gray-600">Share course notes and export reports via email, messaging, or cloud services.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="650">
         <div class="flex items-center mb-4">
           <span class="material-icons text-indigo-600 text-3xl mr-3">storage</span>
           <h3 class="text-xl font-semibold">Local Database</h3>
         </div>
-        <p class="text-gray-600">All data stored securely on device (SQLite).</p>
+        <p class="text-gray-600">SQLite database with secure local storage, user data isolation, and offline functionality.</p>
       </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="550">
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="700">
         <div class="flex items-center mb-4">
           <span class="material-icons text-indigo-600 text-3xl mr-3">devices</span>
           <h3 class="text-xl font-semibold">Cross-Platform</h3>
         </div>
-        <p class="text-gray-600">Could be run on Android, iOS, Windows, and macOS.</p>
+        <p class="text-gray-600">Built with .NET MAUI for Android, iOS, Windows, and macOS compatibility.</p>
       </div>
     </div>
   </section>
@@ -242,24 +265,74 @@
   <!-- HOW IT WORKS -->
   <section id="howitworks" class="py-24 bg-gray-50">
     <div class="max-w-4xl mx-auto text-center mb-12">
-      <h2 class="text-3xl font-bold fade" data-delay="100">How It Works</h2>
+      <h2 class="text-3xl font-bold fade" data-delay="100">Technical Architecture</h2>
+      <p class="text-gray-600 fade" data-delay="200">Built with modern development practices and secure architecture patterns.</p>
     </div>
-    <div class="max-w-3xl mx-auto grid gap-8 md:grid-cols-2">
+    <div class="max-w-6xl mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-4">
       <div class="p-6 rounded-xl shadow fade bg-white" data-delay="200">
-        <h3 class="text-xl font-semibold mb-2">Add Terms</h3>
-        <p class="text-gray-600">Create academic terms with start/end dates.</p>
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-2xl mr-2">account_circle</span>
+          <h3 class="text-lg font-semibold">Register & Login</h3>
+        </div>
+        <p class="text-gray-600 text-sm">Secure user authentication with SHA256 hashing and session management.</p>
       </div>
       <div class="p-6 rounded-xl shadow fade bg-white" data-delay="250">
-        <h3 class="text-xl font-semibold mb-2">Manage Courses</h3>
-        <p class="text-gray-600">Add courses to each term, including instructor and schedule details.</p>
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-2xl mr-2">calendar_today</span>
+          <h3 class="text-lg font-semibold">Manage Terms</h3>
+        </div>
+        <p class="text-gray-600 text-sm">Create academic terms with user-specific data isolation and CRUD operations.</p>
       </div>
       <div class="p-6 rounded-xl shadow fade bg-white" data-delay="300">
-        <h3 class="text-xl font-semibold mb-2">Track Assessments</h3>
-        <p class="text-gray-600">Add assignments, exams, and projects with due dates.</p>
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-2xl mr-2">book</span>
+          <h3 class="text-lg font-semibold">Track Courses</h3>
+        </div>
+        <p class="text-gray-600 text-sm">Add courses with status tracking, instructor details, and note sharing capabilities.</p>
       </div>
       <div class="p-6 rounded-xl shadow fade bg-white" data-delay="350">
-        <h3 class="text-xl font-semibold mb-2">Generate Reports</h3>
-        <p class="text-gray-600">View and export academic summaries for easy sharing.</p>
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-2xl mr-2">assessment</span>
+          <h3 class="text-lg font-semibold">Monitor Progress</h3>
+        </div>
+        <p class="text-gray-600 text-sm">Performance & Objective assessments with notifications and comprehensive reporting.</p>
+      </div>
+    </div>
+    
+    <!-- Technical Stack -->
+    <div class="max-w-4xl mx-auto mt-16">
+      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="400">
+        <h3 class="text-2xl font-bold text-center mb-8">Technology Stack</h3>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div class="text-center">
+            <div class="bg-indigo-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+              <span class="material-icons text-indigo-600 text-2xl">code</span>
+            </div>
+            <h4 class="font-semibold">.NET MAUI 9.0</h4>
+            <p class="text-sm text-gray-600">Cross-platform framework</p>
+          </div>
+          <div class="text-center">
+            <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+              <span class="material-icons text-green-600 text-2xl">language</span>
+            </div>
+            <h4 class="font-semibold">C# 12</h4>
+            <p class="text-sm text-gray-600">Modern programming language</p>
+          </div>
+          <div class="text-center">
+            <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+              <span class="material-icons text-purple-600 text-2xl">storage</span>
+            </div>
+            <h4 class="font-semibold">SQLite</h4>
+            <p class="text-sm text-gray-600">Local database with MVVM</p>
+          </div>
+          <div class="text-center">
+            <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+              <span class="material-icons text-blue-600 text-2xl">security</span>
+            </div>
+            <h4 class="font-semibold">Secure Auth</h4>
+            <p class="text-sm text-gray-600">SHA256 + Salt hashing</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -267,20 +340,29 @@
   <!-- FOOTER -->
   <footer class="bg-gray-800 text-gray-400 py-12">
     <div class="max-w-4xl mx-auto text-center space-y-6">
-      <p class="fade" data-delay="100">&copy; 2025 Tofiks Capstone project.</p>
+      <p class="fade" data-delay="100">&copy; 2025 Student Scheduler Mobile Application - Academic Management Solution</p>
       <div class="fade" data-delay="150">
-        <strong>Project History:</strong><br>
-        Originally submitted for <b>C971 – Mobile Application Development</b>.<br>
-        Enhanced for <b>D424 Software Engineering Capstone</b>.<br>
-        <span class="block mt-2">Student Name: <b>tofik mohammed</b> | Student ID: <b>tmoha34</b></span>
+        <strong>Project Evolution:</strong><br>
+        Originally developed for <b>C971 – Mobile Application Development</b><br>
+        Enhanced and reused for <b>D424 Software Engineering Capstone</b><br>
+        <span class="block mt-2">Comprehensive rewrite with advanced security, user authentication, and data isolation</span>
       </div>
       <div class="fade" data-delay="200">
         <strong>Western Governors University</strong><br>
-        Capstone: D424 – Software Engineering Capstone
+        <b>Student:</b> tofik mohammed | <b>Student ID:</b> tmoha34<br>
+        <b>Current Capstone:</b> D424 – Software Engineering Capstone
+      </div>
+      <div class="fade" data-delay="250">
+        <strong>Technical Architecture:</strong><br>
+        .NET MAUI 9.0 · C# 12 · SQLite · MVVM Pattern · SHA256 Security
       </div>
       <div class="fade" data-delay="300">
-        <strong>Technologies Used:</strong><br>
-        .NET MAUI · C# · SQLite · MVVM Architecture · Tailwind CSS
+        <strong>Key Capabilities:</strong><br>
+        User Authentication · Local Notifications · Data Sharing · Cross-Platform · Academic Reporting
+      </div>
+      <div class="fade" data-delay="350">
+        <strong>Security Features:</strong><br>
+        User Data Isolation · Secure Password Hashing · Session Management · Input Validation
       </div>
     </div>
   </footer>
