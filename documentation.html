@@ -269,19 +269,14 @@
 
       <h2 id="architecture">Architecture</h2>
       <h3>Application Architecture Pattern</h3>
-      <p>The application follows the <strong>Model-View-ViewModel (MVVM)</strong> pattern with additional service layers:</p>
-      
-      <pre><code>┌─────────────────┐
-│     Views       │ ← User Interface (XAML + Code-behind)
-├─────────────────┤
-│   ViewModels    │ ← Data Binding & UI Logic
-├─────────────────┤
-│    Services     │ ← Business Logic Layer
-├─────────────────┤
-│     Models      │ ← Data Models & Entities
-├─────────────────┤
-│   Data Layer    │ ← SQLite Database
-└─────────────────┘</code></pre>
+    <p>The application follows the <strong>Model-View-ViewModel (MVVM)</strong> pattern with additional service layers:</p>
+    <ul>
+      <li><strong>Views</strong>: User Interface (XAML + Code-behind)</li>
+      <li><strong>ViewModels</strong>: Data Binding & UI Logic</li>
+      <li><strong>Services</strong>: Business Logic Layer</li>
+      <li><strong>Models</strong>: Data Models & Entities</li>
+      <li><strong>Data Layer</strong>: SQLite Database</li>
+    </ul>
 
       <h3>Key Architectural Principles</h3>
       <ol>
