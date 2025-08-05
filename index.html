@@ -65,8 +65,7 @@
       <div class="space-x-6">
         <a href="#installation" class="hover:text-indigo-600">Installation</a>
         <a href="#features" class="hover:text-indigo-600">Features</a>
-        <a href="#howitworks" class="hover:text-indigo-600">How It Works</a>
-        <a href="#technical-docs" class="hover:text-indigo-600">Technical Docs</a>
+        <a href="#technical" class="hover:text-indigo-600">Technical Details</a>
         <a href="#demo" class="hover:text-indigo-600">Demo Video</a>
       </div>
       <button id="menuBtn" class="md:hidden block ml-4 text-indigo-600 focus:outline-none">
@@ -76,8 +75,7 @@
     <div id="mobileMenu" class="mobile-menu hidden md:hidden bg-white border-t">
       <a href="#installation" class="block px-4 py-2 hover:bg-gray-100">Installation</a>
       <a href="#features" class="block px-4 py-2 hover:bg-gray-100">Features</a>
-      <a href="#howitworks" class="block px-4 py-2 hover:bg-gray-100">How It Works</a>
-      <a href="#technical-docs" class="block px-4 py-2 hover:bg-gray-100">Technical Docs</a>
+      <a href="#technical" class="block px-4 py-2 hover:bg-gray-100">Technical Details</a>
       <a href="#demo" class="block px-4 py-2 hover:bg-gray-100">Demo Video</a>
     </div>
   </nav>
@@ -87,14 +85,13 @@
     <div class="max-w-4xl mx-auto text-center px-4">
       <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 fade" data-delay="100">Student Scheduler Mobile Application</h1>
       <p class="text-lg text-gray-600 mb-6 max-w-3xl mx-auto fade" data-delay="200">
-        A comprehensive .NET MAUI mobile application for managing academic terms, courses, and assessments with user authentication, local notifications, and data sharing capabilities.<br>
-        Built with .NET MAUI 9.0, SQLite database with user data isolation, and secure authentication using SHA256 hashing.
+        A comprehensive .NET MAUI mobile application for managing academic schedules with secure user authentication, local notifications, and data sharing.<br>
+        Built for Android with cross-platform compatibility.
       </p>
       <div class="mb-8 fade" data-delay="250">
-        <span class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium mr-2">Android APK</span>
-        <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium mr-2">.NET MAUI 9.0</span>
-        <span class="inline-block bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium mr-2">SQLite Database</span>
-        <span class="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">Unit Tested</span>
+        <span class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium mr-2">Android</span>
+        <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium mr-2">.NET MAUI</span>
+        <span class="inline-block bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">SQLite</span>
       </div>
       <a id="download"
          href="output/com.companyname.tm_capstoned424-Signed.apk" download
@@ -167,15 +164,366 @@
       </div>
     </div>
   </section>
-
-    <!-- DEMO VIDEO -->
-  <section id="demo" class="py-24 bg-gray-50">
+  <!-- FEATURES -->
+  <section id="features" class="py-24 bg-white">
     <div class="max-w-4xl mx-auto text-center mb-12">
-      <h2 class="text-3xl font-bold fade" data-delay="100">App Demo</h2>
-      <p class="text-gray-600 fade" data-delay="200">Watch how the Student Scheduler App works in action</p>
+      <h2 class="text-3xl font-bold mb-2 fade" data-delay="100">Key Features</h2>
+      <p class="text-gray-600 fade" data-delay="200">Complete academic management with modern security and user experience.</p>
+    </div>
+    <div class="max-w-4xl mx-auto grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="300">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">security</span>
+          <h3 class="text-xl font-semibold">Secure Authentication</h3>
+        </div>
+        <p class="text-gray-600">SHA256 password hashing with user data isolation and session management.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="350">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">school</span>
+          <h3 class="text-xl font-semibold">Academic Management</h3>
+        </div>
+        <p class="text-gray-600">Complete terms, courses, and assessments tracking with status monitoring.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="400">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">notifications</span>
+          <h3 class="text-xl font-semibold">Smart Notifications</h3>
+        </div>
+        <p class="text-gray-600">Local notifications for course dates and assessment reminders.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="450">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">storage</span>
+          <h3 class="text-xl font-semibold">SQLite Database</h3>
+        </div>
+        <p class="text-gray-600">Secure local storage with comprehensive entity models and relationships.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="500">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">share</span>
+          <h3 class="text-xl font-semibold">Data Export & Sharing</h3>
+        </div>
+        <p class="text-gray-600">Share course notes and export academic reports easily.</p>
+      </div>
+      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="550">
+        <div class="flex items-center mb-4">
+          <span class="material-icons text-indigo-600 text-3xl mr-3">verified_user</span>
+          <h3 class="text-xl font-semibold">Fully Tested</h3>
+        </div>
+        <p class="text-gray-600">Comprehensive unit test coverage ensuring reliability and quality.</p>
+      </div>
+    </div>
+    
+    <!-- Technology Stack -->
+    <div class="max-w-4xl mx-auto mt-16">
+      <div class="bg-gray-50 rounded-2xl p-8 fade" data-delay="600">
+        <h3 class="text-2xl font-bold text-center mb-8">Built With Modern Technology</h3>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 text-center">
+          <div>
+            <div class="bg-indigo-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+              <span class="material-icons text-indigo-600 text-2xl">code</span>
+            </div>
+            <h4 class="font-semibold">.NET MAUI 9.0</h4>
+            <p class="text-sm text-gray-600">Cross-platform framework</p>
+          </div>
+          <div>
+            <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+              <span class="material-icons text-green-600 text-2xl">language</span>
+            </div>
+            <h4 class="font-semibold">C# 12</h4>
+            <p class="text-sm text-gray-600">Modern language features</p>
+          </div>
+          <div>
+            <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+              <span class="material-icons text-purple-600 text-2xl">storage</span>
+            </div>
+            <h4 class="font-semibold">SQLite</h4>
+            <p class="text-sm text-gray-600">Local database</p>
+          </div>
+          <div>
+            <div class="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+              <span class="material-icons text-orange-600 text-2xl">verified</span>
+            </div>
+            <h4 class="font-semibold">52 Unit Tests</h4>
+            <p class="text-sm text-gray-600">100% pass rate</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECHNICAL DETAILS -->
+  <section id="technical" class="py-24 bg-gray-50">
+    <div class="max-w-6xl mx-auto text-center mb-12">
+      <h2 class="text-3xl font-bold fade" data-delay="100">Technical Implementation</h2>
+      <p class="text-gray-600 fade" data-delay="200">Comprehensive technical details demonstrating software engineering expertise</p>
+    </div>
+
+    <!-- Architecture Overview -->
+    <div class="max-w-6xl mx-auto mb-16">
+      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="300">
+        <h3 class="text-2xl font-bold text-center mb-8">Software Architecture & Design Patterns</h3>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div class="border border-indigo-200 rounded-lg p-6 bg-indigo-50">
+            <div class="flex items-center mb-4">
+              <span class="material-icons text-indigo-600 text-2xl mr-3">architecture</span>
+              <h4 class="font-semibold text-indigo-800">MVVM Pattern</h4>
+            </div>
+            <ul class="text-sm text-indigo-700 space-y-1">
+              <li>• Model-View-ViewModel separation</li>
+              <li>• Data binding with XAML views</li>
+              <li>• Business logic in ViewModels</li>
+              <li>• Clean separation of concerns</li>
+            </ul>
+          </div>
+          <div class="border border-green-200 rounded-lg p-6 bg-green-50">
+            <div class="flex items-center mb-4">
+              <span class="material-icons text-green-600 text-2xl mr-3">layers</span>
+              <h4 class="font-semibold text-green-800">Service Layer</h4>
+            </div>
+            <ul class="text-sm text-green-700 space-y-1">
+              <li>• DatabaseService: Data access layer</li>
+              <li>• AuthenticationService: Security</li>
+              <li>• ReportService: Business logic</li>
+              <li>• Dependency injection pattern</li>
+            </ul>
+          </div>
+          <div class="border border-purple-200 rounded-lg p-6 bg-purple-50">
+            <div class="flex items-center mb-4">
+              <span class="material-icons text-purple-600 text-2xl mr-3">storage</span>
+              <h4 class="font-semibold text-purple-800">Repository Pattern</h4>
+            </div>
+            <ul class="text-sm text-purple-700 space-y-1">
+              <li>• Centralized data access</li>
+              <li>• Async/await operations</li>
+              <li>• CRUD abstraction layer</li>
+              <li>• Unit testable design</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Database Design -->
+    <div class="max-w-6xl mx-auto mb-16">
+      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="400">
+        <h3 class="text-2xl font-bold text-center mb-8">Database Design & Entity Models</h3>
+        <div class="grid gap-6 md:grid-cols-2">
+          <div>
+            <h4 class="text-xl font-semibold mb-4 text-purple-600">Entity Relationships</h4>
+            <div class="bg-purple-50 border border-purple-200 rounded-lg p-6">
+              <div class="space-y-4 text-sm">
+                <div class="border-l-4 border-purple-400 pl-4">
+                  <strong>User (1:N)</strong><br>
+                  Id, Username, PasswordHash, Salt, CreatedAt, IsActive
+                </div>
+                <div class="border-l-4 border-blue-400 pl-4">
+                  <strong>Term (1:N with Courses)</strong><br>
+                  Id, Name, StartDate, EndDate, UserId
+                </div>
+                <div class="border-l-4 border-green-400 pl-4">
+                  <strong>Course (1:N with Assessments)</strong><br>
+                  Id, Name, StartDate, EndDate, Status, InstructorInfo, Notes, TermId, UserId
+                </div>
+                <div class="border-l-4 border-orange-400 pl-4">
+                  <strong>Assessment</strong><br>
+                  Id, Name, StartDate, EndDate, Type, CourseId, UserId
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h4 class="text-xl font-semibold mb-4 text-blue-600">SQLite Implementation</h4>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <ul class="text-sm text-blue-700 space-y-2">
+                <li><strong>ORM:</strong> sqlite-net-pcl 1.9.172</li>
+                <li><strong>Attributes:</strong> [Table], [PrimaryKey], [AutoIncrement], [Ignore]</li>
+                <li><strong>Foreign Keys:</strong> Enforced relationships with cascade operations</li>
+                <li><strong>Data Isolation:</strong> UserId filtering on all queries</li>
+                <li><strong>Async Operations:</strong> All database calls use async/await</li>
+                <li><strong>Connection Management:</strong> SQLiteAsyncConnection pattern</li>
+                <li><strong>Indexing:</strong> Optimized queries with proper indexing</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Implementation -->
+    <div class="max-w-6xl mx-auto mb-16">
+      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="500">
+        <h3 class="text-2xl font-bold text-center mb-8">Security Architecture</h3>
+        <div class="grid gap-6 md:grid-cols-2">
+          <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h4 class="text-xl font-semibold mb-4 text-red-600">Authentication Security</h4>
+            <ul class="text-sm text-red-700 space-y-2">
+              <li><strong>Password Hashing:</strong> SHA256 with salt using System.Security.Cryptography</li>
+              <li><strong>Salt Generation:</strong> Unique salt per user for enhanced security</li>
+              <li><strong>Session Management:</strong> Secure user context with logout functionality</li>
+              <li><strong>Input Validation:</strong> Comprehensive validation with ArgumentNullException</li>
+              <li><strong>Data Sanitization:</strong> SQL injection prevention through ORM</li>
+            </ul>
+          </div>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h4 class="text-xl font-semibold mb-4 text-blue-600">Data Protection</h4>
+            <ul class="text-sm text-blue-700 space-y-2">
+              <li><strong>User Isolation:</strong> Complete data segregation via UserId filtering</li>
+              <li><strong>Local Storage:</strong> SQLite database stored in app's private directory</li>
+              <li><strong>No Cloud Dependencies:</strong> All data remains on device</li>
+              <li><strong>Error Handling:</strong> Graceful exception handling with logging</li>
+              <li><strong>Debug Logging:</strong> Microsoft.Extensions.Logging for development</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Testing & Quality Assurance -->
+    <div class="max-w-6xl mx-auto mb-16">
+      <div class="bg-green-50 border border-green-200 rounded-2xl p-8 fade" data-delay="600">
+        <h3 class="text-2xl font-bold text-green-800 text-center mb-6">Unit Testing & Quality Assurance</h3>
+        <div class="grid gap-6 md:grid-cols-3 mb-6">
+          <div class="text-center">
+            <div class="text-4xl font-bold text-green-600 mb-2">52</div>
+            <p class="text-green-800 font-semibold">Total Unit Tests</p>
+          </div>
+          <div class="text-center">
+            <div class="text-4xl font-bold text-green-600 mb-2">100%</div>
+            <p class="text-green-800 font-semibold">Pass Rate</p>
+          </div>
+          <div class="text-center">
+            <div class="text-4xl font-bold text-green-600 mb-2">0</div>
+            <p class="text-green-800 font-semibold">Failed Tests</p>
+          </div>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div class="bg-white rounded-lg p-4">
+            <h5 class="font-semibold text-gray-800 mb-2">Model Testing</h5>
+            <ul class="text-xs text-gray-600">
+              <li>• User Model: 7 tests</li>
+              <li>• Term Model: 6 tests</li>
+              <li>• Course Model: 7 tests</li>
+              <li>• Assessment Model: 8 tests</li>
+            </ul>
+          </div>
+          <div class="bg-white rounded-lg p-4">
+            <h5 class="font-semibold text-gray-800 mb-2">Service Testing</h5>
+            <ul class="text-xs text-gray-600">
+              <li>• Authentication: 10 tests</li>
+              <li>• Database CRUD: 14 tests</li>
+              <li>• Data isolation validation</li>
+              <li>• Security verification</li>
+            </ul>
+          </div>
+          <div class="bg-white rounded-lg p-4">
+            <h5 class="font-semibold text-gray-800 mb-2">Test Framework</h5>
+            <ul class="text-xs text-gray-600">
+              <li>• MSTest 3.6.4</li>
+              <li>• .NET Test SDK 17.12.0</li>
+              <li>• Global setup/cleanup</li>
+              <li>• Test constants & helpers</li>
+            </ul>
+          </div>
+          <div class="bg-white rounded-lg p-4">
+            <h5 class="font-semibold text-gray-800 mb-2">Coverage Areas</h5>
+            <ul class="text-xs text-gray-600">
+              <li>• Constructor validation</li>
+              <li>• Property operations</li>
+              <li>• Business logic</li>
+              <li>• Error handling</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technology Stack Deep Dive -->
+    <div class="max-w-6xl mx-auto mb-16">
+      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="700">
+        <h3 class="text-2xl font-bold text-center mb-8">Technology Stack & Dependencies</h3>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div class="border rounded-lg p-4">
+            <h5 class="font-semibold text-gray-800 mb-3">.NET MAUI 9.0 Framework</h5>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• Microsoft.Maui.Controls 9.0.0</li>
+              <li>• Microsoft.Maui.Controls.Compatibility</li>
+              <li>• Target: net9.0-android</li>
+              <li>• Cross-platform UI framework</li>
+              <li>• XAML-based user interface</li>
+            </ul>
+          </div>
+          <div class="border rounded-lg p-4">
+            <h5 class="font-semibold text-gray-800 mb-3">Database & Storage</h5>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• sqlite-net-pcl 1.9.172</li>
+              <li>• SQLitePCLRaw.bundle_green 2.1.8</li>
+              <li>• Entity Framework patterns</li>
+              <li>• Async database operations</li>
+              <li>• Local data persistence</li>
+            </ul>
+          </div>
+          <div class="border rounded-lg p-4">
+            <h5 class="font-semibold text-gray-800 mb-3">Additional Features</h5>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• Plugin.LocalNotification 11.1.0</li>
+              <li>• Microsoft.Extensions.Logging.Debug</li>
+              <li>• System.Security.Cryptography</li>
+              <li>• Native platform integration</li>
+              <li>• Data sharing capabilities</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Structure -->
+    <div class="max-w-6xl mx-auto">
+      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="800">
+        <h3 class="text-2xl font-bold text-center mb-8">Project Structure & Organization</h3>
+        <div class="grid gap-6 md:grid-cols-3">
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h4 class="font-semibold text-blue-800 mb-4">Models Layer (5 classes)</h4>
+            <ul class="text-sm text-blue-700 space-y-1">
+              <li>• <strong>User.cs</strong> - Authentication entity</li>
+              <li>• <strong>Term.cs</strong> - Academic term model</li>
+              <li>• <strong>Course.cs</strong> - Course management</li>
+              <li>• <strong>Assessment.cs</strong> - Assessment tracking</li>
+              <li>• <strong>Report.cs</strong> - Reporting models</li>
+            </ul>
+          </div>
+          <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+            <h4 class="font-semibold text-green-800 mb-4">Services Layer (3 classes)</h4>
+            <ul class="text-sm text-green-700 space-y-1">
+              <li>• <strong>DatabaseService.cs</strong> - Data access</li>
+              <li>• <strong>AuthenticationService.cs</strong> - Security</li>
+              <li>• <strong>ReportService.cs</strong> - Business logic</li>
+            </ul>
+          </div>
+          <div class="bg-purple-50 border border-purple-200 rounded-lg p-6">
+            <h4 class="font-semibold text-purple-800 mb-4">Views Layer (16 XAML pages)</h4>
+            <ul class="text-sm text-purple-700 space-y-1">
+              <li>• Login/Register pages</li>
+              <li>• Terms management pages</li>
+              <li>• Courses detail pages</li>
+              <li>• Assessment management</li>
+              <li>• Reports and analytics</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO VIDEO -->
+  <section id="demo" class="py-24 bg-white">
+    <div class="max-w-4xl mx-auto text-center mb-12">
+      <h2 class="text-3xl font-bold fade" data-delay="100">App Demonstration</h2>
+      <p class="text-gray-600 fade" data-delay="200">Watch the complete technical demonstration of the Student Scheduler application</p>
     </div>
     <div class="max-w-4xl mx-auto px-4">
-      <div class="bg-white rounded-2xl shadow-xl p-8 fade" data-delay="300">
+      <div class="bg-gray-50 rounded-2xl shadow-xl p-8 fade" data-delay="300">
         <div class="aspect-video bg-gray-100 rounded-xl overflow-hidden">
           <!-- Replace YOUR_YOUTUBE_VIDEO_ID with your actual YouTube video ID -->
           <iframe 
@@ -188,415 +536,8 @@
           </iframe>
         </div>
         <div class="mt-6 text-center">
-          <h3 class="text-xl font-semibold text-gray-900 mb-2">Complete App Demonstration</h3>
-          <p class="text-gray-600">See user authentication, term/course management, notifications, and data sharing features in action.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- FEATURES -->
-  <section id="features" class="py-24 bg-white">
-    <div class="max-w-4xl mx-auto text-center mb-12">
-      <h2 class="text-3xl font-bold mb-2 fade" data-delay="100">Key Features</h2>
-      <p class="text-gray-600 fade" data-delay="200">A comprehensive academic management solution with advanced security and user experience.</p>
-    </div>
-    <div class="max-w-4xl mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="300">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">security</span>
-          <h3 class="text-xl font-semibold">User Authentication</h3>
-        </div>
-        <p class="text-gray-600">Secure user registration & login with SHA256+salt password hashing, session management, and complete user data isolation.</p>
-      </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="350">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">event</span>
-          <h3 class="text-xl font-semibold">Term Management</h3>
-        </div>
-        <p class="text-gray-600">Create, edit, and delete academic terms with start/end dates and complete course overview.</p>
-      </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="400">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">school</span>
-          <h3 class="text-xl font-semibold">Course Tracking</h3>
-        </div>
-        <p class="text-gray-600">Manage courses with status tracking, instructor info, detailed notes, and sharing capabilities.</p>
-      </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="450">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">assignment</span>
-          <h3 class="text-xl font-semibold">Assessment Management</h3>
-        </div>
-        <p class="text-gray-600">Track Performance & Objective Assessments with start/end dates and progress monitoring.</p>
-      </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="500">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">notifications</span>
-          <h3 class="text-xl font-semibold">Local Notifications</h3>
-        </div>
-        <p class="text-gray-600">Smart local notifications using Plugin.LocalNotification for course start/end dates and assessment reminders with customizable scheduling.</p>
-      </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="550">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">bar_chart</span>
-          <h3 class="text-xl font-semibold">Reports & Analytics</h3>
-        </div>
-        <p class="text-gray-600">Comprehensive dashboard with progress tracking, academic statistics, and export capabilities.</p>
-      </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="600">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">share</span>
-          <h3 class="text-xl font-semibold">Data Sharing</h3>
-        </div>
-        <p class="text-gray-600">Share course notes and export reports via email, messaging, or cloud services.</p>
-      </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="650">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">storage</span>
-          <h3 class="text-xl font-semibold">SQLite Database</h3>
-        </div>
-        <p class="text-gray-600">Robust SQLite database using sqlite-net-pcl with secure local storage, user data isolation, and comprehensive entity models.</p>
-      </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="700">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">devices</span>
-          <h3 class="text-xl font-semibold">Cross-Platform Ready</h3>
-        </div>
-        <p class="text-gray-600">Built with .NET MAUI 9.0 for Android deployment, with iOS, Windows, and macOS compatibility built-in for future expansion.</p>
-      </div>
-      <div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="750">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-3xl mr-3">verified_user</span>
-          <h3 class="text-xl font-semibold">Unit Tested</h3>
-        </div>
-        <p class="text-gray-600">Extensive unit test coverage for all models and services, ensuring reliability and maintainability of core functionality.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW IT WORKS -->
-  <section id="howitworks" class="py-24 bg-gray-50">
-    <div class="max-w-4xl mx-auto text-center mb-12">
-      <h2 class="text-3xl font-bold fade" data-delay="100">Technical Architecture</h2>
-      <p class="text-gray-600 fade" data-delay="200">Built with modern development practices and secure architecture patterns.</p>
-    </div>
-    <div class="max-w-6xl mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-      <div class="p-6 rounded-xl shadow fade bg-white" data-delay="200">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-2xl mr-2">account_circle</span>
-          <h3 class="text-lg font-semibold">Register & Login</h3>
-        </div>
-        <p class="text-gray-600 text-sm">Secure user authentication with SHA256 hashing and session management.</p>
-      </div>
-      <div class="p-6 rounded-xl shadow fade bg-white" data-delay="250">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-2xl mr-2">calendar_today</span>
-          <h3 class="text-lg font-semibold">Manage Terms</h3>
-        </div>
-        <p class="text-gray-600 text-sm">Create academic terms with user-specific data isolation and CRUD operations.</p>
-      </div>
-      <div class="p-6 rounded-xl shadow fade bg-white" data-delay="300">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-2xl mr-2">book</span>
-          <h3 class="text-lg font-semibold">Track Courses</h3>
-        </div>
-        <p class="text-gray-600 text-sm">Add courses with status tracking, instructor details, and note sharing capabilities.</p>
-      </div>
-      <div class="p-6 rounded-xl shadow fade bg-white" data-delay="350">
-        <div class="flex items-center mb-4">
-          <span class="material-icons text-indigo-600 text-2xl mr-2">assessment</span>
-          <h3 class="text-lg font-semibold">Monitor Progress</h3>
-        </div>
-        <p class="text-gray-600 text-sm">Performance & Objective assessments with notifications and comprehensive reporting.</p>
-      </div>
-    </div>
-    
-    <!-- Technical Stack -->
-    <div class="max-w-4xl mx-auto mt-16">
-      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="400">
-        <h3 class="text-2xl font-bold text-center mb-8">Technology Stack & Quality Assurance</h3>
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
-          <div class="text-center">
-            <div class="bg-indigo-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-              <span class="material-icons text-indigo-600 text-2xl">code</span>
-            </div>
-            <h4 class="font-semibold">.NET MAUI 9.0</h4>
-            <p class="text-sm text-gray-600">Cross-platform framework</p>
-          </div>
-          <div class="text-center">
-            <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-              <span class="material-icons text-green-600 text-2xl">language</span>
-            </div>
-            <h4 class="font-semibold">C# 12</h4>
-            <p class="text-sm text-gray-600">Modern programming language</p>
-          </div>
-          <div class="text-center">
-            <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-              <span class="material-icons text-purple-600 text-2xl">storage</span>
-            </div>
-            <h4 class="font-semibold">SQLite</h4>
-            <p class="text-sm text-gray-600">sqlite-net-pcl 1.9.172</p>
-          </div>
-          <div class="text-center">
-            <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-              <span class="material-icons text-blue-600 text-2xl">security</span>
-            </div>
-            <h4 class="font-semibold">Security</h4>
-            <p class="text-sm text-gray-600">SHA256 + Salt hashing</p>
-          </div>
-          <div class="text-center">
-            <div class="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-              <span class="material-icons text-orange-600 text-2xl">notifications</span>
-            </div>
-            <h4 class="font-semibold">Notifications</h4>
-            <p class="text-sm text-gray-600">Plugin.LocalNotification</p>
-          </div>
-        </div>
-        
-        <!-- Quality Assurance Section -->
-        <div class="mt-8 pt-8 border-t border-gray-200">
-          <h4 class="text-lg font-semibold text-center mb-6">Quality Assurance & Testing</h4>
-          <div class="grid gap-4 md:grid-cols-3">
-            <div class="text-center p-4 bg-gray-50 rounded-lg">
-              <span class="material-icons text-green-600 text-2xl mb-2 block">verified</span>
-              <h5 class="font-semibold">Unit Testing</h5>
-              <p class="text-sm text-gray-600">Comprehensive test coverage for all models and services</p>
-            </div>
-            <div class="text-center p-4 bg-gray-50 rounded-lg">
-              <span class="material-icons text-blue-600 text-2xl mb-2 block">security</span>
-              <h5 class="font-semibold">Security Testing</h5>
-              <p class="text-sm text-gray-600">Authentication service and data isolation validation</p>
-            </div>
-            <div class="text-center p-4 bg-gray-50 rounded-lg">
-              <span class="material-icons text-purple-600 text-2xl mb-2 block">build</span>
-              <h5 class="font-semibold">Integration Testing</h5>
-              <p class="text-sm text-gray-600">Database operations and service layer testing</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- COMPREHENSIVE TECHNICAL DOCUMENTATION -->
-  <section id="technical-docs" class="py-24 bg-white">
-    <div class="max-w-6xl mx-auto text-center mb-12">
-      <h2 class="text-3xl font-bold fade" data-delay="100">Complete Technical Documentation</h2>
-      <p class="text-gray-600 fade" data-delay="200">Comprehensive technical details for D424 Software Engineering Capstone evaluation</p>
-    </div>
-    
-    <!-- Test Coverage Results -->
-    <div class="max-w-6xl mx-auto mb-16">
-      <div class="bg-green-50 border border-green-200 rounded-2xl p-8 fade" data-delay="300">
-        <h3 class="text-2xl font-bold text-green-800 text-center mb-6">✅ Unit Test Coverage: 100% Pass Rate</h3>
-        <div class="grid gap-6 md:grid-cols-3 mb-6">
-          <div class="text-center">
-            <div class="text-3xl font-bold text-green-600 mb-2">52</div>
-            <p class="text-green-800">Total Tests</p>
-          </div>
-          <div class="text-center">
-            <div class="text-3xl font-bold text-green-600 mb-2">52</div>
-            <p class="text-green-800">Passed</p>
-          </div>
-          <div class="text-center">
-            <div class="text-3xl font-bold text-red-600 mb-2">0</div>
-            <p class="text-green-800">Failed</p>
-          </div>
-        </div>
-        <div class="bg-white rounded-xl p-6">
-          <h4 class="font-semibold text-gray-800 mb-4">Test Suite Breakdown:</h4>
-          <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-sm">
-            <div class="bg-gray-50 p-3 rounded-lg">
-              <strong>Model Tests:</strong><br>
-              • User Model: 7 tests<br>
-              • Term Model: 6 tests<br>
-              • Course Model: 7 tests<br>
-              • Assessment Model: 8 tests
-            </div>
-            <div class="bg-gray-50 p-3 rounded-lg">
-              <strong>Service Tests:</strong><br>
-              • Authentication: 10 tests<br>
-              • Database CRUD: 14 tests<br>
-              • Data Isolation: Verified<br>
-              • Security: SHA256 validated
-            </div>
-            <div class="bg-gray-50 p-3 rounded-lg">
-              <strong>Test Framework:</strong><br>
-              • MSTest 3.6.4<br>
-              • .NET Test SDK 17.12.0<br>
-              • Global Setup/Cleanup<br>
-              • Test Constants
-            </div>
-            <div class="bg-gray-50 p-3 rounded-lg">
-              <strong>Coverage Areas:</strong><br>
-              • Constructor validation<br>
-              • Property setters/getters<br>
-              • Business logic<br>
-              • Error handling
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Technical Architecture Deep Dive -->
-    <div class="max-w-6xl mx-auto mb-16">
-      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="400">
-        <h3 class="text-2xl font-bold text-center mb-8">🏗️ Technical Architecture & Implementation</h3>
-        
-        <!-- Framework Details -->
-        <div class="mb-8">
-          <h4 class="text-xl font-semibold mb-4 text-indigo-600">Core Framework & Dependencies</h4>
-          <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <div class="border rounded-lg p-4">
-              <h5 class="font-semibold text-gray-800">.NET MAUI 9.0</h5>
-              <p class="text-sm text-gray-600">Microsoft.Maui.Controls (Latest)</p>
-              <p class="text-xs text-gray-500">Cross-platform UI framework targeting Android, iOS, Windows, macOS</p>
-            </div>
-            <div class="border rounded-lg p-4">
-              <h5 class="font-semibold text-gray-800">SQLite Database</h5>
-              <p class="text-sm text-gray-600">sqlite-net-pcl 1.9.172</p>
-              <p class="text-xs text-gray-500">Lightweight, embedded database with full CRUD operations</p>
-            </div>
-            <div class="border rounded-lg p-4">
-              <h5 class="font-semibold text-gray-800">Local Notifications</h5>
-              <p class="text-sm text-gray-600">Plugin.LocalNotification 11.1.0</p>
-              <p class="text-xs text-gray-500">Native platform notifications for course/assessment reminders</p>
-            </div>
-            <div class="border rounded-lg p-4">
-              <h5 class="font-semibold text-gray-800">C# Language</h5>
-              <p class="text-sm text-gray-600">C# 12 with latest language version</p>
-              <p class="text-xs text-gray-500">Modern language features, nullable reference types enabled</p>
-            </div>
-            <div class="border rounded-lg p-4">
-              <h5 class="font-semibold text-gray-800">Target Framework</h5>
-              <p class="text-sm text-gray-600">net9.0 & net9.0-android</p>
-              <p class="text-xs text-gray-500">Latest .NET framework for optimal performance</p>
-            </div>
-            <div class="border rounded-lg p-4">
-              <h5 class="font-semibold text-gray-800">Build System</h5>
-              <p class="text-sm text-gray-600">Microsoft.NET.Sdk</p>
-              <p class="text-xs text-gray-500">Modern SDK-style project with implicit usings</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Database Schema -->
-        <div class="mb-8">
-          <h4 class="text-xl font-semibold mb-4 text-purple-600">Database Schema & Entity Models</h4>
-          <div class="grid gap-4 md:grid-cols-2">
-            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-              <h5 class="font-semibold text-purple-800 mb-2">Core Entities</h5>
-              <ul class="text-sm text-purple-700 space-y-1">
-                <li><strong>User:</strong> Id, Username, PasswordHash, CreatedDate, IsActive</li>
-                <li><strong>Term:</strong> Id, Name, StartDate, EndDate, UserId (isolation)</li>
-                <li><strong>Course:</strong> Id, Name, StartDate, EndDate, Status, TermId, UserId</li>
-                <li><strong>Assessment:</strong> Id, Name, StartDate, EndDate, Type, CourseId, UserId</li>
-              </ul>
-            </div>
-            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-              <h5 class="font-semibold text-purple-800 mb-2">Advanced Features</h5>
-              <ul class="text-sm text-purple-700 space-y-1">
-                <li>• Foreign key relationships with cascade operations</li>
-                <li>• User data isolation via UserId filtering</li>
-                <li>• SQLite attributes: [Table], [PrimaryKey], [AutoIncrement]</li>
-                <li>• [Ignore] attributes for computed properties</li>
-                <li>• String length constraints and indexing</li>
-                <li>• Async database operations throughout</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- Security Implementation -->
-        <div class="mb-8">
-          <h4 class="text-xl font-semibold mb-4 text-red-600">Security Architecture</h4>
-          <div class="bg-red-50 border border-red-200 rounded-lg p-6">
-            <div class="grid gap-4 md:grid-cols-2">
-              <div>
-                <h5 class="font-semibold text-red-800 mb-2">Authentication Security</h5>
-                <ul class="text-sm text-red-700 space-y-1">
-                  <li>• SHA256 password hashing with salt</li>
-                  <li>• System.Security.Cryptography implementation</li>
-                  <li>• Input validation and sanitization</li>
-                  <li>• Session management with user context</li>
-                  <li>• ArgumentNullException handling</li>
-                </ul>
-              </div>
-              <div>
-                <h5 class="font-semibold text-red-800 mb-2">Data Protection</h5>
-                <ul class="text-sm text-red-700 space-y-1">
-                  <li>• Complete user data isolation via UserId</li>
-                  <li>• Secure local SQLite database storage</li>
-                  <li>• No cross-user data access possible</li>
-                  <li>• Comprehensive error handling</li>
-                  <li>• Debug logging for development tracking</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- File Structure -->
-        <div class="mb-8">
-          <h4 class="text-xl font-semibold mb-4 text-blue-600">Project Structure & Organization</h4>
-          <div class="grid gap-4 md:grid-cols-3">
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h5 class="font-semibold text-blue-800 mb-2">Models (4 classes)</h5>
-              <ul class="text-xs text-blue-700">
-                <li>• User.cs - Authentication entity</li>
-                <li>• Term.cs - Academic term model</li>
-                <li>• Course.cs - Course management</li>
-                <li>• Assessment.cs - Assessment tracking</li>
-                <li>• Report.cs - Reporting models</li>
-              </ul>
-            </div>
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h5 class="font-semibold text-blue-800 mb-2">Services (3 classes)</h5>
-              <ul class="text-xs text-blue-700">
-                <li>• DatabaseService.cs - Data access layer</li>
-                <li>• AuthenticationService.cs - User auth</li>
-                <li>• ReportService.cs - Academic reporting</li>
-              </ul>
-            </div>
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h5 class="font-semibold text-blue-800 mb-2">Views (16 XAML pages)</h5>
-              <ul class="text-xs text-blue-700">
-                <li>• LoginPage, RegisterPage</li>
-                <li>• TermsPage, AddEditTermPage</li>
-                <li>• CoursesPage, CourseDetailPage</li>
-                <li>• AddEditCoursePage, AddEditAssessmentPage</li>
-                <li>• ReportsPage - comprehensive reporting</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- Platform Support -->
-        <div class="mb-8">
-          <h4 class="text-xl font-semibold mb-4 text-green-600">Platform Deployment & Configuration</h4>
-          <div class="bg-green-50 border border-green-200 rounded-lg p-6">
-            <div class="grid gap-4 md:grid-cols-2">
-              <div>
-                <h5 class="font-semibold text-green-800 mb-2">Target Platforms</h5>
-                <ul class="text-sm text-green-700 space-y-1">
-                  <li>• <strong>Primary:</strong> Android (net9.0-android)</li>
-                  <li>• <strong>Supported:</strong> iOS 15.0+, Windows 10.0.17763.0+</li>
-                  <li>• <strong>Available:</strong> macOS Catalyst, Tizen 6.5+</li>
-                  <li>• APK Generation: Signed release builds</li>
-                </ul>
-              </div>
-              <div>
-                <h5 class="font-semibold text-green-800 mb-2">Build Configuration</h5>
-                <ul class="text-sm text-green-700 space-y-1">
-                  <li>• Application ID: com.companyname.tm_capstoned424</li>
-                  <li>• Version: 1.0 (ApplicationDisplayVersion)</li>
-                  <li>• MAUI single project architecture</li>
-                  <li>• Debug logging with Microsoft.Extensions.Logging</li>
-                </ul>
-              </div>
-            </div>
-          </div>
+          <h3 class="text-xl font-semibold text-gray-900 mb-2">Complete Technical Walkthrough</h3>
+          <p class="text-gray-600">See all features in action: user authentication, academic management, notifications, database operations, and technical implementation details.</p>
         </div>
       </div>
     </div>
@@ -604,38 +545,32 @@
 
   <!-- FOOTER -->
   <footer class="bg-gray-800 text-gray-400 py-12">
-    <div class="max-w-4xl mx-auto text-center space-y-6">
-      <p class="fade" data-delay="100">&copy; 2025 Student Scheduler Mobile Application - Academic Management Solution</p>
+    <div class="max-w-6xl mx-auto text-center space-y-6">
+      <p class="fade" data-delay="100">&copy; 2025 Student Scheduler Mobile Application - Professional Software Development Showcase</p>
       <div class="fade" data-delay="150">
-        <strong>Project Evolution:</strong><br>
-        Originally developed for <b>C971 – Mobile Application Development</b><br>
-        Enhanced and reused for <b>D424 Software Engineering Capstone</b><br>
-        <span class="block mt-2">Comprehensive rewrite with advanced security, user authentication, and data isolation</span>
+        <strong>Western Governors University - D424 Software Engineering Capstone</strong><br>
+        <b>Student:</b> tofik mohammed | <b>Student ID:</b> tmoha34<br>
+        <span class="block mt-2">Enhanced from C971 Mobile Application Development - Demonstrating advanced software engineering skills</span>
       </div>
       <div class="fade" data-delay="200">
-        <strong>Western Governors University</strong><br>
-        <b>Student:</b> tofik mohammed | <b>Student ID:</b> tmoha34<br>
-        <b>Current Capstone:</b> D424 – Software Engineering Capstone
+        <strong>Core Technologies:</strong><br>
+        .NET MAUI 9.0 · C# 12 · SQLite (sqlite-net-pcl 1.9.172) · XAML · MSTest Framework
+      </div>
+      <div class="fade" data-delay="225">
+        <strong>Architecture & Patterns:</strong><br>
+        MVVM Pattern · Repository Pattern · Service Layer · Dependency Injection · Async/Await
       </div>
       <div class="fade" data-delay="250">
-        <strong>Complete Technology Stack:</strong><br>
-        .NET MAUI 9.0 · C# 12 · SQLite (sqlite-net-pcl 1.9.172) · Plugin.LocalNotification 11.1.0 · MSTest 3.6.4 · MVVM Pattern · XAML UI
+        <strong>Security Implementation:</strong><br>
+        SHA256+Salt Hashing · User Data Isolation · Session Management · Input Validation · Local Storage
       </div>
       <div class="fade" data-delay="275">
-        <strong>Database & Models:</strong><br>
-        4 Core Entity Models · User Data Isolation · SHA256+Salt Security · AsyncConnection Pattern · Foreign Key Relationships
+        <strong>Quality Assurance:</strong><br>
+        52 Unit Tests (100% Pass Rate) · Model Testing · Service Testing · Security Validation · Error Handling
       </div>
       <div class="fade" data-delay="300">
-        <strong>Development & Testing:</strong><br>
-        52 Unit Tests (100% Pass Rate) · Model Testing · Service Layer Testing · Authentication Testing · Database Integration Testing
-      </div>
-      <div class="fade" data-delay="325">
-        <strong>Application Features:</strong><br>
-        16 XAML Views · 3 Service Classes · Local Notifications · Academic Reporting · Data Export · Cross-Platform Ready (Android Primary)
-      </div>
-      <div class="fade" data-delay="350">
-        <strong>Quality Assurance:</strong><br>
-        Comprehensive Unit Test Suite · Security Validation · User Data Isolation · Input Validation · Error Handling · Debug Logging
+        <strong>Professional Features:</strong><br>
+        Local Notifications · Data Export/Sharing · Cross-Platform Design · Comprehensive Reporting · Database Design
       </div>
     </div>
   </footer>
