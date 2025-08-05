@@ -65,7 +65,6 @@
       <div class="space-x-6">
         <a href="#installation" class="hover:text-indigo-600">Installation</a>
         <a href="#features" class="hover:text-indigo-600">Features</a>
-        <a href="#technical" class="hover:text-indigo-600">Technical Details</a>
         <a href="#documentation" class="hover:text-indigo-600">Full Documentation</a>
         <a href="#demo" class="hover:text-indigo-600">Demo Video</a>
       </div>
@@ -76,7 +75,6 @@
     <div id="mobileMenu" class="mobile-menu hidden md:hidden bg-white border-t">
       <a href="#installation" class="block px-4 py-2 hover:bg-gray-100">Installation</a>
       <a href="#features" class="block px-4 py-2 hover:bg-gray-100">Features</a>
-      <a href="#technical" class="block px-4 py-2 hover:bg-gray-100">Technical Details</a>
       <a href="#documentation" class="block px-4 py-2 hover:bg-gray-100">Full Documentation</a>
       <a href="#demo" class="block px-4 py-2 hover:bg-gray-100">Demo Video</a>
     </div>
@@ -255,274 +253,11 @@
     </div>
   </section>
 
-  <!-- TECHNICAL DETAILS -->
-  <section id="technical" class="py-24 bg-gray-50">
-    <div class="max-w-6xl mx-auto text-center mb-12">
-      <h2 class="text-3xl font-bold fade" data-delay="100">Technical Implementation</h2>
-      <p class="text-gray-600 fade" data-delay="200">Comprehensive technical details demonstrating software engineering expertise</p>
-    </div>
-
-    <!-- Architecture Overview -->
-    <div class="max-w-6xl mx-auto mb-16">
-      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="300">
-        <h3 class="text-2xl font-bold text-center mb-8">Software Architecture & Design Patterns</h3>
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div class="border border-indigo-200 rounded-lg p-6 bg-indigo-50">
-            <div class="flex items-center mb-4">
-              <span class="material-icons text-indigo-600 text-2xl mr-3">architecture</span>
-              <h4 class="font-semibold text-indigo-800">MVVM Pattern</h4>
-            </div>
-            <ul class="text-sm text-indigo-700 space-y-1">
-              <li>• Model-View-ViewModel separation</li>
-              <li>• Data binding with XAML views</li>
-              <li>• Business logic in ViewModels</li>
-              <li>• Clean separation of concerns</li>
-            </ul>
-          </div>
-          <div class="border border-green-200 rounded-lg p-6 bg-green-50">
-            <div class="flex items-center mb-4">
-              <span class="material-icons text-green-600 text-2xl mr-3">layers</span>
-              <h4 class="font-semibold text-green-800">Service Layer</h4>
-            </div>
-            <ul class="text-sm text-green-700 space-y-1">
-              <li>• DatabaseService: Data access layer</li>
-              <li>• AuthenticationService: Security</li>
-              <li>• ReportService: Business logic</li>
-              <li>• Dependency injection pattern</li>
-            </ul>
-          </div>
-          <div class="border border-purple-200 rounded-lg p-6 bg-purple-50">
-            <div class="flex items-center mb-4">
-              <span class="material-icons text-purple-600 text-2xl mr-3">storage</span>
-              <h4 class="font-semibold text-purple-800">Repository Pattern</h4>
-            </div>
-            <ul class="text-sm text-purple-700 space-y-1">
-              <li>• Centralized data access</li>
-              <li>• Async/await operations</li>
-              <li>• CRUD abstraction layer</li>
-              <li>• Unit testable design</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Database Design -->
-    <div class="max-w-6xl mx-auto mb-16">
-      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="400">
-        <h3 class="text-2xl font-bold text-center mb-8">Database Design & Entity Models</h3>
-        <div class="grid gap-6 md:grid-cols-2">
-          <div>
-            <h4 class="text-xl font-semibold mb-4 text-purple-600">Entity Relationships</h4>
-            <div class="bg-purple-50 border border-purple-200 rounded-lg p-6">
-              <div class="space-y-4 text-sm">
-                <div class="border-l-4 border-purple-400 pl-4">
-                  <strong>User (1:N)</strong><br>
-                  Id, Username, PasswordHash, Salt, CreatedAt, IsActive
-                </div>
-                <div class="border-l-4 border-blue-400 pl-4">
-                  <strong>Term (1:N with Courses)</strong><br>
-                  Id, Name, StartDate, EndDate, UserId
-                </div>
-                <div class="border-l-4 border-green-400 pl-4">
-                  <strong>Course (1:N with Assessments)</strong><br>
-                  Id, Name, StartDate, EndDate, Status, InstructorInfo, Notes, TermId, UserId
-                </div>
-                <div class="border-l-4 border-orange-400 pl-4">
-                  <strong>Assessment</strong><br>
-                  Id, Name, StartDate, EndDate, Type, CourseId, UserId
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <h4 class="text-xl font-semibold mb-4 text-blue-600">SQLite Implementation</h4>
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <ul class="text-sm text-blue-700 space-y-2">
-                <li><strong>ORM:</strong> sqlite-net-pcl 1.9.172</li>
-                <li><strong>Attributes:</strong> [Table], [PrimaryKey], [AutoIncrement], [Ignore]</li>
-                <li><strong>Foreign Keys:</strong> Enforced relationships with cascade operations</li>
-                <li><strong>Data Isolation:</strong> UserId filtering on all queries</li>
-                <li><strong>Async Operations:</strong> All database calls use async/await</li>
-                <li><strong>Connection Management:</strong> SQLiteAsyncConnection pattern</li>
-                <li><strong>Indexing:</strong> Optimized queries with proper indexing</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Security Implementation -->
-    <div class="max-w-6xl mx-auto mb-16">
-      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="500">
-        <h3 class="text-2xl font-bold text-center mb-8">Security Architecture</h3>
-        <div class="grid gap-6 md:grid-cols-2">
-          <div class="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h4 class="text-xl font-semibold mb-4 text-red-600">Authentication Security</h4>
-            <ul class="text-sm text-red-700 space-y-2">
-              <li><strong>Password Hashing:</strong> SHA256 with salt using System.Security.Cryptography</li>
-              <li><strong>Salt Generation:</strong> Unique salt per user for enhanced security</li>
-              <li><strong>Session Management:</strong> Secure user context with logout functionality</li>
-              <li><strong>Input Validation:</strong> Comprehensive validation with ArgumentNullException</li>
-              <li><strong>Data Sanitization:</strong> SQL injection prevention through ORM</li>
-            </ul>
-          </div>
-          <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <h4 class="text-xl font-semibold mb-4 text-blue-600">Data Protection</h4>
-            <ul class="text-sm text-blue-700 space-y-2">
-              <li><strong>User Isolation:</strong> Complete data segregation via UserId filtering</li>
-              <li><strong>Local Storage:</strong> SQLite database stored in app's private directory</li>
-              <li><strong>No Cloud Dependencies:</strong> All data remains on device</li>
-              <li><strong>Error Handling:</strong> Graceful exception handling with logging</li>
-              <li><strong>Debug Logging:</strong> Microsoft.Extensions.Logging for development</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Testing & Quality Assurance -->
-    <div class="max-w-6xl mx-auto mb-16">
-      <div class="bg-green-50 border border-green-200 rounded-2xl p-8 fade" data-delay="600">
-        <h3 class="text-2xl font-bold text-green-800 text-center mb-6">Unit Testing & Quality Assurance</h3>
-        <div class="grid gap-6 md:grid-cols-3 mb-6">
-          <div class="text-center">
-            <div class="text-4xl font-bold text-green-600 mb-2">52</div>
-            <p class="text-green-800 font-semibold">Total Unit Tests</p>
-          </div>
-          <div class="text-center">
-            <div class="text-4xl font-bold text-green-600 mb-2">100%</div>
-            <p class="text-green-800 font-semibold">Pass Rate</p>
-          </div>
-          <div class="text-center">
-            <div class="text-4xl font-bold text-green-600 mb-2">0</div>
-            <p class="text-green-800 font-semibold">Failed Tests</p>
-          </div>
-        </div>
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <div class="bg-white rounded-lg p-4">
-            <h5 class="font-semibold text-gray-800 mb-2">Model Testing</h5>
-            <ul class="text-xs text-gray-600">
-              <li>• User Model: 7 tests</li>
-              <li>• Term Model: 6 tests</li>
-              <li>• Course Model: 7 tests</li>
-              <li>• Assessment Model: 8 tests</li>
-            </ul>
-          </div>
-          <div class="bg-white rounded-lg p-4">
-            <h5 class="font-semibold text-gray-800 mb-2">Service Testing</h5>
-            <ul class="text-xs text-gray-600">
-              <li>• Authentication: 10 tests</li>
-              <li>• Database CRUD: 14 tests</li>
-              <li>• Data isolation validation</li>
-              <li>• Security verification</li>
-            </ul>
-          </div>
-          <div class="bg-white rounded-lg p-4">
-            <h5 class="font-semibold text-gray-800 mb-2">Test Framework</h5>
-            <ul class="text-xs text-gray-600">
-              <li>• MSTest 3.6.4</li>
-              <li>• .NET Test SDK 17.12.0</li>
-              <li>• Global setup/cleanup</li>
-              <li>• Test constants & helpers</li>
-            </ul>
-          </div>
-          <div class="bg-white rounded-lg p-4">
-            <h5 class="font-semibold text-gray-800 mb-2">Coverage Areas</h5>
-            <ul class="text-xs text-gray-600">
-              <li>• Constructor validation</li>
-              <li>• Property operations</li>
-              <li>• Business logic</li>
-              <li>• Error handling</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Technology Stack Deep Dive -->
-    <div class="max-w-6xl mx-auto mb-16">
-      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="700">
-        <h3 class="text-2xl font-bold text-center mb-8">Technology Stack & Dependencies</h3>
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div class="border rounded-lg p-4">
-            <h5 class="font-semibold text-gray-800 mb-3">.NET MAUI 9.0 Framework</h5>
-            <ul class="text-sm text-gray-600 space-y-1">
-              <li>• Microsoft.Maui.Controls 9.0.0</li>
-              <li>• Microsoft.Maui.Controls.Compatibility</li>
-              <li>• Target: net9.0-android</li>
-              <li>• Cross-platform UI framework</li>
-              <li>• XAML-based user interface</li>
-            </ul>
-          </div>
-          <div class="border rounded-lg p-4">
-            <h5 class="font-semibold text-gray-800 mb-3">Database & Storage</h5>
-            <ul class="text-sm text-gray-600 space-y-1">
-              <li>• sqlite-net-pcl 1.9.172</li>
-              <li>• SQLitePCLRaw.bundle_green 2.1.8</li>
-              <li>• Entity Framework patterns</li>
-              <li>• Async database operations</li>
-              <li>• Local data persistence</li>
-            </ul>
-          </div>
-          <div class="border rounded-lg p-4">
-            <h5 class="font-semibold text-gray-800 mb-3">Additional Features</h5>
-            <ul class="text-sm text-gray-600 space-y-1">
-              <li>• Plugin.LocalNotification 11.1.0</li>
-              <li>• Microsoft.Extensions.Logging.Debug</li>
-              <li>• System.Security.Cryptography</li>
-              <li>• Native platform integration</li>
-              <li>• Data sharing capabilities</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Project Structure -->
-    <div class="max-w-6xl mx-auto">
-      <div class="bg-white rounded-2xl shadow-lg p-8 fade" data-delay="800">
-        <h3 class="text-2xl font-bold text-center mb-8">Project Structure & Organization</h3>
-        <div class="grid gap-6 md:grid-cols-3">
-          <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <h4 class="font-semibold text-blue-800 mb-4">Models Layer (5 classes)</h4>
-            <ul class="text-sm text-blue-700 space-y-1">
-              <li>• <strong>User.cs</strong> - Authentication entity</li>
-              <li>• <strong>Term.cs</strong> - Academic term model</li>
-              <li>• <strong>Course.cs</strong> - Course management</li>
-              <li>• <strong>Assessment.cs</strong> - Assessment tracking</li>
-              <li>• <strong>Report.cs</strong> - Reporting models</li>
-            </ul>
-          </div>
-          <div class="bg-green-50 border border-green-200 rounded-lg p-6">
-            <h4 class="font-semibold text-green-800 mb-4">Services Layer (3 classes)</h4>
-            <ul class="text-sm text-green-700 space-y-1">
-              <li>• <strong>DatabaseService.cs</strong> - Data access</li>
-              <li>• <strong>AuthenticationService.cs</strong> - Security</li>
-              <li>• <strong>ReportService.cs</strong> - Business logic</li>
-            </ul>
-          </div>
-          <div class="bg-purple-50 border border-purple-200 rounded-lg p-6">
-            <h4 class="font-semibold text-purple-800 mb-4">Views Layer (16 XAML pages)</h4>
-            <ul class="text-sm text-purple-700 space-y-1">
-              <li>• Login/Register pages</li>
-              <li>• Terms management pages</li>
-              <li>• Courses detail pages</li>
-              <li>• Assessment management</li>
-              <li>• Reports and analytics</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- DOCUMENTATION -->
   <section id="documentation" class="py-24 bg-white">
     <div class="max-w-6xl mx-auto text-center mb-12">
       <h2 class="text-3xl font-bold fade" data-delay="100">Complete Technical Documentation</h2>
-      <p class="text-gray-600 fade" data-delay="200">Access the comprehensive development documentation with detailed implementation guides, API references, and architectural insights</p>
+      <p class="text-gray-600 fade" data-delay="200">comprehensive development documentation with detailed implementation guides</p>
     </div>
     
     <div class="max-w-4xl mx-auto px-4">
@@ -534,7 +269,7 @@
           <h3 class="text-2xl font-bold text-gray-900 mb-4">Student Scheduler - Development Documentation</h3>
           <p class="text-gray-600 mb-6">
             Complete technical documentation covering architecture, implementation details, testing strategies, 
-            and development workflows. Essential reading for technical evaluators and potential employers.
+            and development workflows.
           </p>
         </div>
         
@@ -578,9 +313,9 @@
           <div class="bg-white rounded-lg p-4 shadow">
             <div class="flex items-center mb-2">
               <span class="material-icons text-indigo-600 mr-2">api</span>
-              <span class="font-semibold">API Reference</span>
+              <span class="font-semibold">Modular code</span>
             </div>
-            <p class="text-sm text-gray-600">Complete method documentation, usage examples</p>
+            <p class="text-sm text-gray-600">Complete modular method documentations</p>
           </div>
         </div>
         
@@ -599,29 +334,7 @@
             Download Documentation
           </a>
         </div>
-        
-        <!-- Documentation Stats -->
-        <div class="bg-white rounded-xl p-6 mt-8">
-          <h4 class="text-lg font-bold text-center mb-4">Documentation Overview</h4>
-          <div class="grid gap-4 md:grid-cols-4 text-center">
-            <div>
-              <div class="text-2xl font-bold text-indigo-600">20+</div>
-              <div class="text-sm text-gray-600">Sections</div>
-            </div>
-            <div>
-              <div class="text-2xl font-bold text-green-600">1000+</div>
-              <div class="text-sm text-gray-600">Lines</div>
-            </div>
-            <div>
-              <div class="text-2xl font-bold text-purple-600">50+</div>
-              <div class="text-sm text-gray-600">Code Examples</div>
-            </div>
-            <div>
-              <div class="text-2xl font-bold text-orange-600">15+</div>
-              <div class="text-sm text-gray-600">Diagrams</div>
-            </div>
-          </div>
-        </div>
+
       </div>
     </div>
   </section>
