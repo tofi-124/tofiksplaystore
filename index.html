@@ -15,44 +15,58 @@
     .blob { position: absolute; top: -50px; right: -100px; z-index: -1; }
     .fade { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
     .fade.visible { opacity: 1; transform: translateY(0); }
-    /* Responsive tweaks */
+    
+    /* Desktop navigation - show all links */
+    .desktop-nav { display: flex; }
+    .mobile-menu-btn { display: none; }
+    .mobile-menu { display: none; }
+    
+    /* Tablet navigation - show hamburger menu */
+    @media (max-width: 768px) {
+      .desktop-nav { display: none; }
+      .mobile-menu-btn { display: block; }
+    }
+    
+    /* Mobile responsive tweaks */
     @media (max-width: 640px) {
-      nav .space-x-6 { display: flex !important; flex-wrap: wrap; gap: 0.5rem; font-size: 0.875rem; }
-      nav a { font-size: 0.875rem; padding: 0.25rem 0.5rem; }
-      nav .text-2xl { font-size: 1.1rem; }
-      nav .max-w-4xl { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
-      nav .flex { width: 100%; justify-content: space-between; align-items: center; }
-      #menuBtn { display: none !important; }
-      .mobile-menu { display: none !important; }
-      header { padding-top: 8rem !important; } /* Increased from pt-24 to account for taller nav */
+      nav { padding: 0.75rem 1rem; }
+      nav .text-2xl { font-size: 1.2rem; }
+      nav .max-w-4xl { padding: 0; }
+      header { padding-top: 6rem !important; }
       header h1 { font-size: 1.75rem !important; line-height: 1.2; }
       header p { font-size: 0.95rem !important; }
-      header .mb-4 { margin-bottom: 0.75rem !important; }
       .blob { width: 150px !important; height: 150px !important; top: -20px; right: -20px; }
       section, header { padding-left: 1rem !important; padding-right: 1rem !important; }
       .py-24 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
       #features .grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
-      #howitworks .grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
-      .lg\\:grid-cols-5 { grid-template-columns: repeat(2, 1fr) !important; gap: 1rem !important; }
-      .xl\\:grid-cols-4 { grid-template-columns: 1fr !important; }
-      #howitworks .max-w-3xl { padding-left: 1rem; padding-right: 1rem; }
       .max-w-4xl, .max-w-3xl { max-width: 100% !important; padding-left: 0.5rem; padding-right: 0.5rem; }
       .text-3xl { font-size: 1.5rem !important; }
       .text-xl { font-size: 1.1rem !important; }
       footer .space-y-6 { gap: 1rem !important; }
       footer div { padding: 0 1rem; }
     }
-    @media (max-width: 400px) {
-      header { padding-top: 9rem !important; } /* Even more space for very small screens */
-      header h1 { font-size: 1.3rem !important; }
+    
+    /* Very small screens - minimal navigation */
+    @media (max-width: 480px) {
+      nav { padding: 0.5rem 0.75rem; }
+      nav .text-2xl { font-size: 1rem !important; }
+      .desktop-nav { display: none !important; }
+      .mobile-menu-btn { display: block !important; }
+      header { padding-top: 5rem !important; }
+      header h1 { font-size: 1.5rem !important; }
       header p { font-size: 0.875rem !important; }
       .text-3xl { font-size: 1.25rem !important; }
       .text-xl { font-size: 1rem !important; }
-      nav .text-2xl { font-size: 1rem !important; }
-      nav .space-x-6 { gap: 0.25rem; }
-      nav a { font-size: 0.75rem; padding: 0.125rem 0.25rem; }
       .p-6 { padding: 1rem !important; }
       footer { font-size: 0.875rem; }
+    }
+    
+    /* Extra small screens - hide navigation completely except hamburger */
+    @media (max-width: 380px) {
+      nav .text-2xl { font-size: 0.9rem !important; }
+      header { padding-top: 4.5rem !important; }
+      header h1 { font-size: 1.3rem !important; }
+      .mobile-menu-btn .material-icons { font-size: 1.2rem; }
     }
   </style>
 </head>
@@ -62,21 +76,41 @@
   <nav class="fixed w-full bg-white shadow-md z-20">
     <div class="max-w-4xl mx-auto flex items-center justify-between p-4">
       <a href="#" class="text-2xl font-bold text-indigo-600">Tofik personal playstore</a>
-      <div class="space-x-6">
-        <a href="#installation" class="hover:text-indigo-600">Installation</a>
-        <a href="#features" class="hover:text-indigo-600">Features</a>
-        <a href="#documentation" class="hover:text-indigo-600">Full Documentation</a>
-        <a href="#demo" class="hover:text-indigo-600">Demo Video</a>
+      
+      <!-- Desktop Navigation -->
+      <div class="desktop-nav space-x-6">
+        <a href="#installation" class="hover:text-indigo-600 transition-colors">Installation</a>
+        <a href="#features" class="hover:text-indigo-600 transition-colors">Features</a>
+        <a href="#documentation" class="hover:text-indigo-600 transition-colors">Full Documentation</a>
+        <a href="#demo" class="hover:text-indigo-600 transition-colors">Demo Video</a>
       </div>
-      <button id="menuBtn" class="md:hidden block ml-4 text-indigo-600 focus:outline-none">
+      
+      <!-- Mobile Menu Button -->
+      <button id="menuBtn" class="mobile-menu-btn text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-300 rounded-lg p-2">
         <span class="material-icons">menu</span>
       </button>
     </div>
-    <div id="mobileMenu" class="mobile-menu hidden md:hidden bg-white border-t">
-      <a href="#installation" class="block px-4 py-2 hover:bg-gray-100">Installation</a>
-      <a href="#features" class="block px-4 py-2 hover:bg-gray-100">Features</a>
-      <a href="#documentation" class="block px-4 py-2 hover:bg-gray-100">Full Documentation</a>
-      <a href="#demo" class="block px-4 py-2 hover:bg-gray-100">Demo Video</a>
+    
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu hidden bg-white border-t border-gray-200 shadow-lg">
+      <div class="py-2">
+        <a href="#installation" class="block px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors border-b border-gray-100">
+          <span class="material-icons text-sm mr-2 align-middle">get_app</span>
+          Installation
+        </a>
+        <a href="#features" class="block px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors border-b border-gray-100">
+          <span class="material-icons text-sm mr-2 align-middle">star</span>
+          Features
+        </a>
+        <a href="#documentation" class="block px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors border-b border-gray-100">
+          <span class="material-icons text-sm mr-2 align-middle">description</span>
+          Full Documentation
+        </a>
+        <a href="#demo" class="block px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+          <span class="material-icons text-sm mr-2 align-middle">play_circle</span>
+          Demo Video
+        </a>
+      </div>
     </div>
   </nav>
 
@@ -371,9 +405,10 @@
     </div>
   </footer>
 
-  <!-- tiny JS to trigger fade-in -->
+  <!-- Enhanced JS for mobile navigation and fade-in effects -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Fade-in animation functionality
       const appear = el => {
         const rect = el.getBoundingClientRect();
         if (rect.top < window.innerHeight - 50) el.classList.add('visible');
@@ -389,12 +424,48 @@
         document.querySelectorAll('.fade:not(.visible)').forEach(appear);
       });
 
-      // Mobile menu toggle
+      // Enhanced mobile menu toggle
       const menuBtn = document.getElementById('menuBtn');
       const mobileMenu = document.getElementById('mobileMenu');
+      
       if (menuBtn && mobileMenu) {
-        menuBtn.addEventListener('click', () => {
+        // Toggle menu visibility
+        menuBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
           mobileMenu.classList.toggle('hidden');
+          
+          // Change hamburger icon to X when open
+          const icon = menuBtn.querySelector('.material-icons');
+          if (mobileMenu.classList.contains('hidden')) {
+            icon.textContent = 'menu';
+          } else {
+            icon.textContent = 'close';
+          }
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+            mobileMenu.classList.add('hidden');
+            menuBtn.querySelector('.material-icons').textContent = 'menu';
+          }
+        });
+
+        // Close menu when clicking on menu links
+        const menuLinks = mobileMenu.querySelectorAll('a');
+        menuLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            menuBtn.querySelector('.material-icons').textContent = 'menu';
+          });
+        });
+
+        // Close menu on scroll
+        window.addEventListener('scroll', () => {
+          if (!mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+            menuBtn.querySelector('.material-icons').textContent = 'menu';
+          }
         });
       }
     });
