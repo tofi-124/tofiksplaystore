@@ -19,7 +19,7 @@
     /* Desktop navigation - show all links */
     .desktop-nav { display: flex; }
     .mobile-menu-btn { display: none; }
-    .mobile-menu { display: none; }
+    /* mobile-menu default display removed; visibility controlled by .hidden utility */
     
     /* Tablet navigation - show hamburger menu */
     @media (max-width: 768px) {
@@ -68,6 +68,10 @@
       header h1 { font-size: 1.3rem !important; }
       .mobile-menu-btn .material-icons { font-size: 1.2rem; }
     }
+  /* Hide mobile menu on desktop sizes */
+  @media (min-width: 769px) {
+    .mobile-menu { display: none; }
+  }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
