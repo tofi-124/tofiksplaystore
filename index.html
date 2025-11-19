@@ -1,694 +1,369 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>NEON COMMANDO</title>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
+    <meta charset="UTF-8">
+    <!-- iOS Viewport Optimization: Prevents zooming and handles the notch -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Super Web Bros</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            touch-action: none; /* Disables browser gestures */
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
 
-    :root { --primary: #00f3ff; --danger: #ff0055; --hud: rgba(255,255,255,0.8); }
+        /* Virtual Controls Overlay */
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            height: 150px;
+            pointer-events: none; /* Let clicks pass through to canvas if needed */
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+            z-index: 100;
+        }
 
-    body {
-        margin: 0; overflow: hidden; background: #050505;
-        font-family: 'Orbitron', sans-serif;
-        touch-action: none; user-select: none; -webkit-user-select: none;
-    }
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            backdrop-filter: blur(4px);
+            pointer-events: auto;
+            touch-action: manipulation;
+        }
 
-    /* CINEMATIC VIEWPORT */
-    #game-container {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
-    }
+        .btn:active {
+            background: rgba(255, 255, 255, 0.5);
+        }
 
-    canvas { display: block; width: 100%; height: 100%; }
+        #dpad {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
 
-    /* GLASSMORPHISM HUD */
-    #ui-layer {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        pointer-events: none;
-        padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 20px max(20px, env(safe-area-inset-left));
-        box-sizing: border-box;
-        display: flex; flex-direction: column; justify-content: space-between;
-    }
+        .arrow {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+        }
 
-    .hud-top { display: flex; justify-content: space-between; align-items: center; }
+        #actions {
+            display: flex;
+            align-items: center;
+        }
 
-    .stat-box {
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.1);
-        padding: 10px 20px; border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        display: flex; align-items: center; gap: 10px;
-    }
+        .action-btn {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 0, 0, 0.3);
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Rotate instruction for landscape */
+        #rotate-msg {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #333;
+            color: white;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
 
-    .label { font-size: 10px; color: #aaa; letter-spacing: 2px; text-transform: uppercase; }
-    .value { font-size: 24px; font-weight: 900; color: var(--primary); text-shadow: 0 0 10px var(--primary); }
-    .value.danger { color: var(--danger); text-shadow: 0 0 10px var(--danger); }
-
-    /* MODERN CONTROLS */
-    #controls {
-        position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-        pointer-events: none;
-    }
-    
-    .control-zone { position: absolute; pointer-events: auto; }
-    
-    /* Virtual Joystick */
-    #stick-zone { bottom: 40px; left: 40px; width: 180px; height: 180px; }
-    .stick-base {
-        width: 100%; height: 100%; border-radius: 50%;
-        background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%);
-        border: 2px solid rgba(255,255,255,0.1);
-        position: relative; transition: border-color 0.2s;
-    }
-    .stick-knob {
-        width: 60px; height: 60px; background: var(--primary);
-        border-radius: 50%; position: absolute; top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        box-shadow: 0 0 20px var(--primary);
-        transition: transform 0.1s;
-    }
-
-    /* Action Buttons */
-    #btn-zone { bottom: 40px; right: 40px; display: flex; gap: 20px; align-items: flex-end; }
-    .btn {
-        width: 90px; height: 90px; border-radius: 50%;
-        background: rgba(255,255,255,0.05);
-        border: 2px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(5px);
-        display: flex; justify-content: center; align-items: center;
-        font-size: 20px; color: white; font-weight: bold;
-        transition: transform 0.1s, background 0.1s;
-    }
-    .btn:active { transform: scale(0.9); background: rgba(255,255,255,0.2); }
-    .btn-fire { border-color: var(--primary); color: var(--primary); }
-    .btn-jump { border-color: var(--danger); color: var(--danger); }
-
-    /* SCREENS */
-    .screen {
-        position: absolute; top:0; left:0; width:100%; height:100%;
-        background: rgba(0,0,0,0.8); z-index: 100;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-        transition: opacity 0.5s;
-    }
-    .hidden { opacity: 0; pointer-events: none; }
-    
-    h1 { 
-        font-size: 60px; color: transparent; 
-        -webkit-text-stroke: 2px white; letter-spacing: -5px; margin: 0;
-        background: linear-gradient(180deg, #fff, #888); -webkit-background-clip: text;
-        filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
-        font-style: italic;
-    }
-    h2 { color: var(--primary); letter-spacing: 10px; font-size: 14px; margin-bottom: 40px; }
-    
-    button.main-btn {
-        background: var(--primary); border: none; padding: 20px 60px;
-        color: #000; font-family: 'Orbitron'; font-weight: 900; font-size: 24px;
-        clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-        cursor: pointer; box-shadow: 0 0 30px var(--primary);
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    button.main-btn:active { transform: scale(0.95); box-shadow: 0 0 10px var(--primary); }
-
-    #rotate-msg {
-        display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:999;
-        color:white; align-items: center; justify-content: center; text-align: center;
-    }
-    @media (orientation: portrait) { #rotate-msg { display: flex; } }
-
-</style>
+        @media screen and (orientation: portrait) {
+           /* Optional: Force landscape hint if you want strictly landscape */
+        }
+    </style>
 </head>
 <body>
 
-<div id="rotate-msg">
-    <div>
-        <div style="font-size:40px; margin-bottom:10px;">⟳</div>
-        ROTATE FOR COMBAT
-    </div>
-</div>
-
-<div id="game-container">
-    <canvas id="gameCanvas"></canvas>
-
-    <!-- UI -->
-    <div id="ui-layer">
-        <div class="hud-top">
-            <div class="stat-box">
-                <div class="label">SCORE</div>
-                <div class="value" id="score">000000</div>
-            </div>
-            <div class="stat-box">
-                <div class="label">WEAPON</div>
-                <div class="value" style="font-size:16px" id="weapon">ASSAULT</div>
-            </div>
-            <div class="stat-box">
-                <div class="label">HP</div>
-                <div class="value danger" id="lives">■■■</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- START MENU -->
-    <div id="start-screen" class="screen">
-        <h1>NEON COMMANDO</h1>
-        <h2>TACTICAL OPERATION</h2>
-        <button class="main-btn" id="start-btn">ENGAGE</button>
-    </div>
-
-    <!-- CONTROLS -->
+    <!-- Touch Controls -->
     <div id="controls">
-        <div class="control-zone" id="stick-zone">
-            <div class="stick-base">
-                <div class="stick-knob" id="knob"></div>
-            </div>
+        <div id="dpad">
+            <div class="btn arrow" id="btn-left">←</div>
+            <div class="btn arrow" id="btn-right">→</div>
         </div>
-        <div class="control-zone" id="btn-zone">
-            <div class="btn btn-fire" id="btn-shoot">FIRE</div>
-            <div class="btn btn-jump" id="btn-jump">JUMP</div>
+        <div id="actions">
+            <div class="btn action-btn" id="btn-jump">A</div>
         </div>
     </div>
-</div>
 
-<script>
-/**
- * MODERN AUDIO ENGINE
- * Uses filtered oscillators and noise buffers for "crunchy" arcade sound.
- */
-const AudioSys = {
-    ctx: new (window.AudioContext || window.webkitAudioContext)(),
-    master: null,
-    
-    init() {
-        this.master = this.ctx.createGain();
-        this.master.gain.value = 0.3;
-        this.master.connect(this.ctx.destination);
-    },
+    <!-- Kaboom.js CDN -->
+    <script src="https://unpkg.com/kaboom@3000.0.1/dist/kaboom.js"></script>
 
-    resume() { if(this.ctx.state === 'suspended') this.ctx.resume(); },
-
-    playTone(freq, type, dur, vol=1, slide=0) {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-        if(slide) osc.frequency.exponentialRampToValueAtTime(freq+slide, this.ctx.currentTime+dur);
-        
-        gain.gain.setValueAtTime(vol, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime+dur);
-        
-        osc.connect(gain);
-        gain.connect(this.master);
-        osc.start(); osc.stop(this.ctx.currentTime+dur);
-    },
-
-    noise(dur, filterFreq=1000) {
-        const bufSize = this.ctx.sampleRate * dur;
-        const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
-        const data = buf.getChannelData(0);
-        for(let i=0; i<bufSize; i++) data[i] = Math.random()*2-1;
-        
-        const src = this.ctx.createBufferSource();
-        src.buffer = buf;
-        
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = filterFreq;
-
-        const gain = this.ctx.createGain();
-        gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime+dur);
-
-        src.connect(filter); filter.connect(gain); gain.connect(this.master);
-        src.start();
-    },
-
-    sfx: {
-        shoot: () => AudioSys.playTone(150, 'sawtooth', 0.1, 0.5, -100),
-        laser: () => AudioSys.playTone(400, 'square', 0.15, 0.3, -200),
-        jump: () => AudioSys.playTone(100, 'sine', 0.3, 0.8, 200),
-        explode: () => AudioSys.noise(0.4, 500),
-        metal: () => AudioSys.playTone(800, 'triangle', 0.05, 0.2)
-    }
-};
-
-/**
- * GRAPHICS & PARTICLES
- */
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d', { alpha: false }); // Optimize
-let width, height;
-let camX = 0, shake = 0;
-
-function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-}
-window.addEventListener('resize', resize);
-resize();
-
-const Particles = [];
-class Particle {
-    constructor(x, y, color, speed, size, life) {
-        this.x = x; this.y = y;
-        const angle = Math.random() * Math.PI * 2;
-        this.vx = Math.cos(angle) * speed;
-        this.vy = Math.sin(angle) * speed;
-        this.color = color;
-        this.size = size;
-        this.life = life;
-        this.maxLife = life;
-    }
-    update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.life--;
-        this.size *= 0.95;
-    }
-    draw(cx) {
-        cx.globalAlpha = this.life / this.maxLife;
-        cx.fillStyle = this.color;
-        cx.fillRect(this.x, this.y, this.size, this.size);
-        cx.globalAlpha = 1;
-    }
-}
-
-function spawnExplosion(x, y, color = '#ff0055') {
-    for(let i=0; i<15; i++) {
-        Particles.push(new Particle(x, y, color, Math.random()*5, Math.random()*4+2, 30));
-    }
-    shake = 10;
-}
-
-/**
- * GAME ENGINE
- */
-const Input = { x: 0, y: 0, shoot: false, jump: false, aimAngle: 0 };
-const Game = {
-    active: false,
-    score: 0,
-    lives: 3,
-    groundY: 0,
-    
-    init() {
-        AudioSys.init();
-        this.groundY = height - 100;
-        this.platforms = [];
-        
-        // Procedural Level Gen (Neon Platforms)
-        for(let i=0; i<100; i++) {
-            // Floor
-            if(i%10 !== 0) this.platforms.push({x: i*100, y: this.groundY, w: 100, h: 50});
-            
-            // Floating
-            if(Math.random() > 0.4) {
-                this.platforms.push({
-                    x: i*100 + 50, 
-                    y: this.groundY - 150 - Math.random()*100, 
-                    w: 80 + Math.random()*50, 
-                    h: 20
-                });
-            }
-        }
-        
-        this.player = new Player();
-        this.bullets = [];
-        this.enemies = [];
-        this.active = true;
-        this.loop();
-    },
-
-    loop() {
-        if(!this.active) return;
-        requestAnimationFrame(() => this.loop());
-        
-        // Clear with Trail Effect
-        ctx.fillStyle = '#050505';
-        ctx.fillRect(0, 0, width, height);
-
-        // Screen Shake
-        let sx = 0, sy = 0;
-        if(shake > 0) {
-            sx = (Math.random()-0.5)*shake;
-            sy = (Math.random()-0.5)*shake;
-            shake *= 0.9;
-            if(shake<1) shake = 0;
-        }
-
-        ctx.save();
-        // Camera Follow
-        let targetCamX = this.player.x - width * 0.3;
-        camX += (targetCamX - camX) * 0.1;
-        ctx.translate(-camX + sx, sy);
-
-        // Draw World
-        this.drawWorld();
-
-        // Update & Draw Entities
-        this.player.update();
-        this.player.draw();
-
-        this.updateBullets();
-        this.updateEnemies();
-        
-        // Particles (Additive Blending for Glow)
-        ctx.globalCompositeOperation = 'lighter';
-        for(let i=Particles.length-1; i>=0; i--) {
-            const p = Particles[i];
-            p.update();
-            p.draw(ctx);
-            if(p.life <= 0) Particles.splice(i, 1);
-        }
-        ctx.globalCompositeOperation = 'source-over';
-
-        ctx.restore();
-    }
-};
-
-/**
- * ENTITIES
- */
-class Player {
-    constructor() {
-        this.x = 200; this.y = 100;
-        this.w = 24; this.h = 48;
-        this.vx = 0; this.vy = 0;
-        this.grounded = false;
-        this.gunCooldown = 0;
-        this.color = '#00f3ff';
-        this.weapon = 'spread'; // normal, spread
-    }
-
-    update() {
-        // Movement
-        const speed = 6;
-        if (Math.abs(Input.x) > 0.1) this.vx = Input.x * speed;
-        else this.vx *= 0.8;
-
-        // Jump
-        if (Input.jump && this.grounded) {
-            this.vy = -16;
-            this.grounded = false;
-            AudioSys.sfx.jump();
-            // Dust particles
-            for(let i=0; i<5; i++) Particles.push(new Particle(this.x, this.y+this.h, '#fff', 2, 2, 10));
-        }
-
-        // Gravity
-        this.vy += 0.8;
-        this.x += this.vx;
-        this.y += this.vy;
-
-        // Collision
-        this.grounded = false;
-        if(this.y > height + 100) this.die();
-
-        Game.platforms.forEach(p => {
-            if(this.x < p.x + p.w && this.x + this.w > p.x &&
-               this.y + this.h >= p.y && this.y + this.h <= p.y + 20 &&
-               this.vy >= 0) {
-                this.y = p.y - this.h;
-                this.vy = 0;
-                this.grounded = true;
-            }
+    <script>
+        // 1. Initialize Kaboom
+        kaboom({
+            background: [135, 206, 235], // Sky Blue
+            scale: 1.5, // Retro pixel feel
         });
 
-        // Shooting
-        if(Input.shoot && this.gunCooldown <= 0) {
-            this.shoot();
-        }
-        if(this.gunCooldown > 0) this.gunCooldown--;
-    }
+        // 2. Load Assets (Using built-in sprites for copyright safety)
+        // REPLACE THESE URLS with your own Mario assets to "reskin" the game.
+        loadSprite("hero", "https://kaboomjs.com/sprites/bean.png"); 
+        loadSprite("enemy", "https://kaboomjs.com/sprites/ghosty.png"); 
+        loadSprite("brick", "https://kaboomjs.com/sprites/brick.png");
+        loadSprite("block", "https://kaboomjs.com/sprites/box.png");
+        loadSprite("mushroom", "https://kaboomjs.com/sprites/mushroom.png");
+        loadSprite("surprise", "https://kaboomjs.com/sprites/surprise.png");
+        loadSprite("coin", "https://kaboomjs.com/sprites/coin.png");
+        loadSprite("pipe", "https://kaboomjs.com/sprites/pipe.png");
 
-    shoot() {
-        const bx = this.x + this.w/2;
-        const by = this.y + this.h/3;
-        let ang = Input.aimAngle;
-        
-        // Muzzle Flash
-        Particles.push(new Particle(bx + Math.cos(ang)*20, by + Math.sin(ang)*20, '#fff', 0, 10, 5));
+        // 3. Define Game Logic
+        scene("game", ({ levelId, score }) => {
+            
+            // UI: Score
+            const scoreLabel = add([
+                text(score),
+                pos(24, 24),
+                fixed(),
+                z(100)
+            ]);
 
-        if(this.weapon === 'spread') {
-            AudioSys.sfx.laser();
-            for(let i=-0.2; i<=0.2; i+=0.2) {
-                Game.bullets.push(new Bullet(bx, by, ang + i, this.color));
-            }
-            this.gunCooldown = 12;
-        } else {
-            AudioSys.sfx.shoot();
-            Game.bullets.push(new Bullet(bx, by, ang, this.color));
-            this.gunCooldown = 8;
-        }
-    }
+            // Physics Constants
+            const MOVE_SPEED = 140;
+            const JUMP_FORCE = 450;
+            const BIG_JUMP_FORCE = 550;
+            let CURRENT_JUMP_FORCE = JUMP_FORCE;
+            let isBig = false;
+            const FALL_DEATH = 600;
 
-    draw() {
-        // Body (Neon Outline)
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = 2;
-        ctx.shadowColor = this.color;
-        ctx.shadowBlur = 15;
-        
-        // Procedural Animation
-        ctx.save();
-        ctx.translate(this.x + this.w/2, this.y + this.h/2);
-        
-        // Tilt based on speed
-        ctx.rotate(this.vx * 0.05);
+            // Level Layout
+            // Symbols map to game objects
+            const LEVELS = [
+                [
+                    "                                      ",
+                    "                                      ",
+                    "        $$                            ",
+                    "      %==%=                           ",
+                    "                                      ",
+                    "                                   -+ ",
+                    "                    ^  ^           () ",
+                    "==============================   =====",
+                ],
+                [
+                    "                                      ",
+                    "                                      ",
+                    "         ====                         ",
+                    "      =                               ",
+                    "                                   -+ ",
+                    "                    ^              () ",
+                    "==============================   =====",
+                ]
+            ];
 
-        // Torso
-        ctx.strokeRect(-this.w/2, -this.h/2, this.w, this.h);
-        
-        // Head
-        ctx.fillStyle = '#000';
-        ctx.fillRect(-6, -this.h/2 - 12, 12, 12);
-        ctx.strokeRect(-6, -this.h/2 - 12, 12, 12);
-
-        // Gun Arm (Rotates to aim)
-        ctx.save();
-        ctx.translate(0, -8);
-        ctx.rotate(Input.aimAngle); 
-        ctx.fillStyle = this.color;
-        ctx.fillRect(0, -2, 24, 4); // Gun
-        ctx.restore();
-
-        ctx.restore();
-        ctx.shadowBlur = 0;
-    }
-
-    die() {
-        spawnExplosion(this.x, this.y, this.color);
-        AudioSys.sfx.explode();
-        this.x = camX + 100;
-        this.y = 0;
-        this.vy = 0;
-        Game.lives--;
-        document.getElementById('lives').innerText = "■".repeat(Math.max(0, Game.lives));
-        if(Game.lives < 0) location.reload();
-    }
-}
-
-class Bullet {
-    constructor(x, y, angle, color) {
-        this.x = x; this.y = y;
-        const speed = 18;
-        this.vx = Math.cos(angle) * speed;
-        this.vy = Math.sin(angle) * speed;
-        this.color = color;
-        this.life = 60;
-    }
-    update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.life--;
-    }
-    draw() {
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = this.color;
-        ctx.strokeStyle = '#fff'; // Hot core
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x - this.vx*0.5, this.y - this.vy*0.5); // Trail
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-    }
-}
-
-class Enemy {
-    constructor(x, y) {
-        this.x = x; this.y = y;
-        this.w = 30; h: 30;
-        this.hp = 3;
-        this.angle = 0;
-    }
-    update(target) {
-        // Look at player
-        this.angle = Math.atan2(target.y - this.y, target.x - this.x);
-        
-        // Move towards (slowly)
-        if(Math.abs(target.x - this.x) < 400) {
-             this.x += Math.cos(this.angle) * 2;
-             this.y += Math.sin(this.angle) * 1;
-        }
-    }
-    draw() {
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = '#ff0055';
-        ctx.strokeStyle = '#ff0055';
-        ctx.lineWidth = 2;
-        
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.angle);
-        
-        // Drone Shape
-        ctx.beginPath();
-        ctx.moveTo(10, 0);
-        ctx.lineTo(-10, 10);
-        ctx.lineTo(-5, 0);
-        ctx.lineTo(-10, -10);
-        ctx.closePath();
-        ctx.stroke();
-        
-        // Eye
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(0, -1, 4, 2);
-        
-        ctx.restore();
-        ctx.shadowBlur = 0;
-    }
-}
-
-Game.drawWorld = function() {
-    // Draw Platforms (Neon Grid style)
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = '#00ff88';
-    ctx.strokeStyle = '#00ff88';
-    ctx.fillStyle = 'rgba(0, 255, 136, 0.1)';
-    ctx.lineWidth = 2;
-
-    this.platforms.forEach(p => {
-        if(p.x > camX - 100 && p.x < camX + width) {
-            ctx.fillRect(p.x, p.y, p.w, p.h);
-            ctx.strokeRect(p.x, p.y, p.w, p.h);
-            // Grid lines inside
-            ctx.beginPath();
-            ctx.moveTo(p.x + p.w/2, p.y); ctx.lineTo(p.x + p.w/2, p.y + p.h);
-            ctx.stroke();
-        }
-    });
-    ctx.shadowBlur = 0;
-}
-
-Game.updateBullets = function() {
-    for(let i=this.bullets.length-1; i>=0; i--) {
-        const b = this.bullets[i];
-        b.update();
-        b.draw();
-        
-        // Hit Enemies
-        for(let j=this.enemies.length-1; j>=0; j--) {
-            const e = this.enemies[j];
-            if(Math.hypot(b.x - e.x, b.y - e.y) < 20) {
-                e.hp--;
-                spawnExplosion(b.x, b.y, '#fff');
-                this.bullets.splice(i, 1);
-                AudioSys.sfx.metal();
-                if(e.hp <= 0) {
-                    spawnExplosion(e.x, e.y, '#ff0055');
-                    AudioSys.sfx.explode();
-                    this.enemies.splice(j, 1);
-                    this.score += 100;
-                    document.getElementById('score').innerText = this.score.toString().padStart(6,'0');
+            const levelConf = {
+                tileWidth: 20,
+                tileHeight: 20,
+                tiles: {
+                    "=": () => [sprite("brick"), area(), body({ isStatic: true }), "ground"],
+                    "%": () => [sprite("surprise"), area(), body({ isStatic: true }), "coin-box"],
+                    "$": () => [sprite("surprise"), area(), body({ isStatic: true }), "mushy-box"],
+                    "^": () => [sprite("enemy"), area(), body(), anchor("bot"), patrol(), "danger"],
+                    "-": () => [sprite("pipe"), area(), body({ isStatic: true }), scale(1, 2), "pipe"],
+                    "+": () => [sprite("pipe"), area(), body({ isStatic: true }), scale(1, 2), "pipe-top"],
+                    "(": () => [sprite("pipe"), area(), body({ isStatic: true }), scale(1, 2), "pipe-bottom"],
+                    ")": () => [sprite("pipe"), area(), body({ isStatic: true }), scale(1, 2), "pipe-bottom-r"],
                 }
-                break;
-            }
+            };
+
+            const level = addLevel(LEVELS[levelId % LEVELS.length], levelConf);
+
+            // The Player
+            const player = add([
+                sprite("hero"),
+                pos(0, 0),
+                area(),
+                body(),
+                anchor("bot"),
+                "player"
+            ]);
+
+            // Camera follows player
+            player.onUpdate(() => {
+                camPos(player.pos.x + 100, 200);
+                if (player.pos.y >= FALL_DEATH) {
+                    go("lose", { score: scoreLabel.text });
+                }
+            });
+
+            // Controls: Keyboard
+            onKeyDown("left", () => {
+                player.move(-MOVE_SPEED, 0);
+                player.flipX = true;
+            });
+            onKeyDown("right", () => {
+                player.move(MOVE_SPEED, 0);
+                player.flipX = false;
+            });
+            onKeyPress("space", () => {
+                if (player.isGrounded()) {
+                    player.jump(CURRENT_JUMP_FORCE);
+                }
+            });
+
+            // Controls: Touch (Mobile Integration)
+            const btnLeft = document.getElementById('btn-left');
+            const btnRight = document.getElementById('btn-right');
+            const btnJump = document.getElementById('btn-jump');
+
+            let leftInterval, rightInterval;
+
+            // Touch Helpers
+            const touchStart = (el, action) => {
+                el.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    action(true);
+                }, {passive: false});
+                el.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    action(false);
+                }, {passive: false});
+                // Mouse fallback for testing on desktop
+                el.addEventListener('mousedown', () => action(true));
+                el.addEventListener('mouseup', () => action(false));
+            };
+
+            touchStart(btnLeft, (active) => {
+                if (active) {
+                    leftInterval = setInterval(() => {
+                        player.move(-MOVE_SPEED, 0);
+                        player.flipX = true;
+                    }, 16);
+                } else {
+                    clearInterval(leftInterval);
+                }
+            });
+
+            touchStart(btnRight, (active) => {
+                if (active) {
+                    rightInterval = setInterval(() => {
+                        player.move(MOVE_SPEED, 0);
+                        player.flipX = false;
+                    }, 16);
+                } else {
+                    clearInterval(rightInterval);
+                }
+            });
+
+            touchStart(btnJump, (active) => {
+                if (active && player.isGrounded()) {
+                    player.jump(CURRENT_JUMP_FORCE);
+                }
+            });
+
+            // Game Interactions
+            player.onHeadbutt((obj) => {
+                if (obj.is("coin-box")) {
+                    destroy(obj);
+                    add([sprite("block"), pos(obj.pos), area(), body({ isStatic: true })]);
+                    add([sprite("coin"), pos(obj.pos.sub(0, 20)), area(), move(UP, 100), "coin-fx"]);
+                    scoreLabel.text += 100;
+                }
+                if (obj.is("mushy-box")) {
+                    destroy(obj);
+                    add([sprite("block"), pos(obj.pos), area(), body({ isStatic: true })]);
+                    add([sprite("mushroom"), pos(obj.pos.sub(0, 20)), area(), body(), move(RIGHT, 60), "mushroom"]);
+                }
+            });
+
+            player.onCollide("mushroom", (m) => {
+                destroy(m);
+                player.scale = vec2(1.5); // Grow big
+                isBig = true;
+                CURRENT_JUMP_FORCE = BIG_JUMP_FORCE;
+            });
+
+            player.onCollide("danger", (d) => {
+                if (isBig) {
+                    isBig = false;
+                    player.scale = vec2(1);
+                    CURRENT_JUMP_FORCE = JUMP_FORCE;
+                    destroy(d); // Sacrifice enemy to save player
+                } else {
+                    go("lose", { score: scoreLabel.text });
+                }
+            });
+
+            // Stomp enemy
+            player.onGround((l) => {
+                if (l.is("danger")) {
+                    player.jump(JUMP_FORCE * 1.2);
+                    destroy(l);
+                    addKaboom(l.pos);
+                }
+            });
+
+            player.onCollide("pipe", () => {
+                onKeyPress("down", () => {
+                    go("game", {
+                        levelId: levelId + 1,
+                        score: scoreLabel.text
+                    });
+                });
+            });
+        });
+
+        // Custom Component: Patrol AI
+        function patrol(speed = 60, dir = 1) {
+            return {
+                id: "patrol",
+                require: ["pos", "area"],
+                add() {
+                    this.on("collide", (obj, col) => {
+                        if (col.isLeft() || col.isRight()) {
+                            dir = -dir;
+                        }
+                    });
+                },
+                update() {
+                    this.move(speed * dir, 0);
+                },
+            };
         }
+
+        scene("lose", ({ score }) => {
+            add([text(score, 32), pos(width() / 2, height() / 2 - 40), anchor("center")]);
+            add([
+                text("Game Over\nTap to Restart", { size: 24 }),
+                pos(width() / 2, height() / 2 + 20),
+                anchor("center"),
+            ]);
+
+            onKeyPress("space", () => go("game", { levelId: 0, score: 0 }));
+            onClick(() => go("game", { levelId: 0, score: 0 }));
+            onTouchStart(() => go("game", { levelId: 0, score: 0 }));
+        });
+
+        go("game", { levelId: 0, score: 0 });
         
-        if(b.life <= 0) this.bullets.splice(i, 1);
-    }
-}
-
-Game.updateEnemies = function() {
-    // Spawn Logic
-    if(Math.random() < 0.02) {
-        this.enemies.push(new Enemy(camX + width + 50, 100 + Math.random()*300));
-    }
-
-    for(let i=this.enemies.length-1; i>=0; i--) {
-        const e = this.enemies[i];
-        e.update(this.player);
-        e.draw();
-        
-        // Collision with player
-        if(Math.hypot(e.x - this.player.x, e.y - this.player.y) < 30) {
-            this.player.die();
-        }
-    }
-}
-
-/**
- * INPUT HANDLING
- */
-const stickBase = document.getElementById('stick-zone');
-const knob = document.getElementById('knob');
-let stickCenter = {x:0, y:0};
-
-stickBase.addEventListener('touchstart', e => {
-    e.preventDefault();
-    const t = e.changedTouches[0];
-    const rect = stickBase.getBoundingClientRect();
-    stickCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
-    updateStick(t.clientX, t.clientY);
-});
-
-stickBase.addEventListener('touchmove', e => {
-    e.preventDefault();
-    updateStick(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-});
-
-stickBase.addEventListener('touchend', () => {
-    knob.style.transform = `translate(-50%, -50%)`;
-    Input.x = 0; Input.y = 0;
-});
-
-function updateStick(cx, cy) {
-    const dx = cx - stickCenter.x;
-    const dy = cy - stickCenter.y;
-    const dist = Math.min(50, Math.hypot(dx, dy));
-    const angle = Math.atan2(dy, dx);
-    
-    knob.style.transform = `translate(-50%, -50%) translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`;
-    
-    if(dist > 10) {
-        Input.x = Math.cos(angle);
-        Input.y = Math.sin(angle);
-        Input.aimAngle = angle;
-    }
-}
-
-// Buttons
-const bindBtn = (id, key) => {
-    const el = document.getElementById(id);
-    el.addEventListener('touchstart', (e) => { e.preventDefault(); Input[key] = true; el.style.transform='scale(0.9)'; });
-    el.addEventListener('touchend', (e) => { e.preventDefault(); Input[key] = false; el.style.transform='scale(1)';});
-};
-bindBtn('btn-shoot', 'shoot');
-bindBtn('btn-jump', 'jump');
-
-// Start
-document.getElementById('start-btn').addEventListener('click', () => {
-    document.getElementById('start-screen').classList.add('hidden');
-    Game.init();
-});
-
-</script>
+    </script>
 </body>
 </html>
