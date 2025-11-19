@@ -1,411 +1,445 @@
 <!DOCTYPE html>
-
-<html class="scroll-smooth" lang="en">
+<html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-<title>Tofik’s App Store – Student Scheduler APK Download</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
-<style>
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Roboto', sans-serif; }
-    .blob { position: absolute; top: -50px; right: -100px; z-index: -1; }
-    .fade { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
-    .fade.visible { opacity: 1; transform: translateY(0); }
-    
-    .desktop-nav { display: flex; }
-    .mobile-menu-btn { display: none; }
-    
-    @media (max-width: 768px) {
-      .desktop-nav { display: none; }
-      .mobile-menu-btn { display: block; }
-    }
-    
-    @media (max-width: 640px) {
-      nav { padding: 0.75rem 1rem; }
-      nav .text-2xl { font-size: 1.2rem; }
-      nav .max-w-4xl { padding: 0; }
-      header { padding-top: 6rem !important; }
-      header h1 { font-size: 1.75rem !important; line-height: 1.2; }
-      header p { font-size: 0.95rem !important; }
-      .blob { width: 150px !important; height: 150px !important; top: -20px; right: -20px; }
-      section, header { padding-left: 1rem !important; padding-right: 1rem !important; }
-      .py-24 { padding-top: 3rem !important; padding-bottom: 3rem !important; }
-      #features .grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
-      .max-w-4xl, .max-w-3xl { max-width: 100% !important; padding-left: 0.5rem; padding-right: 0.5rem; }
-      .text-3xl { font-size: 1.5rem !important; }
-      .text-xl { font-size: 1.1rem !important; }
-      footer .space-y-6 { gap: 1rem !important; }
-      footer div { padding: 0 1rem; }
-    }
-    
-    @media (max-width: 480px) {
-      nav { padding: 0.5rem 0.75rem; }
-      nav .text-2xl { font-size: 1rem !important; }
-      .desktop-nav { display: none !important; }
-      .mobile-menu-btn { display: block !important; }
-      header { padding-top: 5rem !important; }
-      header h1 { font-size: 1.5rem !important; }
-      header p { font-size: 0.875rem !important; }
-      .text-3xl { font-size: 1.25rem !important; }
-      .text-xl { font-size: 1rem !important; }
-      .p-6 { padding: 1rem !important; }
-      footer { font-size: 0.875rem; }
-    }
-    
-    @media (max-width: 380px) {
-      nav .text-2xl { font-size: 0.9rem !important; }
-      header { padding-top: 4.5rem !important; }
-      header h1 { font-size: 1.3rem !important; }
-      .mobile-menu-btn .material-icons { font-size: 1.2rem; }
-    }
-  @media (min-width: 769px) {
-    .mobile-menu { display: none; }
-  }
-  </style>
-<meta content="Student Scheduler – plan terms, courses, and assessments with reminders. Download APK safely with version info and checksum." name="description"/><meta content="Student Scheduler – APK Download" property="og:title"/><meta content="Plan terms, courses, and assessments with reminders." property="og:description"/><meta content="website" property="og:type"/><meta content="/assets/og-card.png" property="og:image"/></head>
-<body class="bg-gray-50 text-gray-800"><a class="sr-only focus:not-sr-only" href="#main">Skip to content</a>
-<nav class="fixed w-full bg-white shadow-md z-20">
-<div class="max-w-4xl mx-auto flex items-center justify-between p-4">
-<a class="text-2xl font-bold text-indigo-600" href="#">Tofik personal playstore</a>
-<div class="desktop-nav space-x-6">
-<a class="hover:text-indigo-600 transition-colors" href="#installation">Installation</a>
-<a class="hover:text-indigo-600 transition-colors" href="#features">Features</a>
-<a class="hover:text-indigo-600 transition-colors" href="#documentation">Full Documentation</a>
-<a class="hover:text-indigo-600 transition-colors" href="#demo">Demo Video</a>
-</div>
-<button aria-controls="mobileMenu" aria-expanded="false" aria-label="Open menu" class="mobile-menu-btn text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-300 rounded-lg p-2" id="menuBtn">
-<span class="material-icons">menu</span>
-</button>
-</div>
-<div class="mobile-menu hidden bg-white border-t border-gray-200 shadow-lg" id="mobileMenu">
-<div class="py-2">
-<a class="block px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors border-b border-gray-100" href="#installation">
-<span class="material-icons text-sm mr-2 align-middle">get_app</span>
-          Installation
-        </a>
-<a class="block px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors border-b border-gray-100" href="#features">
-<span class="material-icons text-sm mr-2 align-middle">star</span>
-          Features
-        </a>
-<a class="block px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors border-b border-gray-100" href="#documentation">
-<span class="material-icons text-sm mr-2 align-middle">description</span>
-          Full Documentation
-        </a>
-<a class="block px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors" href="#demo">
-<span class="material-icons text-sm mr-2 align-middle">play_circle</span>
-          Demo Video
-        </a>
-</div>
-</div>
-</nav>
-<header class="relative pt-32 pb-24 overflow-hidden bg-gradient-to-br from-indigo-50 to-white">
-<div class="max-w-4xl mx-auto text-center px-4">
-<h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 fade" data-delay="100">Student Scheduler Mobile Application</h1>
-<p class="text-lg text-gray-600 mb-6 max-w-3xl mx-auto fade" data-delay="200">Plan your terms, courses, and assessments with smart reminders.</p>
-<div class="mb-8 fade" data-delay="250">
-<span class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium mr-2">Android</span>
-<span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium mr-2">.NET MAUI</span>
-<span class="inline-block bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">SQLite</span>
-</div>
-<a class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:bg-green-700 fade" data-delay="300" download="" href="downloads/app.apk" id="download">
-<span class="material-icons mr-2">download</span>
-        Download APK (Latest Build)
-      </a>
-</div>
-</header>
-<section class="py-24 bg-white" id="installation">
-<div class="max-w-4xl mx-auto text-center mb-12">
-<h2 class="text-3xl font-bold fade" data-delay="100">How to Install</h2>
-<p class="text-gray-600 fade" data-delay="200">Follow these simple steps to install the Student Scheduler App on your Android device.</p>
-</div>
-<div class="max-w-4xl mx-auto space-y-12">
-<div class="flex flex-col md:flex-row items-center gap-8 fade" data-delay="300">
-<div class="md:w-1/2">
-<img alt="Download APK Button" class="w-full max-w-sm mx-auto rounded-xl shadow-lg" decoding="async" loading="lazy" src="assets/web-page-download-apk.JPG"/>
-</div>
-<div class="md:w-1/2 text-center md:text-left">
-<div class="flex items-center justify-center md:justify-start mb-4">
-<span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">1</span>
-<h3 class="text-xl font-semibold">Download the APK</h3>
-</div>
-<p class="text-gray-600">Click the "Download APK" button on this webpage to start downloading the Student Scheduler App to your Android device.</p>
-</div>
-</div>
-<div class="flex flex-col md:flex-row-reverse items-center gap-8 fade" data-delay="400">
-<div class="md:w-1/2">
-<img alt="Download File Prompt" class="w-full max-w-sm mx-auto rounded-xl shadow-lg" decoding="async" loading="lazy" src="assets/download-file-prompt.JPG"/>
-</div>
-<div class="md:w-1/2 text-center md:text-left">
-<div class="flex items-center justify-center md:justify-start mb-4">
-<span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">2</span>
-<h3 class="text-xl font-semibold">Confirm Download</h3>
-</div>
-<p class="text-gray-600">Your browser will prompt you to confirm the download. Tap "Download" or "OK" to save the APK file to your device's Downloads folder.</p>
-</div>
-</div>
-<div class="flex flex-col md:flex-row items-center gap-8 fade" data-delay="500">
-<div class="md:w-1/2">
-<img alt="Install APK Screen" class="w-full max-w-sm mx-auto rounded-xl shadow-lg" decoding="async" loading="lazy" src="assets/after-scanning-install.JPG"/>
-</div>
-<div class="md:w-1/2 text-center md:text-left">
-<div class="flex items-center justify-center md:justify-start mb-4">
-<span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">3</span>
-<h3 class="text-xl font-semibold">Install the App</h3>
-</div>
-<p class="text-gray-600">Open the downloaded APK file from your notifications or Downloads folder. Your device will scan the file for security, then show the install screen. Tap "Install" to complete the installation.</p>
-</div>
-</div>
-<div class="bg-blue-50 border border-blue-200 rounded-xl p-6 fade" data-delay="600">
-<div class="flex items-start">
-<span class="material-icons text-blue-600 mr-3 mt-1">info</span>
-<div>
-<h4 class="font-semibold text-blue-900 mb-2">Important Note</h4>
-<p class="text-blue-800 text-sm">You may need to enable "Install from unknown sources" in your Android settings to install APK files. This is normal for apps not downloaded from the Google Play Store.</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section class="py-24 bg-white" id="features">
-<div class="max-w-4xl mx-auto text-center mb-12">
-<h2 class="text-3xl font-bold mb-2 fade" data-delay="100">Key Features</h2>
-<p class="text-gray-600 fade" data-delay="200">Complete academic management with modern security and user experience.</p>
-</div>
-<div class="max-w-4xl mx-auto grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-<div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="300">
-<div class="flex items-center mb-4">
-<span class="material-icons text-indigo-600 text-3xl mr-3">security</span>
-<h3 class="text-xl font-semibold">Secure Authentication</h3>
-</div>
-<p class="text-gray-600">SHA256 password hashing with user data isolation and session management.</p>
-</div>
-<div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="350">
-<div class="flex items-center mb-4">
-<span class="material-icons text-indigo-600 text-3xl mr-3">school</span>
-<h3 class="text-xl font-semibold">Academic Management</h3>
-</div>
-<p class="text-gray-600">Complete terms, courses, and assessments tracking with status monitoring.</p>
-</div>
-<div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="400">
-<div class="flex items-center mb-4">
-<span class="material-icons text-indigo-600 text-3xl mr-3">notifications</span>
-<h3 class="text-xl font-semibold">Smart Notifications</h3>
-</div>
-<p class="text-gray-600">Local notifications for course dates and assessment reminders.</p>
-</div>
-<div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="450">
-<div class="flex items-center mb-4">
-<span class="material-icons text-indigo-600 text-3xl mr-3">storage</span>
-<h3 class="text-xl font-semibold">SQLite Database</h3>
-</div>
-<p class="text-gray-600">Secure local storage with comprehensive entity models and relationships.</p>
-</div>
-<div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="500">
-<div class="flex items-center mb-4">
-<span class="material-icons text-indigo-600 text-3xl mr-3">share</span>
-<h3 class="text-xl font-semibold">Data Export &amp; Sharing</h3>
-</div>
-<p class="text-gray-600">Share course notes and export academic reports easily.</p>
-</div>
-<div class="p-6 bg-gray-50 rounded-xl shadow fade" data-delay="550">
-<div class="flex items-center mb-4">
-<span class="material-icons text-indigo-600 text-3xl mr-3">verified_user</span>
-<h3 class="text-xl font-semibold">Fully Tested</h3>
-</div>
-<p class="text-gray-600">Comprehensive unit test coverage ensuring reliability and quality.</p>
-</div>
-</div>
-<div class="max-w-4xl mx-auto mt-16">
-<div class="bg-gray-50 rounded-2xl p-8 fade" data-delay="600">
-<h3 class="text-2xl font-bold text-center mb-8">Built With Modern Technology</h3>
-<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 text-center">
-<div>
-<div class="bg-indigo-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-<span class="material-icons text-indigo-600 text-2xl">code</span>
-</div>
-<h4 class="font-semibold">.NET MAUI 9.0</h4>
-<p class="text-sm text-gray-600">Cross-platform framework</p>
-</div>
-<div>
-<div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-<span class="material-icons text-green-600 text-2xl">language</span>
-</div>
-<h4 class="font-semibold">C#</h4>
-<p class="text-sm text-gray-600">Modern language features</p>
-</div>
-<div>
-<div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-<span class="material-icons text-purple-600 text-2xl">storage</span>
-</div>
-<h4 class="font-semibold">SQLite</h4>
-<p class="text-sm text-gray-600">Local database</p>
-</div>
-<div>
-<div class="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-<span class="material-icons text-orange-600 text-2xl">verified</span>
-</div>
-<h4 class="font-semibold">52 Unit Tests</h4>
-<p class="text-sm text-gray-600">Tested E2E</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section class="py-24 bg-white" id="documentation">
-<div class="max-w-6xl mx-auto text-center mb-12">
-<h2 class="text-3xl font-bold fade" data-delay="100">Complete Technical Documentation</h2>
-<p class="text-gray-600 fade" data-delay="200">comprehensive development documentation with detailed implementation guides</p>
-</div>
-<div class="max-w-4xl mx-auto px-4">
-<div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl shadow-xl p-8 fade" data-delay="300">
-<div class="text-center mb-8">
-<div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
-<span class="material-icons text-2xl text-indigo-600">description</span>
-</div>
-<h3 class="text-2xl font-bold text-gray-900 mb-4">Student Scheduler - Development Documentation</h3>
-<p class="text-gray-600 mb-6">
-            Complete technical documentation covering architecture, implementation details, testing strategies, 
-            and development workflows.
-          </p>
-</div>
-<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
-<div class="bg-white rounded-lg p-4 shadow">
-<div class="flex items-center mb-2">
-<span class="material-icons text-indigo-600 mr-2">architecture</span>
-<span class="font-semibold">Architecture</span>
-</div>
-<p class="text-sm text-gray-600">MVVM pattern, dependency injection, service layers</p>
-</div>
-<div class="bg-white rounded-lg p-4 shadow">
-<div class="flex items-center mb-2">
-<span class="material-icons text-indigo-600 mr-2">code</span>
-<span class="font-semibold">Implementation</span>
-</div>
-<p class="text-sm text-gray-600">Detailed code examples, design patterns, best practices</p>
-</div>
-<div class="bg-white rounded-lg p-4 shadow">
-<div class="flex items-center mb-2">
-<span class="material-icons text-indigo-600 mr-2">bug_report</span>
-<span class="font-semibold">Testing</span>
-</div>
-<p class="text-sm text-gray-600">Unit tests, test strategies, quality assurance</p>
-</div>
-<div class="bg-white rounded-lg p-4 shadow">
-<div class="flex items-center mb-2">
-<span class="material-icons text-indigo-600 mr-2">storage</span>
-<span class="font-semibold">Database</span>
-</div>
-<p class="text-sm text-gray-600">Entity models, relationships, data design</p>
-</div>
-<div class="bg-white rounded-lg p-4 shadow">
-<div class="flex items-center mb-2">
-<span class="material-icons text-indigo-600 mr-2">security</span>
-<span class="font-semibold">Security</span>
-</div>
-<p class="text-sm text-gray-600">Authentication, encryption, data protection</p>
-</div>
-<div class="bg-white rounded-lg p-4 shadow">
-<div class="flex items-center mb-2">
-<span class="material-icons text-indigo-600 mr-2">api</span>
-<span class="font-semibold">Modular code</span>
-</div>
-<p class="text-sm text-gray-600">Complete modular method documentations</p>
-</div>
-</div>
-<div class="text-center">
-<a class="inline-flex items-center px-8 py-4 bg-indigo-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:bg-indigo-700 mr-4 mb-4" href="documentation.html" target="_blank">
-<span class="material-icons mr-2">open_in_new</span>
-            View Full Documentation
-          </a>
-</div>
-</div>
-</div>
-</section>
-<section class="py-24 bg-white" id="demo">
-<div class="max-w-4xl mx-auto text-center mb-12">
-<h2 class="text-3xl font-bold fade" data-delay="100">App Demonstration</h2>
-<p class="text-gray-600 fade" data-delay="200">Watch the complete technical demonstration of the Student Scheduler application</p>
-</div>
-<div class="max-w-4xl mx-auto px-4">
-<div class="bg-gray-50 rounded-2xl shadow-xl p-8 fade" data-delay="300">
-<div class="aspect-video bg-gray-100 rounded-xl overflow-hidden">
-<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" class="w-full h-full" frameborder="0" src="https://yt.com/Panopto/Pages/Viewer.aspx?id=7a120a6e-04bb-45ad-be14-b33600fe472f" title="Student Scheduler App Demo">
-</iframe>
-</div>
-<div class="mt-6 text-center">
-<h3 class="text-xl font-semibold text-gray-900 mb-2">Complete Technical Walkthrough</h3>
-<p class="text-gray-600">See all features in action: user authentication, academic management, notifications, database operations, and technical implementation details.</p>
-</div>
-</div>
-</div>
-</section>
-<footer class="bg-gray-800 text-gray-400 py-12">
-<div class="max-w-6xl mx-auto text-center space-y-6">
-<div class="fade" data-delay="150">
-<strong>Western Governors University - D424 Software Engineering Capstone</strong><br/>
-<b>Student:</b> tofik mohammed | <b>Student ID:</b> tmoha34<br/>
-<span class="block mt-2">Enhanced from C971 Mobile Application Development</span>
-</div>
-</div>
-</footer>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const appear = el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 50) el.classList.add('visible');
-      };
+    <meta charset="UTF-8">
+    <!-- Critical for iOS: Prevents scaling, handles notch, locks orientation -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Temple Run Clone</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #87CEEB;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none; /* Disables browser handling of gestures */
+        }
+        #canvas-container {
+            width: 100vw;
+            height: 100dvh; /* Dynamic viewport height for iOS */
+            display: block;
+        }
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+        #score {
+            font-size: 40px;
+            font-weight: 800;
+            color: white;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        #start-screen, #game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 10;
+        }
+        h1 { color: white; font-size: 40px; margin-bottom: 10px; text-transform: uppercase; font-style: italic; }
+        p { color: #eee; font-size: 18px; margin-bottom: 30px; }
+        button {
+            background: linear-gradient(135deg, #ffcc00, #ff9900);
+            border: none;
+            padding: 15px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            border-radius: 50px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transform: scale(1);
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
 
-      document.querySelectorAll('.fade').forEach(el => {
-        const d = el.dataset.delay || 0;
-        setTimeout(() => appear(el), d);
-      });
+    <div id="ui-layer">
+        <div id="score">0</div>
+    </div>
 
-      window.addEventListener('scroll', () => {
-        document.querySelectorAll('.fade:not(.visible)').forEach(appear);
-      });
+    <div id="start-screen">
+        <h1>Temple Dash</h1>
+        <p>Swipe Left/Right to Move &bull; Up to Jump</p>
+        <button id="start-btn">RUN!</button>
+    </div>
 
-      const menuBtn = document.getElementById('menuBtn');
-      const mobileMenu = document.getElementById('mobileMenu');
-      
-      if (menuBtn && mobileMenu) {
-        menuBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          mobileMenu.classList.toggle('hidden');
-          
-          const icon = menuBtn.querySelector('.material-icons');
-          if (mobileMenu.classList.contains('hidden')) {
-            icon.textContent = 'menu';
-          } else {
-            icon.textContent = 'close';
-          }
-        });
+    <div id="game-over-screen" class="hidden">
+        <h1>Wasted</h1>
+        <p id="final-score">Score: 0</p>
+        <button id="restart-btn">TRY AGAIN</button>
+    </div>
 
-        document.addEventListener('click', (e) => {
-          if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
-            mobileMenu.classList.add('hidden');
-            menuBtn.querySelector('.material-icons').textContent = 'menu';
-          }
-        });
+    <div id="canvas-container"></div>
 
-        const menuLinks = mobileMenu.querySelectorAll('a');
-        menuLinks.forEach(link => {
-          link.addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-            menuBtn.querySelector('.material-icons').textContent = 'menu';
-          });
-        });
+    <!-- Import Three.js as an ES Module -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+            }
+        }
+    </script>
 
-        window.addEventListener('scroll', () => {
-          if (!mobileMenu.classList.contains('hidden')) {
-            mobileMenu.classList.add('hidden');
-            menuBtn.querySelector('.material-icons').textContent = 'menu';
-          }
-        });
-      }
-    });
-  </script>
+    <script type="module">
+        import * as THREE from 'three';
+
+        // --- CONFIGURATION ---
+        const CONFIG = {
+            laneWidth: 3,
+            speed: 20, // Units per second
+            jumpForce: 12,
+            gravity: -30,
+            groundLength: 100,
+            fogColor: 0x87CEEB
+        };
+
+        // --- STATE ---
+        let scene, camera, renderer;
+        let player;
+        let isGameActive = false;
+        let score = 0;
+        let lastTime = 0;
+        let lanes = [-CONFIG.laneWidth, 0, CONFIG.laneWidth]; // Left, Center, Right
+        let currentLane = 1; // Start in center (index 1)
+        let playerVelocityY = 0;
+        let isJumping = false;
+        let groundSegments = [];
+        let obstacles = [];
+        let obstaclePool = []; // Object pooling for performance
+        
+        // --- SETUP ---
+        function init() {
+            const container = document.getElementById('canvas-container');
+
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(CONFIG.fogColor);
+            scene.fog = new THREE.Fog(CONFIG.fogColor, 20, 90);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
+            camera.position.set(0, 5, 8);
+            camera.lookAt(0, 2, -10);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap pixel ratio for mobile performance
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            // Lights
+            const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+            scene.add(hemiLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(10, 20, 10);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 1024;
+            dirLight.shadow.mapSize.height = 1024;
+            dirLight.shadow.camera.top = 50;
+            dirLight.shadow.camera.bottom = -50;
+            dirLight.shadow.camera.left = -20;
+            dirLight.shadow.camera.right = 20;
+            scene.add(dirLight);
+
+            createPlayer();
+            initGround();
+            
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize);
+            document.getElementById('start-btn').addEventListener('click', startGame);
+            document.getElementById('restart-btn').addEventListener('click', resetGame);
+            
+            setupInputs();
+
+            // Start Loop
+            requestAnimationFrame(animate);
+        }
+
+        function createPlayer() {
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshStandardMaterial({ color: 0xff5500, roughness: 0.1 });
+            player = new THREE.Mesh(geometry, material);
+            player.castShadow = true;
+            player.position.y = 0.5;
+            scene.add(player);
+        }
+
+        function initGround() {
+            // Create initial ground segments
+            for (let i = 0; i < 10; i++) {
+                spawnGroundSegment(-i * 20);
+            }
+        }
+
+        function spawnGroundSegment(zPos) {
+            // Ground plane
+            const geometry = new THREE.PlaneGeometry(15, 20);
+            const material = new THREE.MeshStandardMaterial({ 
+                color: 0x2a9d8f, 
+                roughness: 0.8,
+                side: THREE.DoubleSide
+            });
+            const ground = new THREE.Mesh(geometry, material);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            ground.position.set(0, 0, zPos);
+            
+            scene.add(ground);
+            groundSegments.push(ground);
+
+            // Spawn Obstacles (skip first few segments for safe start)
+            if (zPos < -30 && Math.random() > 0.3) {
+                spawnObstacle(zPos);
+            }
+        }
+
+        function spawnObstacle(zPos) {
+            const laneIndex = Math.floor(Math.random() * 3);
+            const laneX = lanes[laneIndex];
+            
+            const type = Math.random() > 0.5 ? 'high' : 'low';
+            
+            let obs;
+            const geo = new THREE.BoxGeometry(2.5, type === 'high' ? 3 : 1, 1);
+            const mat = new THREE.MeshStandardMaterial({ color: 0x264653 });
+            
+            obs = new THREE.Mesh(geo, mat);
+            obs.castShadow = true;
+            obs.receiveShadow = true;
+            
+            if (type === 'high') {
+                // Something to slide under (not implemented fully, so just a tall block to dodge)
+                obs.position.set(laneX, 1.5, zPos); 
+            } else {
+                // Something to jump over
+                obs.position.set(laneX, 0.5, zPos);
+            }
+
+            scene.add(obs);
+            obstacles.push({ mesh: obs, type: type });
+        }
+
+        // --- GAME LOGIC ---
+        
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            isGameActive = true;
+            lastTime = performance.now();
+        }
+
+        function resetGame() {
+            // Reset variables
+            score = 0;
+            currentLane = 1;
+            playerVelocityY = 0;
+            isJumping = false;
+            CONFIG.speed = 20;
+            
+            document.getElementById('score').innerText = "0";
+            document.getElementById('game-over-screen').classList.add('hidden');
+
+            // Reset Player
+            player.position.set(0, 0.5, 0);
+            player.rotation.set(0,0,0);
+
+            // Clean Scene
+            obstacles.forEach(o => scene.remove(o.mesh));
+            obstacles = [];
+            groundSegments.forEach(g => scene.remove(g));
+            groundSegments = [];
+
+            initGround();
+            isGameActive = true;
+            lastTime = performance.now();
+        }
+
+        function gameOver() {
+            isGameActive = false;
+            document.getElementById('game-over-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = `Score: ${Math.floor(score)}`;
+        }
+
+        function update(dt) {
+            if (!isGameActive) return;
+
+            // 1. Move Player Forward (Relative to world)
+            // Actually, we move the player forward and the camera follows
+            const moveDistance = CONFIG.speed * dt;
+            player.position.z -= moveDistance;
+            score += moveDistance;
+            document.getElementById('score').innerText = Math.floor(score);
+
+            // Increase speed gradually
+            CONFIG.speed += dt * 0.5;
+
+            // 2. Lane Movement (Lerp for smoothness)
+            const targetX = lanes[currentLane];
+            player.position.x += (targetX - player.position.x) * 10 * dt;
+            
+            // Tilt player when changing lanes
+            const tilt = (player.position.x - targetX) * 0.5;
+            player.rotation.z = tilt;
+
+            // 3. Jump Physics
+            if (isJumping) {
+                playerVelocityY += CONFIG.gravity * dt;
+                player.position.y += playerVelocityY * dt;
+
+                if (player.position.y <= 0.5) {
+                    player.position.y = 0.5;
+                    isJumping = false;
+                    playerVelocityY = 0;
+                    
+                    // Squash effect on land
+                    player.scale.set(1.2, 0.8, 1.2);
+                    setTimeout(() => player.scale.set(1,1,1), 100);
+                }
+            }
+
+            // 4. Camera Follow
+            camera.position.z = player.position.z + 10;
+            camera.position.x += (player.position.x * 0.5 - camera.position.x) * 5 * dt; // Slight lag on X
+
+            // 5. Endless World Generation
+            const lastGround = groundSegments[groundSegments.length - 1];
+            if (lastGround.position.z > player.position.z - 60) {
+                spawnGroundSegment(lastGround.position.z - 20);
+            }
+            
+            // Cleanup old segments
+            if (groundSegments[0].position.z > player.position.z + 20) {
+                scene.remove(groundSegments[0]);
+                groundSegments.shift();
+            }
+
+            // Cleanup old obstacles
+            if (obstacles.length > 0 && obstacles[0].mesh.position.z > player.position.z + 20) {
+                scene.remove(obstacles[0].mesh);
+                obstacles.shift();
+            }
+
+            // 6. Collision Detection
+            const playerBox = new THREE.Box3().setFromObject(player);
+            // Shrink hitbox slightly to be forgiving
+            playerBox.expandByScalar(-0.2);
+
+            for (let obs of obstacles) {
+                const obsBox = new THREE.Box3().setFromObject(obs.mesh);
+                if (playerBox.intersectsBox(obsBox)) {
+                    gameOver();
+                }
+            }
+        }
+
+        function animate(time) {
+            requestAnimationFrame(animate);
+            
+            const dt = Math.min((time - lastTime) / 1000, 0.1); // Cap dt
+            lastTime = time;
+
+            update(dt);
+            renderer.render(scene, camera);
+        }
+
+        // --- INPUT HANDLING (TOUCH & KEYBOARD) ---
+        function setupInputs() {
+            // Keyboard
+            window.addEventListener('keydown', (e) => {
+                if (!isGameActive) return;
+                if (e.key === 'ArrowLeft' || e.key === 'a') changeLane(-1);
+                if (e.key === 'ArrowRight' || e.key === 'd') changeLane(1);
+                if ((e.key === 'ArrowUp' || e.key === ' ' || e.key === 'w') && !isJumping) jump();
+            });
+
+            // Touch / Swipe
+            let touchStartX = 0;
+            let touchStartY = 0;
+
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            }, { passive: false });
+
+            document.addEventListener('touchend', (e) => {
+                if (!isGameActive) return;
+                const touchEndX = e.changedTouches[0].screenX;
+                const touchEndY = e.changedTouches[0].screenY;
+                handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+            }, { passive: false });
+        }
+
+        function handleSwipe(startX, startY, endX, endY) {
+            const diffX = endX - startX;
+            const diffY = endY - startY;
+            const absX = Math.abs(diffX);
+            const absY = Math.abs(diffY);
+
+            // Threshold to detect swipe vs tap
+            if (Math.max(absX, absY) < 20) return;
+
+            if (absX > absY) {
+                // Horizontal Swipe
+                if (diffX > 0) changeLane(1);
+                else changeLane(-1);
+            } else {
+                // Vertical Swipe
+                if (diffY < 0 && !isJumping) jump(); // Swipe Up
+                // if (diffY > 0) slide(); // Swipe Down (Not implemented)
+            }
+        }
+
+        function changeLane(dir) {
+            const newLane = currentLane + dir;
+            if (newLane >= 0 && newLane <= 2) {
+                currentLane = newLane;
+            }
+        }
+
+        function jump() {
+            isJumping = true;
+            playerVelocityY = CONFIG.jumpForce;
+            // Stretch effect
+            player.scale.set(0.8, 1.2, 0.8);
+            setTimeout(() => player.scale.set(1,1,1), 100);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Init
+        init();
+
+    </script>
 </body>
 </html>
