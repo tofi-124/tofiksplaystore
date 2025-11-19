@@ -3,293 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GENERATIVE_SCULPTURE</title>
+    <title>ENTROPY_ENGINE</title>
     <style>
-        :root { --bg: #0a0a0a; --text: #e0e0e0; }
-        body { margin: 0; overflow: hidden; background-color: var(--bg); font-family: 'Helvetica Neue', Arial, sans-serif; color: var(--text); }
+        :root { 
+            --bg: #000000; 
+            --fg: #ffffff; 
+            --accent: #ff003c; 
+        }
         
-        /* Canvas */
-        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-
-        /* Grain Overlay (Texture) */
-        .grain {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 2; opacity: 0.05;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        body { 
+            margin: 0; overflow: hidden; background-color: var(--bg); 
+            font-family: 'Courier New', Courier, monospace; 
+            color: var(--fg); 
+            -webkit-font-smoothing: none; /* Pixelated font feel */
         }
 
-        /* UI */
-        #ui-layer {
+        /* CANVAS & FX */
+        #canvas-container { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; 
+            filter: contrast(110%) saturate(120%);
+            transition: filter 0.5s ease;
+        }
+
+        /* SCANLINE OVERLAY */
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+        }
+
+        /* VIGNETTE */
+        .vignette {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 6;
+            background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%);
+        }
+
+        /* UI LAYOUT */
+        #ui {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10; pointer-events: none;
-            display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box;
+            padding: 20px; box-sizing: border-box;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
 
-        header { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; }
+        .meta-block {
+            border-left: 2px solid var(--fg);
+            padding-left: 10px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 12px;
+            line-height: 1.4;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(2px);
+            max-width: 200px;
+        }
         
-        .controls { pointer-events: auto; width: 100%; display: flex; justify-content: center; margin-bottom: 30px; }
-        
+        .h-glitch {
+            font-weight: bold;
+            color: var(--accent);
+            text-shadow: 2px 0 #00ffff;
+        }
+
+        /* CONTROLS */
+        .control-bar {
+            width: 100%; display: flex; justify-content: flex-end; pointer-events: auto;
+            align-items: center; gap: 20px;
+        }
+
         button {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.4);
-            color: white; padding: 15px 40px; font-size: 12px; letter-spacing: 3px;
-            text-transform: uppercase; cursor: pointer; backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); transition: 0.3s;
+            background: var(--fg); color: var(--bg);
+            border: none; padding: 15px 30px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold; font-size: 14px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--accent);
+            transition: transform 0.1s;
         }
-        button:hover { background: white; color: black; }
-        button:active { transform: scale(0.98); }
+        button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--accent); }
 
-        #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; letter-spacing: 4px; }
+        #seed-display { font-size: 10px; opacity: 0.7; text-align: right; }
+
     </style>
 </head>
 <body>
 
-<div class="grain"></div>
+<div class="scanlines"></div>
+<div class="vignette"></div>
 <div id="canvas-container"></div>
 
-<div id="ui-layer">
-    <header>
-        <div>CONCEPT_GEN</div>
-        <div id="art-id">INIT...</div>
-    </header>
-    
-    <div id="loading">INITIALIZING RENDERER...</div>
+<div id="ui">
+    <div class="top-left">
+        <div class="meta-block">
+            <div class="h-glitch">ENTROPY_ENGINE</div>
+            <div id="noise-val">NOISE: 0.00</div>
+            <div id="poly-val">POLYS: 0</div>
+        </div>
+        <div class="meta-block">
+            <div id="mode-val">MODE: NULL</div>
+            <div id="status-val">STATUS: IDLE</div>
+        </div>
+    </div>
 
-    <div class="controls">
+    <div class="control-bar">
+        <div id="seed-display">SEED: NULL</div>
         <button id="gen-btn">GENERATE</button>
     </div>
 </div>
 
-<!-- Modern Module Import -->
 <script type="module">
     import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
-    /**
-     * INLINE NOISE ALGORITHM (Simplex 3D)
-     * Inlined to prevent CDN loading errors.
-     */
-    const FastNoise = (function() {
-        const p = new Uint8Array(512);
-        const perm = [151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
-        for (let i=0; i<256; i++) p[256+i] = p[i] = perm[i];
-        
-        function dot(g, x, y, z) { return g[0]*x + g[1]*y + g[2]*z; }
-        function mix(a, b, t) { return (1-t)*a + t*b; }
-        function fade(t) { return t*t*t*(t*(t*6-15)+10); }
-        
-        const grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
-
-        return {
-            noise3D: function(x, y, z) {
-                let X = Math.floor(x) & 255, Y = Math.floor(y) & 255, Z = Math.floor(z) & 255;
-                x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
-                let u = fade(x), v = fade(y), w = fade(z);
-                let A = p[X]+Y, AA = p[A]+Z, AB = p[A+1]+Z, B = p[X+1]+Y, BA = p[B]+Z, BB = p[B+1]+Z;
-                return mix(mix(mix(dot(grad3[p[AA]%12], x, y, z), dot(grad3[p[BA]%12], x-1, y, z), u),
-                           mix(dot(grad3[p[AB]%12], x, y-1, z), dot(grad3[p[BB]%12], x-1, y-1, z), u), v),
-                           mix(mix(dot(grad3[p[AA+1]%12], x, y, z-1), dot(grad3[p[BA+1]%12], x-1, y, z-1), u),
-                           mix(dot(grad3[p[AB+1]%12], x, y-1, z-1), dot(grad3[p[BB+1]%12], x-1, y-1, z-1), u), v), w);
-            }
-        };
+    // --- FAST NOISE (Inlined for reliability) ---
+    const FastNoise = (function(){
+        const p=new Uint8Array(512),perm=[151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
+        for(let i=0;i<256;i++)p[256+i]=p[i]=perm[i];
+        const fade=t=>t*t*t*(t*(t*6-15)+10), lerp=(t,a,b)=>a+t*(b-a), grad=(hash,x,y,z)=>{const h=hash&15,u=h<8?x:y,v=h<4?y:h==12||h==14?x:z;return((h&1)?-u:u)+((h&2)?-v:v)};
+        return{noise3D:(x,y,z)=>{const X=Math.floor(x)&255,Y=Math.floor(y)&255,Z=Math.floor(z)&255;x-=Math.floor(x);y-=Math.floor(y);z-=Math.floor(z);const u=fade(x),v=fade(y),w=fade(z),A=p[X]+Y,AA=p[A]+Z,AB=p[A+1]+Z,B=p[X+1]+Y,BA=p[B]+Z,BB=p[B+1]+Z;return lerp(w,lerp(v,lerp(u,grad(p[AA],x,y,z),grad(p[BA],x-1,y,z)),lerp(u,grad(p[AB],x,y-1,z),grad(p[BB],x-1,y-1,z))),lerp(v,lerp(u,grad(p[AA+1],x,y,z-1),grad(p[BA+1],x-1,y,z-1)),lerp(u,grad(p[AB+1],x,y-1,z-1),grad(p[BB+1],x-1,y-1,z-1))))}};
     })();
 
-    /**
-     * MAIN APPLICATION
-     */
-    const container = document.getElementById('canvas-container');
-    const uiLabel = document.getElementById('art-id');
-    const loading = document.getElementById('loading');
-    
-    // Setup Scene
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.z = 3.5;
+    // --- UI ELEMENTS ---
+    const dom = {
+        noise: document.getElementById('noise-val'),
+        poly: document.getElementById('poly-val'),
+        mode: document.getElementById('mode-val'),
+        status: document.getElementById('status-val'),
+        seed: document.getElementById('seed-display'),
+        btn: document.getElementById('gen-btn')
+    };
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // --- ENGINE SETUP ---
+    const scene = new THREE.Scene();
+    // Add volumetric fog for depth
+    scene.fog = new THREE.FogExp2(0x000000, 0.03);
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 100);
+    camera.position.z = 5;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    // High-end encoding settings
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.0;
-    container.appendChild(renderer.domElement);
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-    // State
+    // --- ART STATE ---
     let mesh = null;
-    let material = null;
-    let lights = [];
-    let geometryBase = null;
-    let originalPositions = null; // Float32Array
+    let particles = null;
+    let originalPos = null; // Float32Array for vertex manipulation
     let time = 0;
-    let noiseFreq = 1.0;
-    let noiseAmp = 0.5;
-    let rotationSpeed = { x: 0.002, y: 0.003 };
+    let params = {
+        speed: 0.005,
+        amp: 1.0,
+        freq: 1.0,
+        sharpness: 1.0, // Cubing the noise
+        rotation: { x:0, y:0, z:0 }
+    };
 
-    // Prepare base geometry once
-    // Use Icosahedron with high detail for smooth deformation
-    const baseGeo = new THREE.IcosahedronGeometry(1, 60); 
-    const posAttribute = baseGeo.attributes.position;
-    originalPositions = posAttribute.array.slice(); // Clone the array
-
-    // Lighting Setup
-    function setupLights(style) {
-        lights.forEach(l => scene.remove(l));
-        lights = [];
-
-        const ambient = new THREE.AmbientLight(0x222222);
-        scene.add(ambient);
-        lights.push(ambient);
-
-        // Main Light
-        const dirLight = new THREE.DirectionalLight(0xffffff, 2);
-        dirLight.position.set(5, 5, 5);
-        scene.add(dirLight);
-        lights.push(dirLight);
-
-        // Color Accent Light (Random position)
-        const color = new THREE.Color().setHSL(Math.random(), 0.8, 0.5);
-        const spotLight = new THREE.SpotLight(color, 10);
-        spotLight.position.set(
-            (Math.random()-0.5)*10, 
-            (Math.random()-0.5)*10, 
-            5
-        );
-        spotLight.lookAt(0,0,0);
-        scene.add(spotLight);
-        lights.push(spotLight);
+    // --- GENERATION LOGIC ---
+    function createGeometry() {
+        // Randomly select a base geometry complexity
+        const rand = Math.random();
+        let geo;
+        
+        if(rand < 0.25) {
+            // Dense Sphere
+            geo = new THREE.IcosahedronGeometry(2, 30); // High detail
+        } else if (rand < 0.5) {
+            // Complex Knot
+            geo = new THREE.TorusKnotGeometry(1.2, 0.4, 150, 20, 2, 3);
+        } else if (rand < 0.75) {
+            // Twisted Ring
+            geo = new THREE.TorusGeometry(1.5, 0.5, 30, 100);
+        } else {
+            // Sharp Crystal (Low poly octahedron base, subdivided)
+            geo = new THREE.OctahedronGeometry(2, 5);
+        }
+        return geo;
     }
 
-    // Material Generator
-    function getMaterial() {
-        const rand = Math.random();
-        const color = new THREE.Color().setHSL(Math.random(), 0.5, 0.5);
-        
-        if (rand < 0.33) {
-            // "Liquid Metal"
-            uiLabel.innerText = "MAT: CHROME_LIQUID";
-            return new THREE.MeshStandardMaterial({
-                color: 0xffffff,
-                metalness: 1.0,
-                roughness: 0.1,
-                envMapIntensity: 1.0
+    function createMaterial(type, color) {
+        if(type === 'WIRE') {
+            return new THREE.MeshBasicMaterial({ 
+                color: color, 
+                wireframe: true, 
+                transparent: true, 
+                opacity: 0.8,
+                side: THREE.DoubleSide
             });
-        } else if (rand < 0.66) {
-            // "Matte Porcelain"
-            uiLabel.innerText = "MAT: PORCELAIN_ROUGH";
+        } 
+        else if (type === 'POINTS') {
+            return new THREE.PointsMaterial({
+                color: color,
+                size: 0.05,
+                sizeAttenuation: true,
+                blending: THREE.AdditiveBlending
+            });
+        }
+        else {
+            // LIQUID / CHROME
             return new THREE.MeshStandardMaterial({
                 color: color,
-                metalness: 0.0,
-                roughness: 0.9,
-                flatShading: false
-            });
-        } else {
-            // "Wireframe Abstract"
-            uiLabel.innerText = "MAT: VECTOR_MESH";
-            return new THREE.MeshBasicMaterial({
-                color: 0xffffff,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.3
+                roughness: 0.05,
+                metalness: 0.95,
+                flatShading: Math.random() > 0.5, // Glitched look if true
+                side: THREE.DoubleSide
             });
         }
     }
 
-    // Generation Logic
     function generate() {
-        if (mesh) {
-            scene.remove(mesh);
-            if (material) material.dispose();
-        }
-
-        material = getMaterial();
+        dom.status.innerText = "STATUS: COMPUTING_ENTROPY";
         
-        // Create new mesh with cloned geometry to avoid corrupting the shared baseGeo
-        const newGeo = baseGeo.clone();
-        mesh = new THREE.Mesh(newGeo, material);
-        scene.add(mesh);
-
-        // Randomize Noise Params
-        noiseFreq = 0.5 + Math.random() * 1.5;
-        noiseAmp = 0.2 + Math.random() * 0.6;
-        rotationSpeed = {
-            x: (Math.random() - 0.5) * 0.01,
-            y: (Math.random() - 0.5) * 0.01
+        // 1. Cleanup
+        if(mesh) { scene.remove(mesh); mesh.geometry.dispose(); mesh.material.dispose(); }
+        if(particles) { scene.remove(particles); }
+        
+        // 2. Random Parameters
+        params.amp = 0.5 + Math.random() * 2.5; // High amplitude
+        params.freq = 0.5 + Math.random() * 1.5;
+        params.sharpness = Math.random() > 0.5 ? 3 : 1; // Cube the noise for spikes
+        params.rotation = { 
+            x: (Math.random()-0.5)*0.02, 
+            y: (Math.random()-0.5)*0.02, 
+            z: (Math.random()-0.5)*0.02 
         };
 
-        setupLights();
+        // 3. Aesthetic Mode
+        const modeRand = Math.random();
+        let mode = 'SOLID';
+        let primaryColor = 0xffffff;
+        let bgColor = 0x000000;
+
+        if(modeRand < 0.33) {
+            mode = 'WIRE';
+            primaryColor = Math.random() > 0.5 ? 0x00ff00 : 0xff00ff; // Neon
+        } else if (modeRand < 0.66) {
+            mode = 'POINTS';
+            primaryColor = 0x00ffff; // Cyan data
+        } else {
+            mode = 'LIQUID';
+            primaryColor = 0x222222; // Dark chrome
+            bgColor = 0x111111;
+        }
+
+        // Update DOM
+        dom.mode.innerText = `MODE: ${mode}_ABSTRACT`;
+        dom.noise.innerText = `NOISE: ${params.amp.toFixed(2)}`;
+        dom.seed.innerText = `SEED: ${Math.random().toString(16).substr(2, 6).toUpperCase()}`;
+        scene.fog.color.setHex(bgColor);
+        scene.background = new THREE.Color(bgColor);
+        document.body.style.backgroundColor = '#' + new THREE.Color(bgColor).getHexString();
+
+        // 4. Create Mesh
+        const geometry = createGeometry();
+        dom.poly.innerText = `VERTS: ${geometry.attributes.position.count}`;
         
-        // Update Background
-        const hue = Math.random();
-        const bgColor = new THREE.Color().setHSL(hue, 0.3, 0.05);
-        document.body.style.backgroundColor = '#' + bgColor.getHexString();
+        // Store original positions for noise
+        originalPos = geometry.attributes.position.array.slice();
+
+        const material = createMaterial(mode, primaryColor);
+
+        if(mode === 'POINTS') {
+            mesh = new THREE.Points(geometry, material);
+        } else {
+            mesh = new THREE.Mesh(geometry, material);
+        }
+        scene.add(mesh);
+
+        // 5. Lights (Dramatic)
+        scene.clear(); // Clear old lights
+        scene.add(mesh); // Add mesh back
+        
+        const amb = new THREE.AmbientLight(0x404040);
+        scene.add(amb);
+        
+        const dir1 = new THREE.DirectionalLight(0xffffff, 3);
+        dir1.position.set(1, 1, 1);
+        scene.add(dir1);
+
+        const dir2 = new THREE.DirectionalLight(mode === 'WIRE' ? primaryColor : 0xff0000, 2);
+        dir2.position.set(-2, -2, 0);
+        scene.add(dir2);
+
+        // 6. Background Particles (Noise Dust)
+        const pGeo = new THREE.BufferGeometry();
+        const pCount = 500;
+        const pPos = new Float32Array(pCount * 3);
+        for(let i=0; i<pCount*3; i++) pPos[i] = (Math.random()-0.5) * 20;
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+        const pMat = new THREE.PointsMaterial({ color: 0x555555, size: 0.05, transparent: true, opacity: 0.5 });
+        particles = new THREE.Points(pGeo, pMat);
+        scene.add(particles);
+
+        dom.status.innerText = "STATUS: ACTIVE";
     }
 
-    // Animation Loop
+    // --- ANIMATION LOOP ---
     function animate() {
         requestAnimationFrame(animate);
+        
+        time += params.speed;
 
-        if (mesh) {
-            time += 0.005;
-            mesh.rotation.x += rotationSpeed.x;
-            mesh.rotation.y += rotationSpeed.y;
+        if(mesh && originalPos) {
+            // Rotate Object
+            mesh.rotation.x += params.rotation.x;
+            mesh.rotation.y += params.rotation.y;
+            mesh.rotation.z += params.rotation.z;
 
-            // Vertex Displacement Logic
+            // Noise Deformation
             const pos = mesh.geometry.attributes.position;
-            const count = pos.count;
+            const arr = pos.array;
+            
+            for(let i=0; i < pos.count; i++) {
+                const ix = i * 3;
+                const ox = originalPos[ix];
+                const oy = originalPos[ix+1];
+                const oz = originalPos[ix+2];
 
-            for (let i = 0; i < count; i++) {
-                // Get original coordinates
-                const ox = originalPositions[i * 3];
-                const oy = originalPositions[i * 3 + 1];
-                const oz = originalPositions[i * 3 + 2];
-
-                // Calculate Noise
-                const n = FastNoise.noise3D(
-                    ox * noiseFreq + time,
-                    oy * noiseFreq + time,
-                    oz * noiseFreq + time
+                // 4D Noise Simulation (using time as 4th dimension roughly)
+                // We use multiple frequencies for "rough" texture
+                let n = FastNoise.noise3D(
+                    ox * params.freq + time, 
+                    oy * params.freq + time, 
+                    oz * params.freq + time
                 );
 
-                // Displace along normal (since it's a sphere, normal is just the normalized position)
-                // But simplifying: just multiply original pos by displacement factor
-                const displacement = 1 + (n * noiseAmp);
+                // Apply "Sharpness" (Cubing or squaring the noise value)
+                // This creates flat areas and sharp spikes
+                let displace = Math.pow(Math.abs(n), params.sharpness) * (n > 0 ? 1 : -1);
+                
+                // Apply Amplitude
+                const scale = 1 + displace * params.amp;
 
-                pos.setXYZ(i, ox * displacement, oy * displacement, oz * displacement);
+                arr[ix] = ox * scale;
+                arr[ix+1] = oy * scale;
+                arr[ix+2] = oz * scale;
             }
-
             pos.needsUpdate = true;
-            mesh.geometry.computeVertexNormals(); // Critical for lighting updates
+            
+            // Recalculate normals for solid meshes to reflect light correctly on new spikes
+            if(mesh.isMesh) mesh.geometry.computeVertexNormals();
+        }
+
+        // Particles Rotation
+        if(particles) {
+            particles.rotation.y -= 0.001;
         }
 
         renderer.render(scene, camera);
     }
 
-    // Window Resize Handling
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    // Initial Start
-    generate();
-    animate();
-    loading.style.display = 'none';
-
-    // Button Event
-    document.getElementById('gen-btn').addEventListener('click', () => {
-        generate();
-    });
-
-    // Simple Interaction (Touch/Mouse)
-    let mouseX = 0, mouseY = 0;
-    document.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX - window.innerWidth/2) * 0.001;
-        mouseY = (e.clientY - window.innerHeight/2) * 0.001;
-    });
-    document.addEventListener('touchmove', (e) => {
-        mouseX = (e.touches[0].clientX - window.innerWidth/2) * 0.001;
-        mouseY = (e.touches[0].clientY - window.innerHeight/2) * 0.001;
-    });
-
-</script>
-</body>
-</html>
+    // --- INPUT HANDLING ---
+    dom.btn.addEventListener('click', () => {
+        // Flash
