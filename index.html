@@ -2,413 +2,421 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Critical: Fix iOS scaling and prevent user zooming -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#5c94fc">
     <title>Super Web Bros</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #5c94fc; /* Mario Sky Blue */
-            touch-action: none;
-            user-select: none;
-            -webkit-user-select: none;
-            font-family: 'Arial', sans-serif;
+        /* RESET & BASE */
+        * { box-sizing: border-box; -webkit-touch-callout: none; }
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: #000;
+            overflow: hidden; /* No scrolling */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            touch-action: none; /* Disables browser swipe navigation */
+            user-select: none; -webkit-user-select: none;
+        }
+
+        /* ROTATE MESSAGE (Visible in Portrait) */
+        #rotate-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #222;
+            color: #fff;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        #rotate-overlay svg { width: 64px; height: 64px; margin-bottom: 20px; animation: spin 2s infinite; }
+        #rotate-overlay p { font-size: 18px; color: #aaa; }
+
+        /* HIDE ROTATE MSG IN LANDSCAPE */
+        @media screen and (orientation: landscape) {
+            #rotate-overlay { display: none; }
         }
         
+        /* FORCE SHOW ROTATE MSG IN PORTRAIT */
+        @media screen and (orientation: portrait) {
+            canvas { display: none !important; }
+            #ui-layer { display: none !important; }
+        }
+
+        /* GAME CONTAINER */
         canvas {
             display: block;
             width: 100%;
             height: 100%;
+            /* Smooth rendering for sprites */
+            image-rendering: pixelated; 
         }
 
-        /* VIRTUAL CONTROLS */
+        /* TOUCH CONTROLS UI */
         #ui-layer {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
+            justify-content: space-between;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
+        /* TOP BAR (Score) */
+        #hud {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            width: 100%;
+        }
+        .score-box {
+            font-family: "Courier New", monospace;
+            font-size: 24px;
+            color: white;
+            text-shadow: 2px 2px 0 #000;
+            font-weight: bold;
+        }
+
+        /* BOTTOM BAR (Buttons) */
         #controls {
             display: flex;
             justify-content: space-between;
-            padding: 20px 40px;
-            padding-bottom: 40px;
+            align-items: flex-end;
+            padding: 20px 40px 40px 40px; /* Extra bottom padding for thumbs */
             width: 100%;
-            box-sizing: border-box;
         }
 
-        .btn-group {
+        /* BUTTON STYLES */
+        .touch-btn {
+            pointer-events: auto;
+            backdrop-filter: blur(4px);
+            border-radius: 50%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+            position: relative;
+        }
+        .touch-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.4); }
+
+        /* D-PAD */
+        .dpad-container {
             display: flex;
-            gap: 20px;
-            pointer-events: auto; /* Enable touch for buttons */
+            gap: 15px;
         }
-
-        /* D-PAD STYLING */
         .dpad-btn {
-            width: 70px;
-            height: 70px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 4px solid rgba(255, 255, 255, 0.4);
-            border-radius: 15px;
+            width: 75px; height: 75px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255,255,255,0.3);
             display: flex;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(5px);
         }
-        
-        .dpad-btn:active { background: rgba(255, 255, 255, 0.3); transform: scale(0.95); }
-        
         .arrow {
-            border: solid white;
-            border-width: 0 6px 6px 0;
-            display: inline-block;
-            padding: 8px;
+            width: 0; height: 0;
+            border-style: solid;
         }
-        .left { transform: rotate(135deg); }
-        .right { transform: rotate(-45deg); }
+        .arrow-left { border-width: 10px 15px 10px 0; border-color: transparent white transparent transparent; }
+        .arrow-right { border-width: 10px 0 10px 15px; border-color: transparent transparent transparent white; }
 
-        /* ACTION BUTTON STYLING */
+        /* ACTION BUTTONS */
         .action-btn {
-            width: 80px;
-            height: 80px;
-            background: rgba(200, 0, 0, 0.4);
-            border: 4px solid rgba(255, 200, 200, 0.6);
-            border-radius: 50%;
+            width: 85px; height: 85px;
+            background: rgba(255, 50, 50, 0.4); /* Red Tint */
+            border: 2px solid rgba(255, 100, 100, 0.5);
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
             font-weight: 900;
-            font-size: 28px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-size: 24px;
+            font-family: sans-serif;
         }
-        
-        .action-btn:active { background: rgba(255, 0, 0, 0.6); transform: scale(0.95); }
 
-        /* Start Screen Overlay */
-        #start-screen {
+        /* START SCREEN */
+        #start-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: white;
-            z-index: 999;
             pointer-events: auto;
         }
-        h1 { margin: 0 0 20px 0; text-shadow: 4px 4px 0 #e60012; font-size: 40px; text-align: center;}
-        button.start-btn {
+        .start-btn {
             padding: 15px 40px;
-            font-size: 24px;
-            background: #ffcc00;
-            border: 4px solid white;
-            border-radius: 50px;
-            color: #d35400;
+            background: #ffce00;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
             font-weight: bold;
-            cursor: pointer;
+            color: #d35400;
+            text-transform: uppercase;
+            box-shadow: 0 5px 0 #d35400;
+            margin-top: 20px;
         }
+        .start-btn:active { transform: translateY(5px); box-shadow: none; }
+        h1 { color: white; font-size: 40px; text-shadow: 4px 4px 0 #e70012; margin: 0; font-family: 'Arial Black', sans-serif; letter-spacing: -2px;}
+
+        /* ANIMATION FOR ROTATE ICON */
+        @keyframes spin { 0% { transform: rotate(0deg); } 25% { transform: rotate(-90deg); } 100% { transform: rotate(-90deg); } }
     </style>
 </head>
 <body>
 
-    <!-- Game UI Overlay -->
+    <!-- LANDSCAPE ONLY WARNING -->
+    <div id="rotate-overlay">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+        <h2>Please Rotate Your Phone</h2>
+        <p>This game requires Landscape Mode</p>
+    </div>
+
+    <!-- START SCREEN -->
+    <div id="start-overlay">
+        <h1>SUPER WEB BROS</h1>
+        <div style="color:#eee; margin-top:10px">iOS Edition</div>
+        <button class="start-btn" onclick="initAudioAndStart()">TAP TO START</button>
+    </div>
+
+    <!-- UI LAYER -->
     <div id="ui-layer">
+        <div id="hud">
+            <div class="score-box" id="score-display">SCORE: 0000</div>
+            <div class="score-box" id="world-display">WORLD 1-1</div>
+        </div>
         <div id="controls">
-            <div class="btn-group">
-                <div class="dpad-btn" id="btn-left"><i class="arrow left"></i></div>
-                <div class="dpad-btn" id="btn-right"><i class="arrow right"></i></div>
+            <div class="dpad-container">
+                <div class="touch-btn dpad-btn" id="btn-left"><div class="arrow arrow-left"></div></div>
+                <div class="touch-btn dpad-btn" id="btn-right"><div class="arrow arrow-right"></div></div>
             </div>
-            <div class="btn-group">
-                <div class="action-btn" id="btn-jump">A</div>
-            </div>
+            <div class="touch-btn action-btn" id="btn-jump">A</div>
         </div>
     </div>
 
-    <div id="start-screen">
-        <h1>PLUMBER<br>ODYSSEY</h1>
-        <button class="start-btn" onclick="startGame()">TAP TO START</button>
-    </div>
-
-    <!-- Kaboom Library -->
+    <!-- KABOOM JS -->
     <script src="https://unpkg.com/kaboom@3000.0.1/dist/kaboom.js"></script>
 
     <script>
-        // --- ASSET GENERATOR SYSTEM ---
-        // This function creates game graphics using code so no external URLs are needed.
-        function generateAsset(width, height, colorFn) {
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            const imgData = ctx.createImageData(width, height);
-            
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    const color = colorFn(x, y, width, height);
-                    if (color) {
-                        const i = (y * width + x) * 4;
-                        imgData.data[i] = color[0];     // R
-                        imgData.data[i+1] = color[1];   // G
-                        imgData.data[i+2] = color[2];   // B
-                        imgData.data[i+3] = 255;        // Alpha
-                    }
+        // 1. GENERATE ASSETS (No external images to fail loading)
+        function createPixelTexture(w, h, colorMap) {
+            const c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            const ctx = c.getContext('2d');
+            const id = ctx.createImageData(w, h);
+            for (let i = 0; i < w * h; i++) {
+                const x = i % w; const y = Math.floor(i / w);
+                const col = colorMap(x, y);
+                if (col) {
+                    const idx = i * 4;
+                    id.data[idx] = col[0]; id.data[idx+1] = col[1]; id.data[idx+2] = col[2]; id.data[idx+3] = 255;
                 }
             }
-            ctx.putImageData(imgData, 0, 0);
-            return canvas.toDataURL();
+            ctx.putImageData(id, 0, 0);
+            return c.toDataURL();
         }
 
-        // 1. Mario Sprite (Red hat, blue overalls)
-        const marioUrl = generateAsset(16, 16, (x, y) => {
-            if (y < 4 && x > 3 && x < 13) return [255, 0, 0]; // Hat
-            if (y >= 4 && y < 9) { // Face/Skin
-                if (x > 9 && y > 5 && y < 7) return [0,0,0]; // Mustache
-                return [255, 200, 150];
-            }
-            if (y >= 9) return [0, 0, 255]; // Body
-            return null;
+        // Mario (Red/Blue)
+        const marioTex = createPixelTexture(12, 16, (x, y) => {
+            if (y < 4 && x > 2 && x < 10) return [230, 0, 0]; // Hat
+            if (y >= 4 && y < 7) return [255, 200, 150]; // Face
+            if (y >= 7) return (x===3||x===8) ? [255,200,0] : [0, 0, 200]; // Overalls
         });
 
-        // 2. Brick Sprite (Brown with mortar lines)
-        const brickUrl = generateAsset(16, 16, (x, y) => {
-            if (x === 0 || y === 0 || x === 15 || y === 15 || y === 8 || (y < 8 && x === 8) || (y > 8 && x === 4) || (y > 8 && x === 12)) {
-                return [0, 0, 0]; // Black lines
-            }
-            return [180, 100, 50]; // Brown brick
+        // Ground Brick
+        const groundTex = createPixelTexture(16, 16, (x,y) => {
+            if(y===0 || y===15 || x===0 || x===15) return [60, 30, 10]; // Dark Border
+            return (x+y)%5===0 ? [180, 90, 40] : [200, 100, 50]; // Brick pattern
         });
 
-        // 3. Goomba Sprite (Brown mushroom thing)
-        const goombaUrl = generateAsset(16, 16, (x, y) => {
-            if (y < 8 && x > 2 && x < 14) return [139, 69, 19]; // Head
-            if (y >= 8 && y < 12) {
-                if ((x > 4 && x < 6) || (x > 10 && x < 12)) return [0,0,0]; // Eyes
-                return [255, 228, 181]; // Stem
-            }
-            if (y >= 12) return [0,0,0]; // Feet
-            return null;
+        // Question Block
+        const boxTex = createPixelTexture(16, 16, (x,y) => {
+            if(x===0||x===15||y===0||y===15) return [0,0,0];
+            if(x>4 && x<11 && y>3 && y<12) return [255,255,255]; // ? mark approx
+            return [255, 215, 0]; // Gold
         });
 
-        // 4. Coin (Yellow Circle)
-        const coinUrl = generateAsset(16, 16, (x, y) => {
-            const dx = x - 8;
-            const dy = y - 8;
-            if (dx*dx + dy*dy < 36) return [255, 215, 0];
-            return null;
+        // Goomba
+        const enemyTex = createPixelTexture(16, 16, (x,y) => {
+            if(y > 10) return [0,0,0]; // Feet
+            return [139, 69, 19]; // Brown body
         });
 
-        // 5. Pipe (Green)
-        const pipeUrl = generateAsset(32, 32, (x, y) => {
-            if (x < 2 || x > 29) return [0, 80, 0]; // Outline
-            return [0, 180, 0];
-        });
+        // 2. GAME LOGIC
+        let k;
 
-
-        // --- KABOOM INITIALIZATION ---
-        function startGame() {
-            document.getElementById('start-screen').style.display = 'none';
+        function initAudioAndStart() {
+            document.getElementById('start-overlay').style.display = 'none';
             
-            kaboom({
-                background: [92, 148, 252], // Classic Blue
-                scale: 2, // Zoom in for pixel look
-                touchToMouse: true // Translates touch to mouse clicks automatically
+            // Initialize Kaboom with LANDSCAPE settings
+            k = kaboom({
+                background: [92, 148, 252], // Sky Blue
+                width: 640,  // Logical Width
+                height: 360, // Logical Height (16:9 Aspect)
+                scale: 1,    // We handle CSS scaling
+                letterbox: true, // Maintains aspect ratio centered
+                touchToMouse: false, // We handle touch manually
             });
 
-            // Load Generated Assets
-            loadSprite("mario", marioUrl);
-            loadSprite("brick", brickUrl);
-            loadSprite("goomba", goombaUrl);
-            loadSprite("coin", coinUrl);
-            loadSprite("pipe", pipeUrl);
+            // Load Assets
+            k.loadSprite("mario", marioTex);
+            k.loadSprite("ground", groundTex);
+            k.loadSprite("box", boxTex);
+            k.loadSprite("enemy", enemyTex);
 
-            // Define Game Objects
-            scene("game", ({ levelId, score }) => {
+            // Define Scenes
+            k.scene("main", () => {
                 
-                const MOVE_SPEED = 120;
-                const JUMP_FORCE = 420;
-                const FALL_DEATH = 800;
+                // Physics
+                k.setGravity(1600);
+                const SPEED = 180;
+                const JUMP = 550;
 
-                // UI Score
-                const scoreLabel = add([
-                    text("Score: " + score, { size: 18, font: "monospace" }),
-                    pos(20, 20),
-                    fixed(), // stays on screen
-                    z(100)
-                ]);
+                // UI Sync
+                let score = 0;
+                const scoreEl = document.getElementById("score-display");
 
-                // Level Design
-                const LEVELS = [
-                    [
-                        "                                      ",
-                        "                                      ",
-                        "      $$                              ",
-                        "     ====     =   =                   ",
-                        "                                      ",
-                        "         ^                ^           ",
-                        "=============  ================   ====",
-                    ],
-                    [
-                        "                                      ",
-                        "    $$                                ",
-                        "   ====              $$               ",
-                        "                                      ",
-                        "          p        ====               ",
-                        "          p        p                  ",
-                        "======================   =============",
-                    ]
+                // Level Layout
+                const map = [
+                    "                                                  ",
+                    "                                                  ",
+                    "      %   %?%                                     ",
+                    "                                                  ",
+                    "                          ^     ^                 ",
+                    "                 ===================              ",
+                    "               ==                   ==            ",
+                    "             ==                       ==          ",
+                    "           ==                           =======   ",
+                    "   P     ==                                       ",
+                    "==================================================",
                 ];
 
-                const levelConf = {
-                    tileWidth: 20,
-                    tileHeight: 20,
+                const levelCfg = {
+                    tileWidth: 32, tileHeight: 32,
                     tiles: {
-                        "=": () => [sprite("brick"), area(), body({ isStatic: true }), "ground"],
-                        "$": () => [sprite("coin"), area(), "coin"],
-                        "^": () => [sprite("goomba"), area(), body(), patrol(), "danger", anchor("bot")],
-                        "p": () => [sprite("pipe"), area(), body({ isStatic: true }), "pipe"],
+                        "=": () => [ k.sprite("ground"), k.scale(2), k.area(), k.body({isStatic:true}), "solid" ],
+                        "%": () => [ k.sprite("box"), k.scale(2), k.area(), k.body({isStatic:true}), "coin-box" ],
+                        "?": () => [ k.sprite("box"), k.scale(2), k.area(), k.body({isStatic:true}), "mushroom-box" ],
+                        "^": () => [ k.sprite("enemy"), k.scale(2), k.area(), k.body(), k.patrol(), "danger", k.anchor("bot") ],
+                        "P": () => [ k.sprite("mario"), k.scale(2), k.area(), k.body(), k.anchor("bot"), "player" ]
                     }
                 };
 
-                const level = addLevel(LEVELS[levelId % LEVELS.length], levelConf);
+                const level = k.addLevel(map, levelCfg);
 
-                const player = add([
-                    sprite("mario"),
-                    pos(40, 0),
-                    area(),
-                    body(),
-                    anchor("bot"),
-                    "player"
-                ]);
-
-                // Camera Logic (Lerp for smooth feel)
+                // Player setup
+                const player = level.get("player")[0];
+                
+                // Camera follows player X only (smoothly)
                 player.onUpdate(() => {
-                    const currCam = camPos();
-                    if (currCam.x < player.pos.x) {
-                        camPos(player.pos.x, currCam.y); // Only scroll right
-                    }
+                    // Keep camera centered on player, but clamp to left side
+                    let camX = player.pos.x;
+                    if (camX < 320) camX = 320; 
+                    k.camPos(camX, 180); // Center Y (360 / 2)
+
                     // Fall death
-                    if (player.pos.y > FALL_DEATH) {
-                        go("lose", { score: scoreLabel.text });
+                    if (player.pos.y > 600) {
+                        k.go("lose");
                     }
                 });
 
-                // Input Logic
-                onKeyDown("left", () => {
-                    player.move(-MOVE_SPEED, 0);
-                    player.flipX = true;
-                });
-                onKeyDown("right", () => {
-                    player.move(MOVE_SPEED, 0);
-                    player.flipX = false;
-                });
-                onKeyPress("space", () => {
-                    if (player.isGrounded()) player.jump(JUMP_FORCE);
-                });
+                // Controls (Keyboard)
+                k.onKeyDown("left", () => { player.move(-SPEED, 0); player.flipX = true; });
+                k.onKeyDown("right", () => { player.move(SPEED, 0); player.flipX = false; });
+                k.onKeyPress("space", () => { if (player.isGrounded()) player.jump(JUMP); });
 
-                // Mobile Touch Logic
-                const touchBtn = (id, actionStart, actionEnd) => {
-                    const btn = document.getElementById(id);
-                    // Prevent default context menu
-                    btn.addEventListener("contextmenu", e => e.preventDefault());
-                    
-                    btn.addEventListener("touchstart", (e) => {
-                        e.preventDefault();
-                        actionStart();
-                    });
-                    btn.addEventListener("touchend", (e) => {
-                        e.preventDefault();
+                // Controls (Touch - Bind to HTML elements)
+                const bindTouch = (id, actionFrame, actionEnd) => {
+                    const el = document.getElementById(id);
+                    let interval;
+                    const start = (e) => {
+                        if(e.cancelable) e.preventDefault();
+                        if (interval) clearInterval(interval);
+                        actionFrame(); // Do once immediately
+                        interval = setInterval(actionFrame, 16); // Then loop
+                        el.style.transform = "scale(0.9)";
+                    };
+                    const end = (e) => {
+                        if(e.cancelable) e.preventDefault();
+                        clearInterval(interval);
                         if(actionEnd) actionEnd();
-                    });
-                    // Mouse support for testing
-                    btn.addEventListener("mousedown", actionStart);
-                    btn.addEventListener("mouseup", actionEnd ? actionEnd : () => {});
+                        el.style.transform = "scale(1)";
+                    };
+
+                    el.addEventListener("touchstart", start, {passive: false});
+                    el.addEventListener("touchend", end, {passive: false});
+                    el.addEventListener("mousedown", start); // For PC testing
+                    el.addEventListener("mouseup", end);
                 };
 
-                let leftInt, rightInt;
+                bindTouch("btn-left", () => { player.move(-SPEED, 0); player.flipX = true; });
+                bindTouch("btn-right", () => { player.move(SPEED, 0); player.flipX = false; });
+                bindTouch("btn-jump", () => { 
+                    // Jump only triggers once per press, not loop
+                }, () => {}); 
 
-                touchBtn("btn-left", 
-                    () => { leftInt = setInterval(() => { player.move(-MOVE_SPEED, 0); player.flipX = true; }, 15); }, 
-                    () => { clearInterval(leftInt); }
-                );
+                // Separate listener for Jump Tap
+                const jumpBtn = document.getElementById("btn-jump");
+                const doJump = (e) => { 
+                    if(e.cancelable) e.preventDefault();
+                    if (player.isGrounded()) player.jump(JUMP); 
+                };
+                jumpBtn.addEventListener("touchstart", doJump, {passive: false});
+                jumpBtn.addEventListener("mousedown", doJump);
 
-                touchBtn("btn-right", 
-                    () => { rightInt = setInterval(() => { player.move(MOVE_SPEED, 0); player.flipX = false; }, 15); }, 
-                    () => { clearInterval(rightInt); }
-                );
 
-                touchBtn("btn-jump", () => {
-                    if (player.isGrounded()) player.jump(JUMP_FORCE);
-                });
-
-                // Game Mechanics
-                player.onCollide("coin", (c) => {
-                    destroy(c);
-                    score += 100;
-                    scoreLabel.text = "Score: " + score;
+                // Game Interactions
+                player.onHeadbutt((obj) => {
+                    if(obj.is("coin-box")) {
+                        k.destroy(obj);
+                        k.add([ k.sprite("ground"), k.pos(obj.pos), k.scale(2), k.area(), k.body({isStatic:true}) ]); // turns to dead block
+                        score += 100;
+                        scoreEl.innerText = "SCORE: " + score.toString().padStart(4, '0');
+                    }
                 });
 
                 player.onGround((obj) => {
-                    if (obj.is("danger")) {
-                        destroy(obj);
-                        player.jump(JUMP_FORCE); // Bounce
-                        score += 200;
+                    if(obj.is("danger")) {
+                        k.destroy(obj);
+                        player.jump(JUMP);
                     }
                 });
 
                 player.onCollide("danger", (obj) => {
-                    if (!player.isGrounded()) return; // Handled by onGround above
-                    go("lose", { score: score });
+                    if(!player.isGrounded()) return;
+                    k.go("lose");
                 });
 
-                player.onCollide("pipe", () => {
-                    if(player.pos.y < 0) { // simplistic top check
-                        // pipe enter logic
-                    }
-                });
-                
-                // Win condition / Next Level logic could go here (simple "reach right side")
-                player.onUpdate(() => {
-                    if (player.pos.x > 600) {
-                        go("game", { levelId: levelId + 1, score: score });
-                    }
-                });
             });
 
-            scene("lose", ({ score }) => {
-                add([
-                    text("GAME OVER", { size: 48 }),
-                    pos(width()/2, height()/2 - 50),
-                    anchor("center"),
-                    color(255, 0, 0)
+            k.scene("lose", () => {
+                k.add([
+                    k.text("GAME OVER", {size: 48}),
+                    k.pos(k.width()/2, k.height()/2),
+                    k.anchor("center"),
+                    k.color(255, 0, 0)
                 ]);
-                add([
-                    text("Score: " + score, { size: 24 }),
-                    pos(width()/2, height()/2 + 20),
-                    anchor("center")
-                ]);
-                add([
-                    text("Tap to Restart", { size: 16 }),
-                    pos(width()/2, height()/2 + 60),
-                    anchor("center")
-                ]);
-
-                // Simple restart
-                onClick(() => go("game", { levelId: 0, score: 0 }));
-                onTouchStart(() => go("game", { levelId: 0, score: 0 }));
+                // restart on tap
+                k.wait(1, () => {
+                    k.onTouchStart(() => k.go("main"));
+                    k.onKeyPress("space", () => k.go("main"));
+                });
             });
-
-            function patrol(speed = 60, dir = 1) {
+            
+            // Patrol helper
+            k.component("patrol", (speed = 60, dir = -1) => {
                 return {
                     id: "patrol",
-                    require: ["pos", "area"],
+                    require: [ "pos", "area" ],
+                    update() {
+                        this.move(speed * dir, 0);
+                    },
                     add() {
                         this.on("collide", (obj, col) => {
                             if (col.isLeft() || col.isRight()) {
@@ -416,13 +424,10 @@
                             }
                         });
                     },
-                    update() {
-                        this.move(speed * dir, 0);
-                    },
                 };
-            }
+            });
 
-            go("game", { levelId: 0, score: 0 });
+            k.go("main");
         }
     </script>
 </body>
