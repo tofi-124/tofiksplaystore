@@ -2,554 +2,414 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#000000">
-    <title>Sky Ace Mobile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CONTEMPORARY_01</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
     <style>
-        body { 
-            margin: 0; overflow: hidden; background: #000; 
-            font-family: 'Segoe UI', sans-serif;
-            touch-action: none; /* Vital: stops browser scrolling */
-            -webkit-user-select: none; user-select: none;
+        /* SOPHISTICATED UI DESIGN */
+        :root {
+            --bg: #050505;
+            --ui: #e0e0e0;
+            --accent: #ff3b3b;
         }
-        canvas { display: block; width: 100%; height: 100%; }
-        
-        /* UI Layers */
-        #ui-layer, #controls-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: var(--bg);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: var(--ui);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* GRAIN OVERLAY FOR TEXTURE */
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
+            z-index: 2;
+            opacity: 0.07;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* HUD */
-        .hud-top { 
-            position: absolute; top: 10px; left: 10px; right: 10px;
-            display: flex; justify-content: space-between;
-        }
-        .hud-box {
-            background: rgba(0, 20, 40, 0.6);
-            border: 1px solid #00ccff;
-            color: #00ccff; padding: 5px 15px;
-            font-size: 16px; font-weight: bold;
-            transform: skewX(-15deg);
-        }
-        .health-bar { width: 100px; height: 10px; background: #333; margin-top: 5px; border: 1px solid #00ccff; }
-        .health-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #f00, #ff0, #0f0); transition: width 0.2s; }
-
-        /* Mobile Controls */
-        #controls-layer { pointer-events: auto; }
-
-        /* Joystick */
-        #stick-zone {
-            position: absolute; bottom: 20px; left: 20px;
-            width: 160px; height: 160px;
-            border-radius: 50%;
-            border: 2px dashed rgba(255, 255, 255, 0.2);
-        }
-        #stick-knob {
-            position: absolute; top: 50%; left: 50%;
-            width: 60px; height: 60px;
-            background: rgba(0, 204, 255, 0.5);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px rgba(0, 204, 255, 0.5);
+        /* UI LAYER */
+        #ui-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem;
+            box-sizing: border-box;
         }
 
-        /* Buttons */
-        .action-btn {
-            position: absolute; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: bold; font-size: 14px;
-            border: 2px solid rgba(255,255,255,0.5);
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            touch-action: none;
-        }
-        .action-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.3); }
-
-        #btn-fire {
-            bottom: 40px; right: 30px;
-            width: 80px; height: 80px;
-            background: rgba(255, 50, 50, 0.4);
-            border-color: #ff5555;
-        }
-        #btn-boost {
-            bottom: 130px; right: 30px; /* Stacked above fire */
-            width: 60px; height: 60px;
-            background: rgba(50, 255, 50, 0.4);
-            border-color: #55ff55;
-        }
-
-        /* Screens */
-        .screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 20; pointer-events: auto;
-        }
-        h1 { color: #fff; font-style: italic; text-shadow: 4px 4px 0 #00ccff; margin-bottom: 10px; }
-        .btn-start {
-            background: transparent; color: #fff; border: 2px solid #fff;
-            padding: 15px 40px; font-size: 20px; margin-top: 20px;
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 2px;
+            opacity: 0.7;
         }
-        .hidden { display: none !important; }
-        .landscape-hint { position: absolute; bottom: 10px; color: #666; font-size: 12px; }
+
+        .meta-data {
+            text-align: right;
+            line-height: 1.6;
+        }
+
+        /* GENERATE BUTTON */
+        .control-area {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            pointer-events: auto;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 18px 40px;
+            font-family: inherit;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 2px;
+        }
+
+        button:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* Loading / Intro Text */
+        #title-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        
+        h1 {
+            font-weight: 300;
+            font-size: 14px;
+            letter-spacing: 5px;
+            margin: 0;
+        }
+        
+        .fade-in { opacity: 1 !important; }
+        .fade-out { opacity: 0 !important; }
+
     </style>
 </head>
 <body>
 
-<canvas id="gameCanvas"></canvas>
+<div class="grain"></div>
 
-<!-- Gameplay UI -->
+<div id="canvas-container"></div>
+
 <div id="ui-layer">
-    <div class="hud-top">
-        <div class="hud-box">
-            <div>SCORE <span id="scoreEl">0</span></div>
+    <header>
+        <div class="brand">ARTIFACT_GEN</div>
+        <div class="meta-data">
+            <div id="art-id">NO. 0001</div>
+            <div id="art-mat">POLYMER</div>
         </div>
-        <div class="hud-box">
-            <div class="health-bar"><div id="healthEl" class="health-fill"></div></div>
-        </div>
+    </header>
+
+    <div id="title-overlay" class="fade-in">
+        <h1>ABSTRACT FORM</h1>
     </div>
-</div>
 
-<!-- Touch Controls -->
-<div id="controls-layer">
-    <div id="stick-zone">
-        <div id="stick-knob"></div>
+    <div class="control-area">
+        <button id="gen-btn">GENERATE</button>
     </div>
-    <div id="btn-boost" class="action-btn">BOOST</div>
-    <div id="btn-fire" class="action-btn">FIRE</div>
-</div>
-
-<!-- Screens -->
-<div id="start-screen" class="screen">
-    <h1>SKY ACE</h1>
-    <p style="color:#aaa">Virtual Stick to Fly | Buttons to Shoot</p>
-    <button class="btn-start" onclick="startGame()">ENGAGE</button>
-    <div class="landscape-hint">Best played in Landscape mode</div>
-</div>
-
-<div id="game-over-screen" class="screen hidden">
-    <h1 style="color: #ff3333;">MISSION FAILED</h1>
-    <h2 style="color: white;" id="final-score">Score: 0</h2>
-    <button class="btn-start" onclick="resetGame()">RETRY</button>
 </div>
 
 <script>
 /**
- * MOBILE INPUT HANDLING
+ * ENGINE CONFIGURATION
  */
-const Input = {
-    x: 0, // Joystick X (-1 to 1)
-    y: 0, // Joystick Y (-1 to 1)
-    fire: false,
-    boost: false
+const CONFIG = {
+    speed: 0.002, // Speed of the organic movement
+    noiseScale: 1.5,
+    detail: 60 // Geometry detail (higher = smoother but slower)
 };
 
-// Joystick Logic
-const stickZone = document.getElementById('stick-zone');
-const stickKnob = document.getElementById('stick-knob');
-let stickCenter = { x: 0, y: 0 };
-let stickTouchId = null;
-
-stickZone.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    const touch = e.changedTouches[0];
-    stickTouchId = touch.identifier;
-    
-    // Re-center logic based on initial touch or fixed zone?
-    // Fixed zone feels better for muscle memory.
-    const rect = stickZone.getBoundingClientRect();
-    stickCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
-    updateJoystick(touch.clientX, touch.clientY);
-}, {passive: false});
-
-stickZone.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    for(let i=0; i<e.changedTouches.length; i++) {
-        if(e.changedTouches[i].identifier === stickTouchId) {
-            updateJoystick(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
-            break;
-        }
-    }
-}, {passive: false});
-
-const endJoystick = (e) => {
-    for(let i=0; i<e.changedTouches.length; i++) {
-        if(e.changedTouches[i].identifier === stickTouchId) {
-            stickTouchId = null;
-            Input.x = 0;
-            Input.y = 0;
-            stickKnob.style.transform = `translate(-50%, -50%)`;
-        }
-    }
-};
-stickZone.addEventListener('touchend', endJoystick);
-stickZone.addEventListener('touchcancel', endJoystick);
-
-function updateJoystick(clientX, clientY) {
-    const maxDist = 40; // Max pixel pull
-    let dx = clientX - stickCenter.x;
-    let dy = clientY - stickCenter.y;
-    
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    if (dist > maxDist) {
-        const ratio = maxDist / dist;
-        dx *= ratio;
-        dy *= ratio;
-    }
-    
-    // Visual update
-    stickKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-    
-    // Logical update (-1 to 1)
-    Input.x = dx / maxDist;
-    Input.y = dy / maxDist;
-}
-
-// Buttons Logic
-const btnFire = document.getElementById('btn-fire');
-const btnBoost = document.getElementById('btn-boost');
-
-const bindBtn = (el, prop) => {
-    el.addEventListener('touchstart', (e) => { e.preventDefault(); Input[prop] = true; el.style.background = "#fff"; }, {passive:false});
-    el.addEventListener('touchend', (e) => { e.preventDefault(); Input[prop] = false; el.style.background = ""; }, {passive:false});
-};
-
-bindBtn(btnFire, 'fire');
-bindBtn(btnBoost, 'boost');
-
-// PC Fallback (Debugging)
-window.addEventListener('keydown', e => {
-    if(e.key === 'ArrowUp' || e.key === 'w') Input.y = -1;
-    if(e.key === 'ArrowDown' || e.key === 's') Input.y = 1;
-    if(e.key === 'ArrowLeft' || e.key === 'a') Input.x = -1;
-    if(e.key === 'ArrowRight' || e.key === 'd') Input.x = 1;
-    if(e.key === ' ') Input.fire = true;
-    if(e.key === 'Shift') Input.boost = true;
-});
-window.addEventListener('keyup', e => {
-    if(['ArrowUp','w','ArrowDown','s'].includes(e.key)) Input.y = 0;
-    if(['ArrowLeft','a','ArrowRight','d'].includes(e.key)) Input.x = 0;
-    if(e.key === ' ') Input.fire = false;
-    if(e.key === 'Shift') Input.boost = false;
-});
-
-
-/**
- * GAME ENGINE
- */
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d', { alpha: false });
-let lastTime = 0;
-
-function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resize);
-resize();
-
-const Game = {
-    active: false,
-    score: 0,
-    difficulty: 1,
-    entities: [],
-    particles: [],
-    clouds: [],
-    player: null,
-    
-    init() {
-        this.score = 0;
-        this.difficulty = 1;
-        this.entities = [];
-        this.particles = [];
-        this.clouds = [];
-        this.player = new Player();
-        
-        // Init Clouds
-        for(let i=0; i<8; i++) this.spawnCloud(Math.random()*canvas.width);
-        
-        document.getElementById('healthEl').style.width = '100%';
-    },
-
-    spawnCloud(x) {
-        this.clouds.push({
-            x: x || canvas.width + 50,
-            y: Math.random() * (canvas.height/1.5),
-            w: 60 + Math.random() * 80,
-            speed: 1 + Math.random()
-        });
-    },
-
-    spawnEnemy() {
-        if (Math.random() < 0.02 * this.difficulty) {
-            this.entities.push(new Enemy(Math.random() > 0.7 ? 'bomber' : 'fighter'));
-        }
-    },
-
-    update(dt) {
-        if(this.player.dead) return;
-
-        // Background
-        this.clouds.forEach(c => c.x -= (c.speed + (Input.boost ? 3 : 0)));
-        this.clouds = this.clouds.filter(c => c.x + c.w > -100);
-        if(this.clouds.length < 10 && Math.random() < 0.05) this.spawnCloud();
-
-        this.player.update(dt);
-
-        // Entities
-        this.spawnEnemy();
-        this.entities.forEach(e => e.update(dt));
-        this.entities = this.entities.filter(e => !e.dead);
-
-        // Particles
-        this.particles.forEach(p => p.update());
-        this.particles = this.particles.filter(p => p.life > 0);
-
-        // Difficulty & Score
-        this.difficulty += 0.0003;
-        this.score += 0.1;
-        document.getElementById('scoreEl').innerText = Math.floor(this.score);
-    },
-
-    draw() {
-        // Clear / Sky
-        const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        grad.addColorStop(0, '#0d1a33');
-        grad.addColorStop(1, '#38618c');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Clouds
-        ctx.fillStyle = 'rgba(255,255,255,0.2)';
-        this.clouds.forEach(c => {
-            ctx.beginPath();
-            ctx.arc(c.x, c.y, c.w/2, 0, Math.PI*2);
-            ctx.fill();
-        });
-
-        // Draw Objects
-        this.entities.forEach(e => e.draw());
-        if(!this.player.dead) this.player.draw();
-        this.particles.forEach(p => p.draw());
-    },
-
-    gameOver() {
-        this.active = false;
-        document.getElementById('game-over-screen').classList.remove('hidden');
-        document.getElementById('controls-layer').classList.add('hidden'); // Hide controls
-        document.getElementById('final-score').innerText = "Score: " + Math.floor(this.score);
-    }
-};
-
-class Player {
+class ArtEngine {
     constructor() {
-        this.x = 50; this.y = canvas.height/2;
-        this.w = 50; this.h = 25;
-        this.hp = 100;
-        this.speed = 6;
-        this.shootTimer = 0;
-        this.dead = false;
-    }
-
-    update(dt) {
-        // Movement from Virtual Joystick
-        this.x += Input.x * this.speed;
-        this.y += Input.y * this.speed;
-
-        // Bounds
-        this.x = Math.max(0, Math.min(canvas.width - this.w, this.x));
-        this.y = Math.max(0, Math.min(canvas.height - this.h, this.y));
-
-        // Shoot
-        if (Input.fire && Date.now() - this.shootTimer > 120) {
-            Game.entities.push(new Bullet(this.x + this.w, this.y + 5, 12, true));
-            this.shootTimer = Date.now();
-        }
-
-        // Boost Trail
-        if (Input.boost) {
-            Game.particles.push(new Particle(this.x, this.y + 5, -5 - Math.random()*5, (Math.random()-0.5), '#0ff', 15));
-        }
-    }
-
-    draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        // Tilt visual based on Y input
-        ctx.rotate(Input.y * 0.3);
-
-        // Jet Graphics (Simplified Vector)
-        ctx.fillStyle = '#ddd';
-        ctx.beginPath();
-        ctx.moveTo(this.w, 5);
-        ctx.lineTo(0, 10);
-        ctx.lineTo(-5, 5);
-        ctx.lineTo(0, 0);
-        ctx.fill();
-
-        // Cockpit
-        ctx.fillStyle = '#0af';
-        ctx.beginPath();
-        ctx.moveTo(10, 0);
-        ctx.lineTo(25, 2);
-        ctx.lineTo(10, 5);
-        ctx.fill();
-
-        // Engine
-        ctx.fillStyle = '#f90';
-        ctx.fillRect(-5, 2, 5, 6);
-
-        ctx.restore();
-    }
-
-    hit(dmg) {
-        this.hp -= dmg;
-        document.getElementById('healthEl').style.width = Math.max(0, this.hp) + '%';
-        // Screen flash
-        ctx.fillStyle = 'rgba(255,0,0,0.5)';
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-
-        if (this.hp <= 0) {
-            this.dead = true;
-            for(let i=0; i<30; i++) Game.particles.push(new Particle(this.x, this.y, (Math.random()-0.5)*10, (Math.random()-0.5)*10, '#f50', 60));
-            setTimeout(() => Game.gameOver(), 1000);
-        }
-    }
-}
-
-class Enemy {
-    constructor(type) {
-        this.type = type;
-        this.x = canvas.width + 50;
-        this.y = Math.random() * (canvas.height - 100);
-        this.dead = false;
-        this.hp = type === 'bomber' ? 5 : 2;
-        this.w = 40; this.h = 30;
-        this.timer = 0;
-    }
-
-    update() {
-        this.x -= (this.type === 'bomber' ? 2 : 5);
-        if (this.type === 'fighter') this.y += Math.sin(this.x/100)*2;
-
-        if (this.x < -50) this.dead = true;
-
-        // Shoot logic
-        this.timer++;
-        if (this.timer > 100 && this.x < canvas.width) {
-            if (Math.random() > 0.5) {
-                Game.entities.push(new Bullet(this.x, this.y + 10, -8, false));
-                this.timer = 0;
-            }
-        }
-
-        // Crash logic
-        if (!Game.player.dead && checkColl(this, Game.player)) {
-            Game.player.hit(20);
-            this.die();
-        }
-    }
-
-    draw() {
-        ctx.fillStyle = this.type === 'bomber' ? '#353' : '#500';
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.scale(-1, 1);
-        ctx.beginPath();
-        ctx.moveTo(0,0);
-        ctx.lineTo(30, 10);
-        ctx.lineTo(0, 20);
-        ctx.fill();
-        ctx.restore();
-    }
-
-    die() {
-        this.dead = true;
-        Game.score += 100;
-        for(let i=0; i<10; i++) Game.particles.push(new Particle(this.x, this.y, (Math.random()-0.5)*5, (Math.random()-0.5)*5, '#fa0', 30));
-    }
-}
-
-class Bullet {
-    constructor(x, y, vx, playerOwner) {
-        this.x = x; this.y = y; this.vx = vx; this.player = playerOwner;
-        this.dead = false; this.w = 10; this.h = 5;
-    }
-    update() {
-        this.x += this.vx;
-        if (this.x < -10 || this.x > canvas.width + 10) this.dead = true;
+        this.container = document.getElementById('canvas-container');
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.scene = new THREE.Scene();
         
-        if (this.player) {
-            Game.entities.forEach(e => {
-                if (e instanceof Enemy && checkColl(this, e)) {
-                    e.hp--;
-                    this.dead = true;
-                    if (e.hp <= 0) e.die();
-                    else Game.particles.push(new Particle(this.x, this.y, -2, 0, '#fff', 5));
-                }
-            });
-        } else {
-            if (!Game.player.dead && checkColl(this, Game.player)) {
-                Game.player.hit(10);
-                this.dead = true;
-            }
+        // Camera
+        this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 0.1, 100);
+        this.camera.position.z = 4;
+
+        // Renderer
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        this.renderer.setSize(this.width, this.height);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
+        this.container.appendChild(this.renderer.domElement);
+
+        // Noise
+        this.simplex = new SimplexNoise();
+        this.time = 0;
+
+        // State
+        this.geometry = null;
+        this.material = null;
+        this.mesh = null;
+        this.lights = [];
+        
+        this.init();
+        this.addEvents();
+        this.animate();
+    }
+
+    init() {
+        // Base Geometry
+        this.geometry = new THREE.IcosahedronGeometry(1, CONFIG.detail);
+        
+        // Store original positions for noise calculations
+        this.geometry.userData.originalPositions = this.geometry.attributes.position.clone();
+        
+        // Initial Generation
+        this.generate();
+    }
+
+    /**
+     * THE GENERATOR LOGIC
+     * Randomizes materials, lighting, and noise parameters
+     */
+    generate() {
+        // 1. Clean up old mesh
+        if (this.mesh) {
+            this.scene.remove(this.mesh);
+            this.material.dispose();
+        }
+        this.lights.forEach(l => this.scene.remove(l));
+        this.lights = [];
+
+        // 2. Determine Aesthetic Style (Randomized)
+        const styles = ['glass', 'liquid_metal', 'matte_sculpture', 'neon_wire'];
+        const style = styles[Math.floor(Math.random() * styles.length)];
+        
+        document.getElementById('art-mat').innerText = style.replace('_', ' ').toUpperCase();
+        document.getElementById('art-id').innerText = 'NO. ' + Math.floor(Math.random() * 9999).toString().padStart(4, '0');
+
+        // 3. Create Material based on style
+        this.material = this.createMaterial(style);
+
+        // 4. Create Mesh
+        this.mesh = new THREE.Mesh(this.geometry, this.material);
+        this.scene.add(this.mesh);
+
+        // 5. Randomize Noise Parameters
+        this.noiseStrength = 0.2 + Math.random() * 0.5;
+        this.noiseFreq = 0.5 + Math.random() * 1.5;
+        
+        // 6. Setup Lighting based on style
+        this.setupLighting(style);
+        
+        // 7. Update background color
+        this.updateBackground();
+    }
+
+    createMaterial(style) {
+        const color = new THREE.Color().setHSL(Math.random(), Math.random(), 0.5);
+        
+        switch(style) {
+            case 'glass':
+                return new THREE.MeshPhysicalMaterial({
+                    color: 0xffffff,
+                    metalness: 0,
+                    roughness: 0,
+                    transmission: 1, // Glass
+                    thickness: 0.5,
+                    clearcoat: 1,
+                    ior: 1.5
+                });
+            case 'liquid_metal':
+                return new THREE.MeshStandardMaterial({
+                    color: color,
+                    metalness: 1,
+                    roughness: 0.1,
+                    envMapIntensity: 1
+                });
+            case 'matte_sculpture':
+                return new THREE.MeshStandardMaterial({
+                    color: color.offsetHSL(0, -0.2, 0.2),
+                    metalness: 0.1,
+                    roughness: 0.9,
+                    flatShading: Math.random() > 0.5
+                });
+            case 'neon_wire':
+                return new THREE.MeshBasicMaterial({
+                    color: color.offsetHSL(0, 1, 0.1),
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.8
+                });
         }
     }
-    draw() {
-        ctx.fillStyle = this.player ? '#ff0' : '#f00';
-        ctx.fillRect(this.x, this.y, 10, 3);
+
+    setupLighting(style) {
+        const ambient = new THREE.AmbientLight(0x404040);
+        this.scene.add(ambient);
+        this.lights.push(ambient);
+
+        // Main Directional Light
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2);
+        dirLight.position.set(1, 1, 1);
+        this.scene.add(dirLight);
+        this.lights.push(dirLight);
+
+        // Rim Light for drama
+        const pointLight = new THREE.PointLight(
+            new THREE.Color().setHSL(Math.random(), 1, 0.5), 
+            3, 10
+        );
+        pointLight.position.set(-2, -2, 2);
+        this.scene.add(pointLight);
+        this.lights.push(pointLight);
     }
-}
 
-class Particle {
-    constructor(x,y,vx,vy,c,l) {
-        this.x=x; this.y=y; this.vx=vx; this.vy=vy; this.c=c; this.life=l; this.ml=l;
+    updateBackground() {
+        // Minimalist background palettes
+        const bgs = ['#050505', '#1a1a1a', '#0e1218', '#180e0e'];
+        const bg = bgs[Math.floor(Math.random() * bgs.length)];
+        document.body.style.backgroundColor = bg;
     }
-    update() { this.x+=this.vx; this.y+=this.vy; this.life--; }
-    draw() {
-        ctx.globalAlpha = this.life/this.ml;
-        ctx.fillStyle = this.c;
-        ctx.fillRect(this.x, this.y, 3, 3);
-        ctx.globalAlpha = 1;
+
+    /**
+     * ANIMATION LOOP
+     * Morphs the shape using Simplex Noise
+     */
+    updateGeometry() {
+        if (!this.mesh) return;
+
+        const time = Date.now() * CONFIG.speed;
+        const positions = this.geometry.attributes.position;
+        const original = this.geometry.userData.originalPositions;
+
+        for (let i = 0; i < positions.count; i++) {
+            const px = original.getX(i);
+            const py = original.getY(i);
+            const pz = original.getZ(i);
+
+            // 3D Noise
+            const noise = this.simplex.noise3D(
+                px * this.noiseFreq + time,
+                py * this.noiseFreq + time,
+                pz * this.noiseFreq + time
+            );
+
+            // Displace along normal (simple sphere expansion/contraction)
+            // Since base is sphere, position vector IS the normal vector direction
+            const displacement = 1 + noise * this.noiseStrength;
+
+            positions.setXYZ(
+                i,
+                px * displacement,
+                py * displacement,
+                pz * displacement
+            );
+        }
+
+        positions.needsUpdate = true;
+        this.geometry.computeVertexNormals();
     }
-}
 
-function checkColl(r1, r2) {
-    return (r1.x < r2.x + r2.w && r1.x + r1.w > r2.x &&
-            r1.y < r2.y + r2.h && r1.y + r1.h > r2.y);
-}
+    animate() {
+        requestAnimationFrame(() => this.animate());
 
-function loop(time) {
-    const dt = time - lastTime;
-    lastTime = time;
-    
-    if (Game.active) {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        Game.update(dt);
-        Game.draw();
+        this.updateGeometry();
+
+        if (this.mesh) {
+            this.mesh.rotation.y += 0.002;
+            this.mesh.rotation.x += 0.001;
+        }
+
+        this.renderer.render(this.scene, this.camera);
     }
-    requestAnimationFrame(loop);
-}
 
-function startGame() {
-    document.getElementById('start-screen').classList.add('hidden');
-    document.getElementById('controls-layer').classList.remove('hidden');
-    Game.active = true;
-    Game.init();
-    lastTime = performance.now();
-    requestAnimationFrame(loop);
-}
+    addEvents() {
+        window.addEventListener('resize', () => {
+            this.width = window.innerWidth;
+            this.height = window.innerHeight;
+            this.camera.aspect = this.width / this.height;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(this.width, this.height);
+        });
 
-function resetGame() {
-    document.getElementById('game-over-screen').classList.add('hidden');
-    startGame();
-}
+        // Touch interaction to rotate
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
 
-// Initial Setup
-document.getElementById('controls-layer').classList.add('hidden');
+        const start = (e) => {
+            isDragging = true;
+            previousMousePosition = {
+                x: e.touches ? e.touches[0].clientX : e.clientX,
+                y: e.touches ? e.touches[0].clientY : e.clientY
+            };
+        };
 
-</script>
-</body>
-</html>
+        const move = (e) => {
+            if (!isDragging || !this.mesh) return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const deltaMove = {
+                x: clientX - previousMousePosition.x,
+                y: clientY - previousMousePosition.y
+            };
+
+            this.mesh.rotation.y += deltaMove.x * 0.005;
+            this.mesh.rotation.x += deltaMove.y * 0.005;
+
+            previousMousePosition = { x: clientX, y: clientY };
+        };
+
+        const end = () => isDragging = false;
+
+        document.addEventListener('touchstart', start);
+        document.addEventListener('touchmove', move);
+        document.addEventListener('touchend', end);
+        document.addEvent
