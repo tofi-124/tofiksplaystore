@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- iOS Viewport Optimization: Prevents zooming and handles the notch -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,11 +11,11 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: #000;
-            touch-action: none; /* Disables browser gestures */
-            font-family: 'Courier New', Courier, monospace;
+            background-color: #5c94fc; /* Mario Sky Blue */
+            touch-action: none;
             user-select: none;
             -webkit-user-select: none;
+            font-family: 'Arial', sans-serif;
         }
         
         canvas {
@@ -25,345 +24,406 @@
             height: 100%;
         }
 
-        /* Virtual Controls Overlay */
-        #controls {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            height: 150px;
-            pointer-events: none; /* Let clicks pass through to canvas if needed */
-            display: flex;
-            justify-content: space-between;
-            padding: 0 20px;
-            box-sizing: border-box;
-            z-index: 100;
-        }
-
-        .btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            backdrop-filter: blur(4px);
-            pointer-events: auto;
-            touch-action: manipulation;
-        }
-
-        .btn:active {
-            background: rgba(255, 255, 255, 0.5);
-        }
-
-        #dpad {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .arrow {
-            width: 60px;
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            color: white;
-        }
-
-        #actions {
-            display: flex;
-            align-items: center;
-        }
-
-        .action-btn {
-            width: 70px;
-            height: 70px;
-            background: rgba(255, 0, 0, 0.3);
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        /* Rotate instruction for landscape */
-        #rotate-msg {
-            display: none;
+        /* VIRTUAL CONTROLS */
+        #ui-layer {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #333;
-            color: white;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
         }
 
-        @media screen and (orientation: portrait) {
-           /* Optional: Force landscape hint if you want strictly landscape */
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            padding-bottom: 40px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            pointer-events: auto; /* Enable touch for buttons */
+        }
+
+        /* D-PAD STYLING */
+        .dpad-btn {
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 4px solid rgba(255, 255, 255, 0.4);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .dpad-btn:active { background: rgba(255, 255, 255, 0.3); transform: scale(0.95); }
+        
+        .arrow {
+            border: solid white;
+            border-width: 0 6px 6px 0;
+            display: inline-block;
+            padding: 8px;
+        }
+        .left { transform: rotate(135deg); }
+        .right { transform: rotate(-45deg); }
+
+        /* ACTION BUTTON STYLING */
+        .action-btn {
+            width: 80px;
+            height: 80px;
+            background: rgba(200, 0, 0, 0.4);
+            border: 4px solid rgba(255, 200, 200, 0.6);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 900;
+            font-size: 28px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .action-btn:active { background: rgba(255, 0, 0, 0.6); transform: scale(0.95); }
+
+        /* Start Screen Overlay */
+        #start-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 999;
+            pointer-events: auto;
+        }
+        h1 { margin: 0 0 20px 0; text-shadow: 4px 4px 0 #e60012; font-size: 40px; text-align: center;}
+        button.start-btn {
+            padding: 15px 40px;
+            font-size: 24px;
+            background: #ffcc00;
+            border: 4px solid white;
+            border-radius: 50px;
+            color: #d35400;
+            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <!-- Touch Controls -->
-    <div id="controls">
-        <div id="dpad">
-            <div class="btn arrow" id="btn-left">←</div>
-            <div class="btn arrow" id="btn-right">→</div>
-        </div>
-        <div id="actions">
-            <div class="btn action-btn" id="btn-jump">A</div>
+    <!-- Game UI Overlay -->
+    <div id="ui-layer">
+        <div id="controls">
+            <div class="btn-group">
+                <div class="dpad-btn" id="btn-left"><i class="arrow left"></i></div>
+                <div class="dpad-btn" id="btn-right"><i class="arrow right"></i></div>
+            </div>
+            <div class="btn-group">
+                <div class="action-btn" id="btn-jump">A</div>
+            </div>
         </div>
     </div>
 
-    <!-- Kaboom.js CDN -->
+    <div id="start-screen">
+        <h1>PLUMBER<br>ODYSSEY</h1>
+        <button class="start-btn" onclick="startGame()">TAP TO START</button>
+    </div>
+
+    <!-- Kaboom Library -->
     <script src="https://unpkg.com/kaboom@3000.0.1/dist/kaboom.js"></script>
 
     <script>
-        // 1. Initialize Kaboom
-        kaboom({
-            background: [135, 206, 235], // Sky Blue
-            scale: 1.5, // Retro pixel feel
-        });
-
-        // 2. Load Assets (Using built-in sprites for copyright safety)
-        // REPLACE THESE URLS with your own Mario assets to "reskin" the game.
-        loadSprite("hero", "https://kaboomjs.com/sprites/bean.png"); 
-        loadSprite("enemy", "https://kaboomjs.com/sprites/ghosty.png"); 
-        loadSprite("brick", "https://kaboomjs.com/sprites/brick.png");
-        loadSprite("block", "https://kaboomjs.com/sprites/box.png");
-        loadSprite("mushroom", "https://kaboomjs.com/sprites/mushroom.png");
-        loadSprite("surprise", "https://kaboomjs.com/sprites/surprise.png");
-        loadSprite("coin", "https://kaboomjs.com/sprites/coin.png");
-        loadSprite("pipe", "https://kaboomjs.com/sprites/pipe.png");
-
-        // 3. Define Game Logic
-        scene("game", ({ levelId, score }) => {
+        // --- ASSET GENERATOR SYSTEM ---
+        // This function creates game graphics using code so no external URLs are needed.
+        function generateAsset(width, height, colorFn) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            const imgData = ctx.createImageData(width, height);
             
-            // UI: Score
-            const scoreLabel = add([
-                text(score),
-                pos(24, 24),
-                fixed(),
-                z(100)
-            ]);
-
-            // Physics Constants
-            const MOVE_SPEED = 140;
-            const JUMP_FORCE = 450;
-            const BIG_JUMP_FORCE = 550;
-            let CURRENT_JUMP_FORCE = JUMP_FORCE;
-            let isBig = false;
-            const FALL_DEATH = 600;
-
-            // Level Layout
-            // Symbols map to game objects
-            const LEVELS = [
-                [
-                    "                                      ",
-                    "                                      ",
-                    "        $$                            ",
-                    "      %==%=                           ",
-                    "                                      ",
-                    "                                   -+ ",
-                    "                    ^  ^           () ",
-                    "==============================   =====",
-                ],
-                [
-                    "                                      ",
-                    "                                      ",
-                    "         ====                         ",
-                    "      =                               ",
-                    "                                   -+ ",
-                    "                    ^              () ",
-                    "==============================   =====",
-                ]
-            ];
-
-            const levelConf = {
-                tileWidth: 20,
-                tileHeight: 20,
-                tiles: {
-                    "=": () => [sprite("brick"), area(), body({ isStatic: true }), "ground"],
-                    "%": () => [sprite("surprise"), area(), body({ isStatic: true }), "coin-box"],
-                    "$": () => [sprite("surprise"), area(), body({ isStatic: true }), "mushy-box"],
-                    "^": () => [sprite("enemy"), area(), body(), anchor("bot"), patrol(), "danger"],
-                    "-": () => [sprite("pipe"), area(), body({ isStatic: true }), scale(1, 2), "pipe"],
-                    "+": () => [sprite("pipe"), area(), body({ isStatic: true }), scale(1, 2), "pipe-top"],
-                    "(": () => [sprite("pipe"), area(), body({ isStatic: true }), scale(1, 2), "pipe-bottom"],
-                    ")": () => [sprite("pipe"), area(), body({ isStatic: true }), scale(1, 2), "pipe-bottom-r"],
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const color = colorFn(x, y, width, height);
+                    if (color) {
+                        const i = (y * width + x) * 4;
+                        imgData.data[i] = color[0];     // R
+                        imgData.data[i+1] = color[1];   // G
+                        imgData.data[i+2] = color[2];   // B
+                        imgData.data[i+3] = 255;        // Alpha
+                    }
                 }
-            };
-
-            const level = addLevel(LEVELS[levelId % LEVELS.length], levelConf);
-
-            // The Player
-            const player = add([
-                sprite("hero"),
-                pos(0, 0),
-                area(),
-                body(),
-                anchor("bot"),
-                "player"
-            ]);
-
-            // Camera follows player
-            player.onUpdate(() => {
-                camPos(player.pos.x + 100, 200);
-                if (player.pos.y >= FALL_DEATH) {
-                    go("lose", { score: scoreLabel.text });
-                }
-            });
-
-            // Controls: Keyboard
-            onKeyDown("left", () => {
-                player.move(-MOVE_SPEED, 0);
-                player.flipX = true;
-            });
-            onKeyDown("right", () => {
-                player.move(MOVE_SPEED, 0);
-                player.flipX = false;
-            });
-            onKeyPress("space", () => {
-                if (player.isGrounded()) {
-                    player.jump(CURRENT_JUMP_FORCE);
-                }
-            });
-
-            // Controls: Touch (Mobile Integration)
-            const btnLeft = document.getElementById('btn-left');
-            const btnRight = document.getElementById('btn-right');
-            const btnJump = document.getElementById('btn-jump');
-
-            let leftInterval, rightInterval;
-
-            // Touch Helpers
-            const touchStart = (el, action) => {
-                el.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    action(true);
-                }, {passive: false});
-                el.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    action(false);
-                }, {passive: false});
-                // Mouse fallback for testing on desktop
-                el.addEventListener('mousedown', () => action(true));
-                el.addEventListener('mouseup', () => action(false));
-            };
-
-            touchStart(btnLeft, (active) => {
-                if (active) {
-                    leftInterval = setInterval(() => {
-                        player.move(-MOVE_SPEED, 0);
-                        player.flipX = true;
-                    }, 16);
-                } else {
-                    clearInterval(leftInterval);
-                }
-            });
-
-            touchStart(btnRight, (active) => {
-                if (active) {
-                    rightInterval = setInterval(() => {
-                        player.move(MOVE_SPEED, 0);
-                        player.flipX = false;
-                    }, 16);
-                } else {
-                    clearInterval(rightInterval);
-                }
-            });
-
-            touchStart(btnJump, (active) => {
-                if (active && player.isGrounded()) {
-                    player.jump(CURRENT_JUMP_FORCE);
-                }
-            });
-
-            // Game Interactions
-            player.onHeadbutt((obj) => {
-                if (obj.is("coin-box")) {
-                    destroy(obj);
-                    add([sprite("block"), pos(obj.pos), area(), body({ isStatic: true })]);
-                    add([sprite("coin"), pos(obj.pos.sub(0, 20)), area(), move(UP, 100), "coin-fx"]);
-                    scoreLabel.text += 100;
-                }
-                if (obj.is("mushy-box")) {
-                    destroy(obj);
-                    add([sprite("block"), pos(obj.pos), area(), body({ isStatic: true })]);
-                    add([sprite("mushroom"), pos(obj.pos.sub(0, 20)), area(), body(), move(RIGHT, 60), "mushroom"]);
-                }
-            });
-
-            player.onCollide("mushroom", (m) => {
-                destroy(m);
-                player.scale = vec2(1.5); // Grow big
-                isBig = true;
-                CURRENT_JUMP_FORCE = BIG_JUMP_FORCE;
-            });
-
-            player.onCollide("danger", (d) => {
-                if (isBig) {
-                    isBig = false;
-                    player.scale = vec2(1);
-                    CURRENT_JUMP_FORCE = JUMP_FORCE;
-                    destroy(d); // Sacrifice enemy to save player
-                } else {
-                    go("lose", { score: scoreLabel.text });
-                }
-            });
-
-            // Stomp enemy
-            player.onGround((l) => {
-                if (l.is("danger")) {
-                    player.jump(JUMP_FORCE * 1.2);
-                    destroy(l);
-                    addKaboom(l.pos);
-                }
-            });
-
-            player.onCollide("pipe", () => {
-                onKeyPress("down", () => {
-                    go("game", {
-                        levelId: levelId + 1,
-                        score: scoreLabel.text
-                    });
-                });
-            });
-        });
-
-        // Custom Component: Patrol AI
-        function patrol(speed = 60, dir = 1) {
-            return {
-                id: "patrol",
-                require: ["pos", "area"],
-                add() {
-                    this.on("collide", (obj, col) => {
-                        if (col.isLeft() || col.isRight()) {
-                            dir = -dir;
-                        }
-                    });
-                },
-                update() {
-                    this.move(speed * dir, 0);
-                },
-            };
+            }
+            ctx.putImageData(imgData, 0, 0);
+            return canvas.toDataURL();
         }
 
-        scene("lose", ({ score }) => {
-            add([text(score, 32), pos(width() / 2, height() / 2 - 40), anchor("center")]);
-            add([
-                text("Game Over\nTap to Restart", { size: 24 }),
-                pos(width() / 2, height() / 2 + 20),
-                anchor("center"),
-            ]);
-
-            onKeyPress("space", () => go("game", { levelId: 0, score: 0 }));
-            onClick(() => go("game", { levelId: 0, score: 0 }));
-            onTouchStart(() => go("game", { levelId: 0, score: 0 }));
+        // 1. Mario Sprite (Red hat, blue overalls)
+        const marioUrl = generateAsset(16, 16, (x, y) => {
+            if (y < 4 && x > 3 && x < 13) return [255, 0, 0]; // Hat
+            if (y >= 4 && y < 9) { // Face/Skin
+                if (x > 9 && y > 5 && y < 7) return [0,0,0]; // Mustache
+                return [255, 200, 150];
+            }
+            if (y >= 9) return [0, 0, 255]; // Body
+            return null;
         });
 
-        go("game", { levelId: 0, score: 0 });
-        
+        // 2. Brick Sprite (Brown with mortar lines)
+        const brickUrl = generateAsset(16, 16, (x, y) => {
+            if (x === 0 || y === 0 || x === 15 || y === 15 || y === 8 || (y < 8 && x === 8) || (y > 8 && x === 4) || (y > 8 && x === 12)) {
+                return [0, 0, 0]; // Black lines
+            }
+            return [180, 100, 50]; // Brown brick
+        });
+
+        // 3. Goomba Sprite (Brown mushroom thing)
+        const goombaUrl = generateAsset(16, 16, (x, y) => {
+            if (y < 8 && x > 2 && x < 14) return [139, 69, 19]; // Head
+            if (y >= 8 && y < 12) {
+                if ((x > 4 && x < 6) || (x > 10 && x < 12)) return [0,0,0]; // Eyes
+                return [255, 228, 181]; // Stem
+            }
+            if (y >= 12) return [0,0,0]; // Feet
+            return null;
+        });
+
+        // 4. Coin (Yellow Circle)
+        const coinUrl = generateAsset(16, 16, (x, y) => {
+            const dx = x - 8;
+            const dy = y - 8;
+            if (dx*dx + dy*dy < 36) return [255, 215, 0];
+            return null;
+        });
+
+        // 5. Pipe (Green)
+        const pipeUrl = generateAsset(32, 32, (x, y) => {
+            if (x < 2 || x > 29) return [0, 80, 0]; // Outline
+            return [0, 180, 0];
+        });
+
+
+        // --- KABOOM INITIALIZATION ---
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            
+            kaboom({
+                background: [92, 148, 252], // Classic Blue
+                scale: 2, // Zoom in for pixel look
+                touchToMouse: true // Translates touch to mouse clicks automatically
+            });
+
+            // Load Generated Assets
+            loadSprite("mario", marioUrl);
+            loadSprite("brick", brickUrl);
+            loadSprite("goomba", goombaUrl);
+            loadSprite("coin", coinUrl);
+            loadSprite("pipe", pipeUrl);
+
+            // Define Game Objects
+            scene("game", ({ levelId, score }) => {
+                
+                const MOVE_SPEED = 120;
+                const JUMP_FORCE = 420;
+                const FALL_DEATH = 800;
+
+                // UI Score
+                const scoreLabel = add([
+                    text("Score: " + score, { size: 18, font: "monospace" }),
+                    pos(20, 20),
+                    fixed(), // stays on screen
+                    z(100)
+                ]);
+
+                // Level Design
+                const LEVELS = [
+                    [
+                        "                                      ",
+                        "                                      ",
+                        "      $$                              ",
+                        "     ====     =   =                   ",
+                        "                                      ",
+                        "         ^                ^           ",
+                        "=============  ================   ====",
+                    ],
+                    [
+                        "                                      ",
+                        "    $$                                ",
+                        "   ====              $$               ",
+                        "                                      ",
+                        "          p        ====               ",
+                        "          p        p                  ",
+                        "======================   =============",
+                    ]
+                ];
+
+                const levelConf = {
+                    tileWidth: 20,
+                    tileHeight: 20,
+                    tiles: {
+                        "=": () => [sprite("brick"), area(), body({ isStatic: true }), "ground"],
+                        "$": () => [sprite("coin"), area(), "coin"],
+                        "^": () => [sprite("goomba"), area(), body(), patrol(), "danger", anchor("bot")],
+                        "p": () => [sprite("pipe"), area(), body({ isStatic: true }), "pipe"],
+                    }
+                };
+
+                const level = addLevel(LEVELS[levelId % LEVELS.length], levelConf);
+
+                const player = add([
+                    sprite("mario"),
+                    pos(40, 0),
+                    area(),
+                    body(),
+                    anchor("bot"),
+                    "player"
+                ]);
+
+                // Camera Logic (Lerp for smooth feel)
+                player.onUpdate(() => {
+                    const currCam = camPos();
+                    if (currCam.x < player.pos.x) {
+                        camPos(player.pos.x, currCam.y); // Only scroll right
+                    }
+                    // Fall death
+                    if (player.pos.y > FALL_DEATH) {
+                        go("lose", { score: scoreLabel.text });
+                    }
+                });
+
+                // Input Logic
+                onKeyDown("left", () => {
+                    player.move(-MOVE_SPEED, 0);
+                    player.flipX = true;
+                });
+                onKeyDown("right", () => {
+                    player.move(MOVE_SPEED, 0);
+                    player.flipX = false;
+                });
+                onKeyPress("space", () => {
+                    if (player.isGrounded()) player.jump(JUMP_FORCE);
+                });
+
+                // Mobile Touch Logic
+                const touchBtn = (id, actionStart, actionEnd) => {
+                    const btn = document.getElementById(id);
+                    // Prevent default context menu
+                    btn.addEventListener("contextmenu", e => e.preventDefault());
+                    
+                    btn.addEventListener("touchstart", (e) => {
+                        e.preventDefault();
+                        actionStart();
+                    });
+                    btn.addEventListener("touchend", (e) => {
+                        e.preventDefault();
+                        if(actionEnd) actionEnd();
+                    });
+                    // Mouse support for testing
+                    btn.addEventListener("mousedown", actionStart);
+                    btn.addEventListener("mouseup", actionEnd ? actionEnd : () => {});
+                };
+
+                let leftInt, rightInt;
+
+                touchBtn("btn-left", 
+                    () => { leftInt = setInterval(() => { player.move(-MOVE_SPEED, 0); player.flipX = true; }, 15); }, 
+                    () => { clearInterval(leftInt); }
+                );
+
+                touchBtn("btn-right", 
+                    () => { rightInt = setInterval(() => { player.move(MOVE_SPEED, 0); player.flipX = false; }, 15); }, 
+                    () => { clearInterval(rightInt); }
+                );
+
+                touchBtn("btn-jump", () => {
+                    if (player.isGrounded()) player.jump(JUMP_FORCE);
+                });
+
+                // Game Mechanics
+                player.onCollide("coin", (c) => {
+                    destroy(c);
+                    score += 100;
+                    scoreLabel.text = "Score: " + score;
+                });
+
+                player.onGround((obj) => {
+                    if (obj.is("danger")) {
+                        destroy(obj);
+                        player.jump(JUMP_FORCE); // Bounce
+                        score += 200;
+                    }
+                });
+
+                player.onCollide("danger", (obj) => {
+                    if (!player.isGrounded()) return; // Handled by onGround above
+                    go("lose", { score: score });
+                });
+
+                player.onCollide("pipe", () => {
+                    if(player.pos.y < 0) { // simplistic top check
+                        // pipe enter logic
+                    }
+                });
+                
+                // Win condition / Next Level logic could go here (simple "reach right side")
+                player.onUpdate(() => {
+                    if (player.pos.x > 600) {
+                        go("game", { levelId: levelId + 1, score: score });
+                    }
+                });
+            });
+
+            scene("lose", ({ score }) => {
+                add([
+                    text("GAME OVER", { size: 48 }),
+                    pos(width()/2, height()/2 - 50),
+                    anchor("center"),
+                    color(255, 0, 0)
+                ]);
+                add([
+                    text("Score: " + score, { size: 24 }),
+                    pos(width()/2, height()/2 + 20),
+                    anchor("center")
+                ]);
+                add([
+                    text("Tap to Restart", { size: 16 }),
+                    pos(width()/2, height()/2 + 60),
+                    anchor("center")
+                ]);
+
+                // Simple restart
+                onClick(() => go("game", { levelId: 0, score: 0 }));
+                onTouchStart(() => go("game", { levelId: 0, score: 0 }));
+            });
+
+            function patrol(speed = 60, dir = 1) {
+                return {
+                    id: "patrol",
+                    require: ["pos", "area"],
+                    add() {
+                        this.on("collide", (obj, col) => {
+                            if (col.isLeft() || col.isRight()) {
+                                dir = -dir;
+                            }
+                        });
+                    },
+                    update() {
+                        this.move(speed * dir, 0);
+                    },
+                };
+            }
+
+            go("game", { levelId: 0, score: 0 });
+        }
     </script>
 </body>
 </html>
