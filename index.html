@@ -2,109 +2,247 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sky Ace: Vector Strike</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <title>Sky Ace Mobile</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        canvas { display: block; }
-        
-        /* HUD Overlay */
-        #ui-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
-            display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box;
+        body { 
+            margin: 0; overflow: hidden; background: #000; 
+            font-family: 'Segoe UI', sans-serif;
+            touch-action: none; /* Vital: stops browser scrolling */
+            -webkit-user-select: none; user-select: none;
         }
+        canvas { display: block; width: 100%; height: 100%; }
         
-        .hud-top { display: flex; justify-content: space-between; width: 100%; }
+        /* UI Layers */
+        #ui-layer, #controls-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        /* HUD */
+        .hud-top { 
+            position: absolute; top: 10px; left: 10px; right: 10px;
+            display: flex; justify-content: space-between;
+        }
         .hud-box {
-            background: rgba(0, 20, 40, 0.7);
-            border: 2px solid #00ccff;
-            color: #00ccff;
-            padding: 10px 20px;
-            font-size: 20px;
-            font-weight: bold;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px #00ccff;
+            background: rgba(0, 20, 40, 0.6);
+            border: 1px solid #00ccff;
+            color: #00ccff; padding: 5px 15px;
+            font-size: 16px; font-weight: bold;
             transform: skewX(-15deg);
         }
-        .hud-box span { display: block; font-size: 12px; opacity: 0.7; transform: skewX(15deg); }
-        .hud-box div { transform: skewX(15deg); }
+        .health-bar { width: 100px; height: 10px; background: #333; margin-top: 5px; border: 1px solid #00ccff; }
+        .health-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #f00, #ff0, #0f0); transition: width 0.2s; }
 
-        /* Health Bar */
-        .health-bar-container { width: 200px; height: 20px; background: #000; border: 1px solid #00ccff; margin-top: 5px; transform: skewX(15deg); }
-        .health-fill { height: 100%; background: linear-gradient(90deg, #ff3333, #ffff00, #00ff00); width: 100%; transition: width 0.2s; }
+        /* Mobile Controls */
+        #controls-layer { pointer-events: auto; }
+
+        /* Joystick */
+        #stick-zone {
+            position: absolute; bottom: 20px; left: 20px;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+        #stick-knob {
+            position: absolute; top: 50%; left: 50%;
+            width: 60px; height: 60px;
+            background: rgba(0, 204, 255, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(0, 204, 255, 0.5);
+        }
+
+        /* Buttons */
+        .action-btn {
+            position: absolute; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: bold; font-size: 14px;
+            border: 2px solid rgba(255,255,255,0.5);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            touch-action: none;
+        }
+        .action-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.3); }
+
+        #btn-fire {
+            bottom: 40px; right: 30px;
+            width: 80px; height: 80px;
+            background: rgba(255, 50, 50, 0.4);
+            border-color: #ff5555;
+        }
+        #btn-boost {
+            bottom: 130px; right: 30px; /* Stacked above fire */
+            width: 60px; height: 60px;
+            background: rgba(50, 255, 50, 0.4);
+            border-color: #55ff55;
+        }
 
         /* Screens */
         .screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            pointer-events: auto;
-            z-index: 10;
-            backdrop-filter: blur(5px);
+            z-index: 20; pointer-events: auto;
         }
-        
-        h1 { 
-            color: #fff; font-size: 60px; margin: 0; font-style: italic; 
-            text-shadow: 4px 4px 0 #00ccff, -2px -2px 0 #ff0055;
-            letter-spacing: 5px;
-        }
-        
-        .btn {
+        h1 { color: #fff; font-style: italic; text-shadow: 4px 4px 0 #00ccff; margin-bottom: 10px; }
+        .btn-start {
             background: transparent; color: #fff; border: 2px solid #fff;
-            padding: 15px 50px; font-size: 24px; margin-top: 30px; cursor: pointer;
-            text-transform: uppercase; letter-spacing: 2px; transition: 0.2s;
-            position: relative; overflow: hidden;
+            padding: 15px 40px; font-size: 20px; margin-top: 20px;
+            text-transform: uppercase;
         }
-        .btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px #fff; }
-        
         .hidden { display: none !important; }
+        .landscape-hint { position: absolute; bottom: 10px; color: #666; font-size: 12px; }
     </style>
 </head>
 <body>
 
-<!-- Game Canvas -->
 <canvas id="gameCanvas"></canvas>
 
-<!-- HUD -->
+<!-- Gameplay UI -->
 <div id="ui-layer">
     <div class="hud-top">
         <div class="hud-box">
-            <span>Score</span>
-            <div id="scoreEl">000000</div>
+            <div>SCORE <span id="scoreEl">0</span></div>
         </div>
         <div class="hud-box">
-            <span>Integrity</span>
-            <div class="health-bar-container">
-                <div id="healthEl" class="health-fill"></div>
-            </div>
+            <div class="health-bar"><div id="healthEl" class="health-fill"></div></div>
         </div>
     </div>
 </div>
 
-<!-- Start Screen -->
-<div id="start-screen" class="screen">
-    <h1>SKY ACE</h1>
-    <p style="color: #aaa; margin-top: 10px;">WASD to Fly | SPACE to Shoot | SHIFT to Boost</p>
-    <button class="btn" onclick="startGame()">Scramble</button>
+<!-- Touch Controls -->
+<div id="controls-layer">
+    <div id="stick-zone">
+        <div id="stick-knob"></div>
+    </div>
+    <div id="btn-boost" class="action-btn">BOOST</div>
+    <div id="btn-fire" class="action-btn">FIRE</div>
 </div>
 
-<!-- Game Over Screen -->
+<!-- Screens -->
+<div id="start-screen" class="screen">
+    <h1>SKY ACE</h1>
+    <p style="color:#aaa">Virtual Stick to Fly | Buttons to Shoot</p>
+    <button class="btn-start" onclick="startGame()">ENGAGE</button>
+    <div class="landscape-hint">Best played in Landscape mode</div>
+</div>
+
 <div id="game-over-screen" class="screen hidden">
-    <h1 style="color: #ff3333; text-shadow: 4px 4px 0 #550000;">MIA</h1>
+    <h1 style="color: #ff3333;">MISSION FAILED</h1>
     <h2 style="color: white;" id="final-score">Score: 0</h2>
-    <button class="btn" onclick="resetGame()">Re-Deploy</button>
+    <button class="btn-start" onclick="resetGame()">RETRY</button>
 </div>
 
 <script>
 /**
- * CONFIGURATION & SETUP
+ * MOBILE INPUT HANDLING
+ */
+const Input = {
+    x: 0, // Joystick X (-1 to 1)
+    y: 0, // Joystick Y (-1 to 1)
+    fire: false,
+    boost: false
+};
+
+// Joystick Logic
+const stickZone = document.getElementById('stick-zone');
+const stickKnob = document.getElementById('stick-knob');
+let stickCenter = { x: 0, y: 0 };
+let stickTouchId = null;
+
+stickZone.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const touch = e.changedTouches[0];
+    stickTouchId = touch.identifier;
+    
+    // Re-center logic based on initial touch or fixed zone?
+    // Fixed zone feels better for muscle memory.
+    const rect = stickZone.getBoundingClientRect();
+    stickCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
+    updateJoystick(touch.clientX, touch.clientY);
+}, {passive: false});
+
+stickZone.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    for(let i=0; i<e.changedTouches.length; i++) {
+        if(e.changedTouches[i].identifier === stickTouchId) {
+            updateJoystick(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
+            break;
+        }
+    }
+}, {passive: false});
+
+const endJoystick = (e) => {
+    for(let i=0; i<e.changedTouches.length; i++) {
+        if(e.changedTouches[i].identifier === stickTouchId) {
+            stickTouchId = null;
+            Input.x = 0;
+            Input.y = 0;
+            stickKnob.style.transform = `translate(-50%, -50%)`;
+        }
+    }
+};
+stickZone.addEventListener('touchend', endJoystick);
+stickZone.addEventListener('touchcancel', endJoystick);
+
+function updateJoystick(clientX, clientY) {
+    const maxDist = 40; // Max pixel pull
+    let dx = clientX - stickCenter.x;
+    let dy = clientY - stickCenter.y;
+    
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist > maxDist) {
+        const ratio = maxDist / dist;
+        dx *= ratio;
+        dy *= ratio;
+    }
+    
+    // Visual update
+    stickKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+    
+    // Logical update (-1 to 1)
+    Input.x = dx / maxDist;
+    Input.y = dy / maxDist;
+}
+
+// Buttons Logic
+const btnFire = document.getElementById('btn-fire');
+const btnBoost = document.getElementById('btn-boost');
+
+const bindBtn = (el, prop) => {
+    el.addEventListener('touchstart', (e) => { e.preventDefault(); Input[prop] = true; el.style.background = "#fff"; }, {passive:false});
+    el.addEventListener('touchend', (e) => { e.preventDefault(); Input[prop] = false; el.style.background = ""; }, {passive:false});
+};
+
+bindBtn(btnFire, 'fire');
+bindBtn(btnBoost, 'boost');
+
+// PC Fallback (Debugging)
+window.addEventListener('keydown', e => {
+    if(e.key === 'ArrowUp' || e.key === 'w') Input.y = -1;
+    if(e.key === 'ArrowDown' || e.key === 's') Input.y = 1;
+    if(e.key === 'ArrowLeft' || e.key === 'a') Input.x = -1;
+    if(e.key === 'ArrowRight' || e.key === 'd') Input.x = 1;
+    if(e.key === ' ') Input.fire = true;
+    if(e.key === 'Shift') Input.boost = true;
+});
+window.addEventListener('keyup', e => {
+    if(['ArrowUp','w','ArrowDown','s'].includes(e.key)) Input.y = 0;
+    if(['ArrowLeft','a','ArrowRight','d'].includes(e.key)) Input.x = 0;
+    if(e.key === ' ') Input.fire = false;
+    if(e.key === 'Shift') Input.boost = false;
+});
+
+
+/**
+ * GAME ENGINE
  */
 const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d', { alpha: false }); // Optimization
-let animationId;
+const ctx = canvas.getContext('2d', { alpha: false });
 let lastTime = 0;
 
-// Resize handling
 function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -112,24 +250,13 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
-// Input State
-const keys = { w: false, a: false, s: false, d: false, ' ': false, Shift: false };
-window.addEventListener('keydown', e => keys[e.key] = true);
-window.addEventListener('keyup', e => keys[e.key] = false);
-
-/**
- * GAME ENGINE
- */
 const Game = {
     active: false,
     score: 0,
     difficulty: 1,
-    speed: 4, // Base scrolling speed
     entities: [],
     particles: [],
     clouds: [],
-    groundPoints: [],
-    
     player: null,
     
     init() {
@@ -138,254 +265,156 @@ const Game = {
         this.entities = [];
         this.particles = [];
         this.clouds = [];
-        
-        // Generate Ground Terrain
-        this.groundPoints = [];
-        for(let i=0; i<=canvas.width + 200; i+=50) {
-            this.groundPoints.push({x: i, y: canvas.height - 50 + Math.random() * 40});
-        }
-
-        // Generate initial clouds
-        for(let i=0; i<10; i++) {
-            this.spawnCloud(Math.random() * canvas.width);
-        }
-
-        // Create Player
         this.player = new Player();
         
-        updateHUD();
+        // Init Clouds
+        for(let i=0; i<8; i++) this.spawnCloud(Math.random()*canvas.width);
+        
+        document.getElementById('healthEl').style.width = '100%';
     },
 
-    spawnCloud(xOverride) {
-        const y = Math.random() * (canvas.height * 0.6);
-        const x = xOverride !== undefined ? xOverride : canvas.width + 100;
+    spawnCloud(x) {
         this.clouds.push({
-            x: x,
-            y: y,
-            w: 100 + Math.random() * 100,
-            speed: 1 + Math.random() * 2,
-            opacity: 0.3 + Math.random() * 0.3
+            x: x || canvas.width + 50,
+            y: Math.random() * (canvas.height/1.5),
+            w: 60 + Math.random() * 80,
+            speed: 1 + Math.random()
         });
     },
 
     spawnEnemy() {
         if (Math.random() < 0.02 * this.difficulty) {
-            const type = Math.random() > 0.7 ? 'bomber' : 'fighter';
-            this.entities.push(new Enemy(type));
+            this.entities.push(new Enemy(Math.random() > 0.7 ? 'bomber' : 'fighter'));
         }
     },
 
     update(dt) {
-        // Scroll Ground
-        const scrollSpeed = this.speed + (keys.Shift ? 4 : 0);
-        
-        // Parallax Clouds
-        this.clouds.forEach(c => {
-            c.x -= c.speed + (keys.Shift ? 2 : 0);
-        });
+        if(this.player.dead) return;
+
+        // Background
+        this.clouds.forEach(c => c.x -= (c.speed + (Input.boost ? 3 : 0)));
         this.clouds = this.clouds.filter(c => c.x + c.w > -100);
-        if(this.clouds.length < 15 && Math.random() < 0.05) this.spawnCloud();
+        if(this.clouds.length < 10 && Math.random() < 0.05) this.spawnCloud();
 
-        // Scroll Terrain
-        this.groundPoints.forEach(p => p.x -= scrollSpeed);
-        if (this.groundPoints[0].x < -100) {
-            this.groundPoints.shift();
-            const lastX = this.groundPoints[this.groundPoints.length-1].x;
-            this.groundPoints.push({x: lastX + 50, y: canvas.height - 50 + Math.random() * 40});
-        }
-
-        // Player Logic
         this.player.update(dt);
 
-        // Entity Logic (Enemies & Bullets)
+        // Entities
         this.spawnEnemy();
         this.entities.forEach(e => e.update(dt));
         this.entities = this.entities.filter(e => !e.dead);
 
         // Particles
-        this.particles.forEach(p => p.update(dt));
+        this.particles.forEach(p => p.update());
         this.particles = this.particles.filter(p => p.life > 0);
 
-        // Difficulty Scaling
-        this.difficulty += 0.0005;
-        
-        // HUD
-        document.getElementById('scoreEl').innerText = Math.floor(this.score).toString().padStart(6, '0');
+        // Difficulty & Score
+        this.difficulty += 0.0003;
+        this.score += 0.1;
+        document.getElementById('scoreEl').innerText = Math.floor(this.score);
     },
 
     draw() {
-        // Sky Gradient
+        // Clear / Sky
         const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        grad.addColorStop(0, '#0d1a33'); // Deep Blue
-        grad.addColorStop(1, '#38618c'); // Lighter Blue
+        grad.addColorStop(0, '#0d1a33');
+        grad.addColorStop(1, '#38618c');
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Draw Clouds
+        // Clouds
+        ctx.fillStyle = 'rgba(255,255,255,0.2)';
         this.clouds.forEach(c => {
-            ctx.fillStyle = `rgba(255, 255, 255, ${c.opacity})`;
             ctx.beginPath();
-            ctx.arc(c.x, c.y, c.w/3, 0, Math.PI*2);
-            ctx.arc(c.x + c.w/3, c.y - c.w/5, c.w/2.5, 0, Math.PI*2);
-            ctx.arc(c.x + c.w/1.5, c.y, c.w/3, 0, Math.PI*2);
+            ctx.arc(c.x, c.y, c.w/2, 0, Math.PI*2);
             ctx.fill();
         });
 
-        // Draw Ground (Silhouetted Terrain)
-        ctx.fillStyle = '#050a14';
-        ctx.beginPath();
-        ctx.moveTo(this.groundPoints[0].x, canvas.height);
-        ctx.lineTo(this.groundPoints[0].x, this.groundPoints[0].y);
-        for(let i=1; i<this.groundPoints.length; i++) {
-            // Quadratic curve for smoother terrain
-            const p = this.groundPoints[i];
-            const prev = this.groundPoints[i-1];
-            const cpX = (prev.x + p.x) / 2;
-            const cpY = (prev.y + p.y) / 2;
-            ctx.quadraticCurveTo(prev.x, prev.y, cpX, cpY);
-        }
-        ctx.lineTo(this.groundPoints[this.groundPoints.length-1].x, canvas.height);
-        ctx.fill();
-
-        // Draw Entities
+        // Draw Objects
         this.entities.forEach(e => e.draw());
-        this.player.draw();
-
-        // Draw Particles
+        if(!this.player.dead) this.player.draw();
         this.particles.forEach(p => p.draw());
     },
 
-    over() {
+    gameOver() {
         this.active = false;
         document.getElementById('game-over-screen').classList.remove('hidden');
+        document.getElementById('controls-layer').classList.add('hidden'); // Hide controls
         document.getElementById('final-score').innerText = "Score: " + Math.floor(this.score);
     }
 };
 
-/**
- * CLASSES
- */
-
 class Player {
     constructor() {
-        this.x = 100;
-        this.y = canvas.height / 2;
-        this.w = 60;
-        this.h = 30;
-        this.speed = 5;
+        this.x = 50; this.y = canvas.height/2;
+        this.w = 50; this.h = 25;
         this.hp = 100;
-        this.lastShot = 0;
-        this.tilt = 0;
+        this.speed = 6;
+        this.shootTimer = 0;
+        this.dead = false;
     }
 
     update(dt) {
-        // Movement
-        if (keys.w || keys.ArrowUp) { this.y -= this.speed; this.tilt = -0.3; }
-        else if (keys.s || keys.ArrowDown) { this.y += this.speed; this.tilt = 0.3; }
-        else { this.tilt *= 0.9; } // Return to level
+        // Movement from Virtual Joystick
+        this.x += Input.x * this.speed;
+        this.y += Input.y * this.speed;
 
-        if (keys.a || keys.ArrowLeft) this.x -= this.speed;
-        if (keys.d || keys.ArrowRight) this.x += this.speed;
-
-        // Boundaries
+        // Bounds
         this.x = Math.max(0, Math.min(canvas.width - this.w, this.x));
-        this.y = Math.max(0, Math.min(canvas.height - 100, this.y));
+        this.y = Math.max(0, Math.min(canvas.height - this.h, this.y));
 
-        // Shooting
-        if (keys[' '] && Date.now() - this.lastShot > 100) {
-            Game.entities.push(new Bullet(this.x + this.w, this.y, 15, true));
-            this.lastShot = Date.now();
+        // Shoot
+        if (Input.fire && Date.now() - this.shootTimer > 120) {
+            Game.entities.push(new Bullet(this.x + this.w, this.y + 5, 12, true));
+            this.shootTimer = Date.now();
         }
 
-        // Afterburner Particles
-        const boost = keys.Shift;
-        for(let i=0; i<(boost?4:1); i++) {
-            Game.particles.push(new Particle(
-                this.x - 10, 
-                this.y + (Math.random()*10 - 5), 
-                -4 - Math.random()*4, 
-                (Math.random()-0.5), 
-                boost ? '#00ffff' : '#ffaa00',
-                20
-            ));
+        // Boost Trail
+        if (Input.boost) {
+            Game.particles.push(new Particle(this.x, this.y + 5, -5 - Math.random()*5, (Math.random()-0.5), '#0ff', 15));
         }
     }
 
     draw() {
         ctx.save();
         ctx.translate(this.x, this.y);
-        ctx.rotate(this.tilt);
+        // Tilt visual based on Y input
+        ctx.rotate(Input.y * 0.3);
 
-        // Jet Body (Modern Fighter)
-        // Main Fuselage
-        ctx.fillStyle = '#ccc';
+        // Jet Graphics (Simplified Vector)
+        ctx.fillStyle = '#ddd';
         ctx.beginPath();
-        ctx.moveTo(30, -5);
-        ctx.lineTo(60, 0); // Nose
-        ctx.lineTo(30, 5);
-        ctx.lineTo(-10, 5);
-        ctx.lineTo(-15, 0); // Exhaust
-        ctx.lineTo(-10, -5);
+        ctx.moveTo(this.w, 5);
+        ctx.lineTo(0, 10);
+        ctx.lineTo(-5, 5);
+        ctx.lineTo(0, 0);
         ctx.fill();
 
         // Cockpit
-        ctx.fillStyle = '#00ccff';
+        ctx.fillStyle = '#0af';
         ctx.beginPath();
-        ctx.moveTo(10, -4);
-        ctx.lineTo(30, -2);
-        ctx.lineTo(10, -2);
+        ctx.moveTo(10, 0);
+        ctx.lineTo(25, 2);
+        ctx.lineTo(10, 5);
         ctx.fill();
 
-        // Wings
-        ctx.fillStyle = '#999';
-        // Left Wing
-        ctx.beginPath();
-        ctx.moveTo(10, 2);
-        ctx.lineTo(-10, 20);
-        ctx.lineTo(0, 2);
-        ctx.fill();
-        // Right Wing (Perspective trick: darker, smaller)
-        ctx.fillStyle = '#777';
-        ctx.beginPath();
-        ctx.moveTo(10, -2);
-        ctx.lineTo(-10, -15);
-        ctx.lineTo(0, -2);
-        ctx.fill();
-
-        // Tail Fin
-        ctx.fillStyle = '#aaa';
-        ctx.beginPath();
-        ctx.moveTo(-5, -5);
-        ctx.lineTo(-15, -15);
-        ctx.lineTo(-15, -5);
-        ctx.fill();
-
-        // Engine Glow
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = '#ffaa00';
-        ctx.fillStyle = '#fff';
-        ctx.beginPath();
-        ctx.arc(-15, 0, 3, 0, Math.PI*2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        // Engine
+        ctx.fillStyle = '#f90';
+        ctx.fillRect(-5, 2, 5, 6);
 
         ctx.restore();
     }
 
     hit(dmg) {
         this.hp -= dmg;
-        document.getElementById('healthEl').style.width = this.hp + "%";
-        
-        // Flash red screen
-        ctx.fillStyle = 'rgba(255,0,0,0.3)';
-        ctx.fillRect(0,0,canvas.width, canvas.height);
+        document.getElementById('healthEl').style.width = Math.max(0, this.hp) + '%';
+        // Screen flash
+        ctx.fillStyle = 'rgba(255,0,0,0.5)';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
 
         if (this.hp <= 0) {
-            // Big Explosion
-            for(let i=0; i<50; i++) {
-                Game.particles.push(new Particle(this.x, this.y, (Math.random()-0.5)*10, (Math.random()-0.5)*10, '#ff5500', 60));
-            }
-            Game.over();
+            this.dead = true;
+            for(let i=0; i<30; i++) Game.particles.push(new Particle(this.x, this.y, (Math.random()-0.5)*10, (Math.random()-0.5)*10, '#f50', 60));
+            setTimeout(() => Game.gameOver(), 1000);
         }
     }
 }
@@ -396,211 +425,130 @@ class Enemy {
         this.x = canvas.width + 50;
         this.y = Math.random() * (canvas.height - 100);
         this.dead = false;
-        
-        if (type === 'fighter') {
-            this.w = 40; this.h = 20; this.hp = 1;
-            this.speed = 4 + Math.random() * 2;
-        } else {
-            // Bomber
-            this.w = 60; this.h = 40; this.hp = 5;
-            this.speed = 2;
-            this.y = Math.random() * (canvas.height * 0.5); // Stay high
-        }
-        
-        this.shootTimer = Date.now();
+        this.hp = type === 'bomber' ? 5 : 2;
+        this.w = 40; this.h = 30;
+        this.timer = 0;
     }
 
-    update(dt) {
-        this.x -= this.speed;
-        
-        // Movement Pattern
-        if (this.type === 'fighter') {
-            this.y += Math.sin(this.x * 0.01) * 2;
-        }
+    update() {
+        this.x -= (this.type === 'bomber' ? 2 : 5);
+        if (this.type === 'fighter') this.y += Math.sin(this.x/100)*2;
 
-        // Cleanup
-        if (this.x < -100) this.dead = true;
+        if (this.x < -50) this.dead = true;
 
-        // Shooting
-        if (this.x < canvas.width && Date.now() - this.shootTimer > 1500) {
+        // Shoot logic
+        this.timer++;
+        if (this.timer > 100 && this.x < canvas.width) {
             if (Math.random() > 0.5) {
-                Game.entities.push(new Bullet(this.x - 10, this.y, -8, false));
+                Game.entities.push(new Bullet(this.x, this.y + 10, -8, false));
+                this.timer = 0;
             }
-            this.shootTimer = Date.now();
         }
 
-        // Collision with Player
-        if (checkRectCollide(this, Game.player)) {
+        // Crash logic
+        if (!Game.player.dead && checkColl(this, Game.player)) {
             Game.player.hit(20);
-            this.explode();
+            this.die();
         }
     }
 
     draw() {
+        ctx.fillStyle = this.type === 'bomber' ? '#353' : '#500';
         ctx.save();
         ctx.translate(this.x, this.y);
-        ctx.scale(-1, 1); // Flip to face left
-
-        if (this.type === 'fighter') {
-            // Red Fighter
-            ctx.fillStyle = '#800000';
-            ctx.beginPath();
-            ctx.moveTo(20, 0);
-            ctx.lineTo(-10, 8);
-            ctx.lineTo(-10, -8);
-            ctx.fill();
-            ctx.fillStyle = '#ff0000'; // Wing
-            ctx.beginPath();
-            ctx.moveTo(5, 0);
-            ctx.lineTo(-15, 12);
-            ctx.lineTo(-5, 0);
-            ctx.fill();
-        } else {
-            // Green Bomber
-            ctx.fillStyle = '#2e4d31';
-            ctx.fillRect(-20, -10, 40, 20);
-            ctx.fillStyle = '#1a2e1d'; // Wings
-            ctx.beginPath();
-            ctx.moveTo(-10, 0);
-            ctx.lineTo(-30, 25);
-            ctx.lineTo(10, 0);
-            ctx.fill();
-        }
-
+        ctx.scale(-1, 1);
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.lineTo(30, 10);
+        ctx.lineTo(0, 20);
+        ctx.fill();
         ctx.restore();
     }
 
-    hit() {
-        this.hp--;
-        if (this.hp <= 0) {
-            Game.score += (this.type==='bomber' ? 500 : 100);
-            this.explode();
-        } else {
-            // Hit flash
-            ctx.globalCompositeOperation = 'source-atop';
-            ctx.fillStyle = 'white';
-            ctx.globalCompositeOperation = 'source-over';
-        }
-    }
-
-    explode() {
+    die() {
         this.dead = true;
-        // Explosion Particles
-        for(let i=0; i<15; i++) {
-            Game.particles.push(new Particle(this.x, this.y, (Math.random()-0.5)*5, (Math.random()-0.5)*5, '#ffaa00', 40));
-        }
+        Game.score += 100;
+        for(let i=0; i<10; i++) Game.particles.push(new Particle(this.x, this.y, (Math.random()-0.5)*5, (Math.random()-0.5)*5, '#fa0', 30));
     }
 }
 
 class Bullet {
-    constructor(x, y, vx, isPlayer) {
-        this.x = x; this.y = y;
-        this.vx = vx;
-        this.isPlayer = isPlayer;
-        this.w = 10; this.h = 4;
-        this.dead = false;
+    constructor(x, y, vx, playerOwner) {
+        this.x = x; this.y = y; this.vx = vx; this.player = playerOwner;
+        this.dead = false; this.w = 10; this.h = 5;
     }
-
     update() {
         this.x += this.vx;
-        if (this.x > canvas.width || this.x < 0) this.dead = true;
-
-        // Collisions
-        if (this.isPlayer) {
+        if (this.x < -10 || this.x > canvas.width + 10) this.dead = true;
+        
+        if (this.player) {
             Game.entities.forEach(e => {
-                if (e instanceof Enemy && checkRectCollide(this, e)) {
-                    e.hit();
+                if (e instanceof Enemy && checkColl(this, e)) {
+                    e.hp--;
                     this.dead = true;
-                    // Spark
-                    Game.particles.push(new Particle(this.x, this.y, -2, (Math.random()-0.5)*5, '#ffff00', 10));
+                    if (e.hp <= 0) e.die();
+                    else Game.particles.push(new Particle(this.x, this.y, -2, 0, '#fff', 5));
                 }
             });
         } else {
-            if (checkRectCollide(this, Game.player)) {
-                Game.player.hit(5);
+            if (!Game.player.dead && checkColl(this, Game.player)) {
+                Game.player.hit(10);
                 this.dead = true;
             }
         }
     }
-
     draw() {
-        ctx.fillStyle = this.isPlayer ? '#ffff00' : '#ff5555';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 3, 0, Math.PI*2);
-        ctx.fill();
-        // Trail
-        ctx.fillStyle = `rgba(${this.isPlayer?'255,255,0':'255,0,0'}, 0.5)`;
-        ctx.fillRect(this.x - (this.vx*2), this.y-1, this.vx*2, 2);
+        ctx.fillStyle = this.player ? '#ff0' : '#f00';
+        ctx.fillRect(this.x, this.y, 10, 3);
     }
 }
 
 class Particle {
-    constructor(x, y, vx, vy, color, life) {
-        this.x = x; this.y = y;
-        this.vx = vx; this.vy = vy;
-        this.color = color;
-        this.life = life;
-        this.maxLife = life;
+    constructor(x,y,vx,vy,c,l) {
+        this.x=x; this.y=y; this.vx=vx; this.vy=vy; this.c=c; this.life=l; this.ml=l;
     }
-    update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.life--;
-    }
+    update() { this.x+=this.vx; this.y+=this.vy; this.life--; }
     draw() {
-        ctx.globalAlpha = this.life / this.maxLife;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, (this.life/this.maxLife)*4, 0, Math.PI*2);
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
+        ctx.globalAlpha = this.life/this.ml;
+        ctx.fillStyle = this.c;
+        ctx.fillRect(this.x, this.y, 3, 3);
+        ctx.globalAlpha = 1;
     }
 }
 
-/**
- * UTILITIES
- */
-function checkRectCollide(r1, r2) {
-    // Simple box collision centered on x/y
-    const r1w = r1.w || 10; const r1h = r1.h || 10;
-    const r2w = r2.w || 10; const r2h = r2.h || 10;
-    return (Math.abs(r1.x - r2.x) * 2 < (r1w + r2w)) &&
-           (Math.abs(r1.y - r2.y) * 2 < (r1h + r2h));
+function checkColl(r1, r2) {
+    return (r1.x < r2.x + r2.w && r1.x + r1.w > r2.x &&
+            r1.y < r2.y + r2.h && r1.y + r1.h > r2.y);
 }
 
-function updateHUD() {
-    document.getElementById('healthEl').style.width = "100%";
-}
-
-/**
- * MAIN LOOP
- */
-function loop(timestamp) {
-    const dt = timestamp - lastTime;
-    lastTime = timestamp;
-
+function loop(time) {
+    const dt = time - lastTime;
+    lastTime = time;
+    
     if (Game.active) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
         Game.update(dt);
         Game.draw();
     }
-    
-    animationId = requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
 }
 
 function startGame() {
     document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('controls-layer').classList.remove('hidden');
     Game.active = true;
     Game.init();
     lastTime = performance.now();
-    cancelAnimationFrame(animationId);
-    loop(performance.now());
+    requestAnimationFrame(loop);
 }
 
 function resetGame() {
     document.getElementById('game-over-screen').classList.add('hidden');
     startGame();
 }
+
+// Initial Setup
+document.getElementById('controls-layer').classList.add('hidden');
 
 </script>
 </body>
