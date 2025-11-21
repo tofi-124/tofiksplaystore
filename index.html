@@ -3,356 +3,583 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ENTROPY_ENGINE</title>
+    <title>DOOM-JS</title>
     <style>
-        :root { 
-            --bg: #000000; 
-            --fg: #ffffff; 
-            --accent: #ff003c; 
-        }
-        
-        body { 
-            margin: 0; overflow: hidden; background-color: var(--bg); 
-            font-family: 'Courier New', Courier, monospace; 
-            color: var(--fg); 
-            -webkit-font-smoothing: none; /* Pixelated font feel */
-        }
-
-        /* CANVAS & FX */
-        #canvas-container { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; 
-            filter: contrast(110%) saturate(120%);
-            transition: filter 0.5s ease;
-        }
-
-        /* SCANLINE OVERLAY */
-        .scanlines {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-        }
-
-        /* VIGNETTE */
-        .vignette {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 6;
-            background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%);
-        }
-
-        /* UI LAYOUT */
-        #ui {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; pointer-events: none;
-            padding: 20px; box-sizing: border-box;
-            display: flex; flex-direction: column; justify-content: space-between;
-        }
-
-        .meta-block {
-            border-left: 2px solid var(--fg);
-            padding-left: 10px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-size: 12px;
-            line-height: 1.4;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(2px);
-            max-width: 200px;
-        }
-        
-        .h-glitch {
-            font-weight: bold;
-            color: var(--accent);
-            text-shadow: 2px 0 #00ffff;
-        }
-
-        /* CONTROLS */
-        .control-bar {
-            width: 100%; display: flex; justify-content: flex-end; pointer-events: auto;
-            align-items: center; gap: 20px;
-        }
-
-        button {
-            background: var(--fg); color: var(--bg);
-            border: none; padding: 15px 30px;
+        body {
+            margin: 0;
+            background-color: #1a1a1a;
+            overflow: hidden;
+            touch-action: none; /* Vital for mobile */
             font-family: 'Courier New', Courier, monospace;
-            font-weight: bold; font-size: 14px;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 4px 4px 0 var(--accent);
-            transition: transform 0.1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--accent); }
 
-        #seed-display { font-size: 10px; opacity: 0.7; text-align: right; }
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Aspect ratio constraint */
+            aspect-ratio: 4/3;
+            background: #000;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated; /* The retro look */
+        }
+
+        /* UI OVERLAY */
+        #ui-layer {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 15%;
+            background: #444;
+            border-top: 4px solid #222;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .stat-box {
+            color: #b22222; /* Doom Red */
+            font-weight: bold;
+            font-size: 24px;
+            text-shadow: 2px 2px 0 #000;
+            text-transform: uppercase;
+            background: #111;
+            padding: 5px 15px;
+            border: 2px solid #666;
+            border-radius: 2px;
+            width: 80px;
+            text-align: center;
+        }
+        .stat-label { font-size: 10px; color: #888; display: block; margin-bottom: 2px; }
+
+        #doom-face {
+            width: 50px; height: 60px;
+            background: #000;
+            border: 2px solid #666;
+        }
+
+        /* MOBILE CONTROLS */
+        #mobile-controls {
+            position: absolute; top: 0; left: 0; width: 100%; height: 85%;
+            pointer-events: none;
+        }
+        
+        .touch-zone {
+            position: absolute; bottom: 20px;
+            width: 120px; height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: auto;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        #stick-left { left: 20px; }
+        #btn-fire { right: 20px; background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.4); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 20px; }
+        
+        .hidden { display: none !important; }
+
+        /* FLASH OVERLAY */
+        #flash {
+            position: absolute; top: 0; left: 0; width: 100%; height: 85%;
+            background: white; opacity: 0; pointer-events: none; transition: opacity 0.1s;
+        }
 
     </style>
 </head>
 <body>
 
-<div class="scanlines"></div>
-<div class="vignette"></div>
-<div id="canvas-container"></div>
-
-<div id="ui">
-    <div class="top-left">
-        <div class="meta-block">
-            <div class="h-glitch">ENTROPY_ENGINE</div>
-            <div id="noise-val">NOISE: 0.00</div>
-            <div id="poly-val">POLYS: 0</div>
-        </div>
-        <div class="meta-block">
-            <div id="mode-val">MODE: NULL</div>
-            <div id="status-val">STATUS: IDLE</div>
-        </div>
+<div id="game-container">
+    <canvas id="screen"></canvas>
+    <div id="flash"></div>
+    
+    <div id="mobile-controls">
+        <div id="stick-left" class="touch-zone"></div>
+        <div id="btn-fire" class="touch-zone">FIRE</div>
     </div>
 
-    <div class="control-bar">
-        <div id="seed-display">SEED: NULL</div>
-        <button id="gen-btn">GENERATE</button>
+    <div id="ui-layer">
+        <div class="stat-box"><span class="stat-label">AMMO</span><span id="ammo">50</span></div>
+        <canvas id="doom-face"></canvas>
+        <div class="stat-box"><span class="stat-label">HEALTH</span><span id="health">100%</span></div>
     </div>
 </div>
 
-<script type="module">
-    import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+<script>
+/**
+ * --- DOOM ENGINE CONSTANTS ---
+ */
+const SCREEN_WIDTH = 320;  // Low res for retro feel
+const SCREEN_HEIGHT = 200;
+const TICK_RATE = 30;
+const FOV = 0.66;
+const MAP_SIZE = 24;
 
-    // --- FAST NOISE (Inlined for reliability) ---
-    const FastNoise = (function(){
-        const p=new Uint8Array(512),perm=[151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
-        for(let i=0;i<256;i++)p[256+i]=p[i]=perm[i];
-        const fade=t=>t*t*t*(t*(t*6-15)+10), lerp=(t,a,b)=>a+t*(b-a), grad=(hash,x,y,z)=>{const h=hash&15,u=h<8?x:y,v=h<4?y:h==12||h==14?x:z;return((h&1)?-u:u)+((h&2)?-v:v)};
-        return{noise3D:(x,y,z)=>{const X=Math.floor(x)&255,Y=Math.floor(y)&255,Z=Math.floor(z)&255;x-=Math.floor(x);y-=Math.floor(y);z-=Math.floor(z);const u=fade(x),v=fade(y),w=fade(z),A=p[X]+Y,AA=p[A]+Z,AB=p[A+1]+Z,B=p[X+1]+Y,BA=p[B]+Z,BB=p[B+1]+Z;return lerp(w,lerp(v,lerp(u,grad(p[AA],x,y,z),grad(p[BA],x-1,y,z)),lerp(u,grad(p[AB],x,y-1,z),grad(p[BB],x-1,y-1,z))),lerp(v,lerp(u,grad(p[AA+1],x,y,z-1),grad(p[BA+1],x-1,y,z-1)),lerp(u,grad(p[AB+1],x,y-1,z-1),grad(p[BB+1],x-1,y-1,z-1))))}};
-    })();
+// Map Data (1=Wall, 0=Empty, 2=Enemy Spawn)
+// A classic maze-like structure
+const MAP = [
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,1,1,1,1,0,0,0,2,0,0,2,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,1,1,1,1,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,1],
+    [1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,1],
+    [1,1,1,1,1,1,1,1,0,0,1,1,1,1,0,0,0,1,1,1,1,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,1,0,0,0,0,0,1,0,0,0,2,0,0,0,2,0,0,0,0,0,1],
+    [1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+];
 
-    // --- UI ELEMENTS ---
-    const dom = {
-        noise: document.getElementById('noise-val'),
-        poly: document.getElementById('poly-val'),
-        mode: document.getElementById('mode-val'),
-        status: document.getElementById('status-val'),
-        seed: document.getElementById('seed-display'),
-        btn: document.getElementById('gen-btn')
-    };
-
-    // --- ENGINE SETUP ---
-    const scene = new THREE.Scene();
-    // Add volumetric fog for depth
-    scene.fog = new THREE.FogExp2(0x000000, 0.03);
-
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 100);
-    camera.position.z = 5;
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.toneMapping = THREE.ReinhardToneMapping;
-    document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-    // --- ART STATE ---
-    let mesh = null;
-    let particles = null;
-    let originalPos = null; // Float32Array for vertex manipulation
-    let time = 0;
-    let params = {
-        speed: 0.005,
-        amp: 1.0,
-        freq: 1.0,
-        sharpness: 1.0, // Cubing the noise
-        rotation: { x:0, y:0, z:0 }
-    };
-
-    // --- GENERATION LOGIC ---
-    function createGeometry() {
-        // Randomly select a base geometry complexity
-        const rand = Math.random();
-        let geo;
-        
-        if(rand < 0.25) {
-            // Dense Sphere
-            geo = new THREE.IcosahedronGeometry(2, 30); // High detail
-        } else if (rand < 0.5) {
-            // Complex Knot
-            geo = new THREE.TorusKnotGeometry(1.2, 0.4, 150, 20, 2, 3);
-        } else if (rand < 0.75) {
-            // Twisted Ring
-            geo = new THREE.TorusGeometry(1.5, 0.5, 30, 100);
-        } else {
-            // Sharp Crystal (Low poly octahedron base, subdivided)
-            geo = new THREE.OctahedronGeometry(2, 5);
-        }
-        return geo;
-    }
-
-    function createMaterial(type, color) {
-        if(type === 'WIRE') {
-            return new THREE.MeshBasicMaterial({ 
-                color: color, 
-                wireframe: true, 
-                transparent: true, 
-                opacity: 0.8,
-                side: THREE.DoubleSide
-            });
-        } 
-        else if (type === 'POINTS') {
-            return new THREE.PointsMaterial({
-                color: color,
-                size: 0.05,
-                sizeAttenuation: true,
-                blending: THREE.AdditiveBlending
-            });
-        }
-        else {
-            // LIQUID / CHROME
-            return new THREE.MeshStandardMaterial({
-                color: color,
-                roughness: 0.05,
-                metalness: 0.95,
-                flatShading: Math.random() > 0.5, // Glitched look if true
-                side: THREE.DoubleSide
-            });
-        }
-    }
-
-    function generate() {
-        dom.status.innerText = "STATUS: COMPUTING_ENTROPY";
-        
-        // 1. Cleanup
-        if(mesh) { scene.remove(mesh); mesh.geometry.dispose(); mesh.material.dispose(); }
-        if(particles) { scene.remove(particles); }
-        
-        // 2. Random Parameters
-        params.amp = 0.5 + Math.random() * 2.5; // High amplitude
-        params.freq = 0.5 + Math.random() * 1.5;
-        params.sharpness = Math.random() > 0.5 ? 3 : 1; // Cube the noise for spikes
-        params.rotation = { 
-            x: (Math.random()-0.5)*0.02, 
-            y: (Math.random()-0.5)*0.02, 
-            z: (Math.random()-0.5)*0.02 
-        };
-
-        // 3. Aesthetic Mode
-        const modeRand = Math.random();
-        let mode = 'SOLID';
-        let primaryColor = 0xffffff;
-        let bgColor = 0x000000;
-
-        if(modeRand < 0.33) {
-            mode = 'WIRE';
-            primaryColor = Math.random() > 0.5 ? 0x00ff00 : 0xff00ff; // Neon
-        } else if (modeRand < 0.66) {
-            mode = 'POINTS';
-            primaryColor = 0x00ffff; // Cyan data
-        } else {
-            mode = 'LIQUID';
-            primaryColor = 0x222222; // Dark chrome
-            bgColor = 0x111111;
-        }
-
-        // Update DOM
-        dom.mode.innerText = `MODE: ${mode}_ABSTRACT`;
-        dom.noise.innerText = `NOISE: ${params.amp.toFixed(2)}`;
-        dom.seed.innerText = `SEED: ${Math.random().toString(16).substr(2, 6).toUpperCase()}`;
-        scene.fog.color.setHex(bgColor);
-        scene.background = new THREE.Color(bgColor);
-        document.body.style.backgroundColor = '#' + new THREE.Color(bgColor).getHexString();
-
-        // 4. Create Mesh
-        const geometry = createGeometry();
-        dom.poly.innerText = `VERTS: ${geometry.attributes.position.count}`;
-        
-        // Store original positions for noise
-        originalPos = geometry.attributes.position.array.slice();
-
-        const material = createMaterial(mode, primaryColor);
-
-        if(mode === 'POINTS') {
-            mesh = new THREE.Points(geometry, material);
-        } else {
-            mesh = new THREE.Mesh(geometry, material);
-        }
-        scene.add(mesh);
-
-        // 5. Lights (Dramatic)
-        scene.clear(); // Clear old lights
-        scene.add(mesh); // Add mesh back
-        
-        const amb = new THREE.AmbientLight(0x404040);
-        scene.add(amb);
-        
-        const dir1 = new THREE.DirectionalLight(0xffffff, 3);
-        dir1.position.set(1, 1, 1);
-        scene.add(dir1);
-
-        const dir2 = new THREE.DirectionalLight(mode === 'WIRE' ? primaryColor : 0xff0000, 2);
-        dir2.position.set(-2, -2, 0);
-        scene.add(dir2);
-
-        // 6. Background Particles (Noise Dust)
-        const pGeo = new THREE.BufferGeometry();
-        const pCount = 500;
-        const pPos = new Float32Array(pCount * 3);
-        for(let i=0; i<pCount*3; i++) pPos[i] = (Math.random()-0.5) * 20;
-        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-        const pMat = new THREE.PointsMaterial({ color: 0x555555, size: 0.05, transparent: true, opacity: 0.5 });
-        particles = new THREE.Points(pGeo, pMat);
-        scene.add(particles);
-
-        dom.status.innerText = "STATUS: ACTIVE";
-    }
-
-    // --- ANIMATION LOOP ---
-    function animate() {
-        requestAnimationFrame(animate);
-        
-        time += params.speed;
-
-        if(mesh && originalPos) {
-            // Rotate Object
-            mesh.rotation.x += params.rotation.x;
-            mesh.rotation.y += params.rotation.y;
-            mesh.rotation.z += params.rotation.z;
-
-            // Noise Deformation
-            const pos = mesh.geometry.attributes.position;
-            const arr = pos.array;
-            
-            for(let i=0; i < pos.count; i++) {
-                const ix = i * 3;
-                const ox = originalPos[ix];
-                const oy = originalPos[ix+1];
-                const oz = originalPos[ix+2];
-
-                // 4D Noise Simulation (using time as 4th dimension roughly)
-                // We use multiple frequencies for "rough" texture
-                let n = FastNoise.noise3D(
-                    ox * params.freq + time, 
-                    oy * params.freq + time, 
-                    oz * params.freq + time
-                );
-
-                // Apply "Sharpness" (Cubing or squaring the noise value)
-                // This creates flat areas and sharp spikes
-                let displace = Math.pow(Math.abs(n), params.sharpness) * (n > 0 ? 1 : -1);
-                
-                // Apply Amplitude
-                const scale = 1 + displace * params.amp;
-
-                arr[ix] = ox * scale;
-                arr[ix+1] = oy * scale;
-                arr[ix+2] = oz * scale;
+/**
+ * --- ASSET GENERATION (Procedural Textures) ---
+ * Creating pixel arrays in code to avoid external assets.
+ */
+const Assets = {
+    textures: [],
+    sprites: { imp: null },
+    weapon: { idle: null, fire: null },
+    
+    init() {
+        // 1. Wall Texture (Gritty Brick)
+        this.textures[1] = this.genTexture(64, 64, (x, y, ctx) => {
+            ctx.fillStyle = '#5d4037'; // Brown base
+            ctx.fillRect(0, 0, 64, 64);
+            // Bricks
+            ctx.fillStyle = '#3e2723';
+            for(let i=0; i<8; i++) {
+                ctx.fillRect(0, i*8, 64, 1); // Horizontal mortar
+                for(let j=0; j<8; j++) {
+                    if((i+j)%2) ctx.fillRect(j*8 + (i%2)*4, i*8, 1, 8); // Vert
+                }
             }
-            pos.needsUpdate = true;
-            
-            // Recalculate normals for solid meshes to reflect light correctly on new spikes
-            if(mesh.isMesh) mesh.geometry.computeVertexNormals();
+            // Noise
+            for(let i=0; i<200; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#795548' : '#222';
+                ctx.fillRect(Math.random()*64, Math.random()*64, 2, 2);
+            }
+        });
+
+        // 2. Enemy Sprite (Imp-like)
+        this.sprites.imp = this.genTexture(64, 64, (x, y, ctx) => {
+            // Brown blob body
+            ctx.fillStyle = '#5d4037';
+            ctx.beginPath();
+            ctx.ellipse(32, 32, 15, 25, 0, 0, Math.PI*2);
+            ctx.fill();
+            // Spikes
+            ctx.fillStyle = '#d7ccc8';
+            ctx.fillRect(15, 10, 4, 10);
+            ctx.fillRect(45, 10, 4, 10);
+            // Eyes
+            ctx.fillStyle = '#ff3d00';
+            ctx.fillRect(25, 20, 4, 4);
+            ctx.fillRect(35, 20, 4, 4);
+            // Mouth
+            ctx.fillStyle = '#000';
+            ctx.fillRect(28, 40, 8, 4);
+        });
+
+        // 3. Weapon (Shotgun)
+        this.weapon.idle = this.genTexture(128, 128, (x, y, ctx) => {
+            // Barrel
+            const g = ctx.createLinearGradient(40, 0, 90, 0);
+            g.addColorStop(0, '#333'); g.addColorStop(0.5, '#888'); g.addColorStop(1, '#333');
+            ctx.fillStyle = g;
+            ctx.fillRect(50, 60, 28, 128);
+            ctx.strokeStyle = '#111'; ctx.lineWidth = 2;
+            ctx.strokeRect(50, 60, 28, 128);
+            // Stock area
+            ctx.fillStyle = '#222';
+            ctx.fillRect(40, 100, 48, 28);
+        });
+
+        this.weapon.fire = this.genTexture(128, 128, (x, y, ctx) => {
+            ctx.drawImage(this.weapon.idle, 0, 0);
+            // Muzzle Flash
+            ctx.fillStyle = '#ffeb3b';
+            ctx.beginPath();
+            ctx.arc(64, 60, 20 + Math.random()*10, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(64, 60, 10, 0, Math.PI*2);
+            ctx.fill();
+        });
+    },
+
+    genTexture(w, h, fn) {
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        fn(w, h, ctx);
+        return c;
+    }
+};
+
+/**
+ * --- ENGINE CORE ---
+ */
+const canvas = document.getElementById('screen');
+canvas.width = SCREEN_WIDTH;
+canvas.height = SCREEN_HEIGHT;
+const ctx = canvas.getContext('2d', { alpha: false });
+
+// Face Canvas
+const faceCanvas = document.getElementById('doom-face');
+faceCanvas.width = 50; faceCanvas.height = 60;
+const faceCtx = faceCanvas.getContext('2d');
+
+// Game State
+const Player = {
+    x: 3.5, y: 3.5,
+    dirX: -1, dirY: 0,
+    planeX: 0, planeY: 0.66,
+    health: 100, ammo: 50,
+    rotSpeed: 0.05, moveSpeed: 0.08,
+    shooting: false, shootTimer: 0,
+    bobX: 0, bobY: 0
+};
+
+const Enemies = [];
+const ZBuffer = new Array(SCREEN_WIDTH).fill(0);
+
+// Inputs
+const Keys = { w:false, a:false, s:false, d:false, ArrowUp:false, ArrowDown:false, ArrowLeft:false, ArrowRight:false };
+const TouchInput = { x: 0, y: 0, fire: false };
+
+// Initialization
+function init() {
+    Assets.init();
+    
+    // Spawn Enemies based on map
+    for(let y=0; y<MAP_SIZE; y++) {
+        for(let x=0; x<MAP_SIZE; x++) {
+            if(MAP[y][x] === 2) {
+                MAP[y][x] = 0;
+                Enemies.push({ x: x+0.5, y: y+0.5, hp: 3, state: 'alive', tex: Assets.sprites.imp });
+            }
+        }
+    }
+    
+    setupControls();
+    gameLoop();
+}
+
+/**
+ * --- RAYCASTING & RENDERING ---
+ */
+function render() {
+    // 1. Floor & Ceiling (Gradient Hack)
+    const grad = ctx.createLinearGradient(0,0,0,SCREEN_HEIGHT);
+    grad.addColorStop(0, '#1a1a1a'); // Ceiling
+    grad.addColorStop(0.5, '#000'); 
+    grad.addColorStop(0.5, '#2d2d2d'); // Floor
+    grad.addColorStop(1, '#555');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    // 2. Raycasting Walls
+    for(let x = 0; x < SCREEN_WIDTH; x++) {
+        // Camera plane calculation
+        const cameraX = 2 * x / SCREEN_WIDTH - 1;
+        const rayDirX = Player.dirX + Player.planeX * cameraX;
+        const rayDirY = Player.dirY + Player.planeY * cameraX;
+
+        // Map position
+        let mapX = Math.floor(Player.x);
+        let mapY = Math.floor(Player.y);
+
+        // DDA variables
+        let sideDistX, sideDistY;
+        const deltaDistX = Math.abs(1 / rayDirX);
+        const deltaDistY = Math.abs(1 / rayDirY);
+        let perpWallDist;
+        let stepX, stepY;
+        let hit = 0;
+        let side; // 0 for NS, 1 for EW
+
+        if (rayDirX < 0) { stepX = -1; sideDistX = (Player.x - mapX) * deltaDistX; }
+        else { stepX = 1; sideDistX = (mapX + 1.0 - Player.x) * deltaDistX; }
+        
+        if (rayDirY < 0) { stepY = -1; sideDistY = (Player.y - mapY) * deltaDistY; }
+        else { stepY = 1; sideDistY = (mapY + 1.0 - Player.y) * deltaDistY; }
+
+        // Perform DDA
+        while (hit === 0) {
+            if (sideDistX < sideDistY) {
+                sideDistX += deltaDistX;
+                mapX += stepX;
+                side = 0;
+            } else {
+                sideDistY += deltaDistY;
+                mapY += stepY;
+                side = 1;
+            }
+            if (MAP[mapX][mapY] === 1) hit = 1;
         }
 
-        // Particles Rotation
-        if(particles) {
-            particles.rotation.y -= 0.001;
-        }
+        // Calculate distance
+        if (side === 0) perpWallDist = (mapX - Player.x + (1 - stepX) / 2) / rayDirX;
+        else perpWallDist = (mapY - Player.y + (1 - stepY) / 2) / rayDirY;
 
-        renderer.render(scene, camera);
+        ZBuffer[x] = perpWallDist; // Store for sprite culling
+
+        // Draw Wall Slice
+        const lineHeight = Math.floor(SCREEN_HEIGHT / perpWallDist);
+        let drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
+        if (drawStart < 0) drawStart = 0;
+        let drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
+        if (drawEnd >= SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT - 1;
+
+        // Texture calculation
+        const texNum = 1;
+        let wallX; // Where exactly the wall was hit
+        if (side === 0) wallX = Player.y + perpWallDist * rayDirY;
+        else wallX = Player.x + perpWallDist * rayDirX;
+        wallX -= Math.floor(wallX);
+
+        let texX = Math.floor(wallX * 64);
+        if(side === 0 && rayDirX > 0) texX = 64 - texX - 1;
+        if(side === 1 && rayDirY < 0) texX = 64 - texX - 1;
+
+        // Lighting (Simple distance fog)
+        let brightness = 1.0 / (perpWallDist * 0.5); 
+        if (brightness > 1) brightness = 1;
+        
+        // Draw vertical strip
+        ctx.drawImage(Assets.textures[texNum], texX, 0, 1, 64, x, drawStart, 1, drawEnd - drawStart);
+        
+        // Apply "Fog" overlay
+        ctx.fillStyle = `rgba(0,0,0,${1 - brightness})`;
+        ctx.fillRect(x, drawStart, 1, drawEnd - drawStart);
     }
 
-    // --- INPUT HANDLING ---
-    dom.btn.addEventListener('click', () => {
+    // 3. Sprite Rendering (Enemies)
+    // Sort sprites by distance
+    Enemies.forEach(e => {
+        e.dist = ((Player.x - e.x) * (Player.x - e.x) + (Player.y - e.y) * (Player.y - e.y));
+    });
+    Enemies.sort((a, b) => b.dist - a.dist);
+
+    for(let i=0; i<Enemies.length; i++) {
+        const enemy = Enemies[i];
+        if(enemy.state !== 'alive') continue;
+
+        // Transform sprite with the inverse camera matrix
+        // [ planeX   dirX ] -1                                       [ dirY      -dirX ]
+        // [               ]       =  1/(planeX*dirY-dirX*planeY) *   [                 ]
+        // [ planeY   dirY ]                                          [ -planeY  planeX ]
+
+        const spriteX = enemy.x - Player.x;
+        const spriteY = enemy.y - Player.y;
+
+        const invDet = 1.0 / (Player.planeX * Player.dirY - Player.dirX * Player.planeY);
+        const transformX = invDet * (Player.dirY * spriteX - Player.dirX * spriteY);
+        const transformY = invDet * (-Player.planeY * spriteX + Player.planeX * spriteY); // Z-depth
+
+        const spriteScreenX = Math.floor((SCREEN_WIDTH / 2) * (1 + transformX / transformY));
+
+        // Scale sprite based on distance
+        const spriteHeight = Math.abs(Math.floor(SCREEN_HEIGHT / transformY)); 
+        let drawStartY = -spriteHeight / 2 + SCREEN_HEIGHT / 2;
+        if(drawStartY < 0) drawStartY = 0;
+        let drawEndY = spriteHeight / 2 + SCREEN_HEIGHT / 2;
+        if(drawEndY >= SCREEN_HEIGHT) drawEndY = SCREEN_HEIGHT - 1;
+
+        const spriteWidth = Math.abs(Math.floor(SCREEN_HEIGHT / transformY));
+        let drawStartX = -spriteWidth / 2 + spriteScreenX;
+        if(drawStartX < 0) drawStartX = 0;
+        let drawEndX = spriteWidth / 2 + spriteScreenX;
+        if(drawEndX >= SCREEN_WIDTH) drawEndX = SCREEN_WIDTH - 1;
+
+        // Draw stripe by stripe
+        if (transformY > 0.1) { // In front of camera
+            for(let stripe = drawStartX; stripe < drawEndX; stripe++) {
+                const texX = Math.floor(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * 64 / spriteWidth) / 256;
+                
+                // Z-Buffer check
+                if(transformY < ZBuffer[stripe]) {
+                     ctx.drawImage(enemy.tex, texX, 0, 1, 64, stripe, drawStartY, 1, drawEndY - drawStartY);
+                }
+            }
+        }
+    }
+
+    // 4. Weapon Rendering
+    const bobOffset = Math.sin(Date.now() / 150) * (Keys.w || Keys.s || TouchInput.y !== 0 ? 10 : 0);
+    const weaponTex = Player.shooting ? Assets.weapon.fire : Assets.weapon.idle;
+    const gunScale = 2.5;
+    const gunW = 128 * gunScale;
+    const gunH = 128 * gunScale;
+    
+    ctx.drawImage(weaponTex, 
+        (SCREEN_WIDTH - gunW) / 2 + bobOffset, 
+        SCREEN_HEIGHT - gunH + Math.abs(bobOffset), 
+        gunW, gunH
+    );
+
+    drawFace();
+}
+
+/**
+ * --- GAME LOGIC ---
+ */
+function update() {
+    // Rotation
+    let rot = 0;
+    if (Keys.ArrowRight || Keys.d) rot = -Player.rotSpeed;
+    if (Keys.ArrowLeft || Keys.a) rot = Player.rotSpeed;
+    
+    // Touch Rotation (X axis)
+    if (Math.abs(TouchInput.x) > 0.1) rot = TouchInput.x * Player.rotSpeed;
+
+    if (rot !== 0) {
+        const oldDirX = Player.dirX;
+        Player.dirX = Player.dirX * Math.cos(rot) - Player.dirY * Math.sin(rot);
+        Player.dirY = oldDirX * Math.sin(rot) + Player.dirY * Math.cos(rot);
+        const oldPlaneX = Player.planeX;
+        Player.planeX = Player.planeX * Math.cos(rot) - Player.planeY * Math.sin(rot);
+        Player.planeY = oldPlaneX * Math.sin(rot) + Player.planeY * Math.cos(rot);
+    }
+
+    // Movement
+    let move = 0;
+    if (Keys.ArrowUp || Keys.w) move = Player.moveSpeed;
+    if (Keys.ArrowDown || Keys.s) move = -Player.moveSpeed;
+
+    // Touch Movement (Y axis)
+    if (Math.abs(TouchInput.y) > 0.1) move = -TouchInput.y * Player.moveSpeed; // Stick Y is inverted usually
+
+    if (move !== 0) {
+        // Collision Detection X
+        if(MAP[Math.floor(Player.x + Player.dirX * move * 2)][Math.floor(Player.y)] === 0) {
+            Player.x += Player.dirX * move;
+        }
+        // Collision Detection Y
+        if(MAP[Math.floor(Player.x)][Math.floor(Player.y + Player.dirY * move * 2)] === 0) {
+            Player.y += Player.dirY * move;
+        }
+    }
+
+    // Shooting Logic
+    if ((Keys[' '] || TouchInput.fire) && !Player.shooting) {
+        Player.shooting = true;
+        Player.shootTimer = 10;
+        Player.ammo--;
+        document.getElementById('ammo').innerText = Player.ammo;
+        
         // Flash
+        const flash = document.getElementById('flash');
+        flash.style.opacity = 0.4;
+        setTimeout(() => flash.style.opacity = 0, 50);
+
+        // Hitscan
+        // Check closest enemy in front
+        Enemies.forEach(e => {
+            if(e.state === 'alive') {
+                // Simple distance & angle check
+                const dx = e.x - Player.x;
+                const dy = e.y - Player.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                
+                // Dot product for angle
+                const dot = (Player.dirX * dx + Player.dirY * dy) / dist;
+                
+                if (dot > 0.9 && dist < 8) { // In front and close
+                    e.hp--;
+                    if(e.hp <= 0) e.state = 'dead';
+                }
+            }
+        });
+    }
+
+    if (Player.shooting) {
+        Player.shootTimer--;
+        if (Player.shootTimer <= 0) Player.shooting = false;
+    }
+
+    // Enemy Logic (Simple chase)
+    Enemies.forEach(e => {
+        if(e.state === 'alive') {
+            const dx = Player.x - e.x;
+            const dy = Player.y - e.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            
+            if (dist > 1 && dist < 10) {
+                e.x += (dx / dist) * 0.02;
+                e.y += (dy / dist) * 0.02;
+            }
+            
+            if (dist < 0.8) {
+                // Damage Player
+                if(Math.random() < 0.05) {
+                    Player.health -= 5;
+                    document.getElementById('health').innerText = Player.health + "%";
+                    const flash = document.getElementById('flash');
+                    flash.style.background = 'red';
+                    flash.style.opacity = 0.3;
+                    setTimeout(() => { flash.style.opacity = 0; flash.style.background='white'; }, 100);
+                }
+            }
+        }
+    });
+}
+
+function drawFace() {
+    // Draw the Doom Guy Face based on health
+    faceCtx.fillStyle = '#888';
+    faceCtx.fillRect(0,0,50,60);
+    
+    // Face base
+    faceCtx.fillStyle = '#d7ccc8';
+    faceCtx.fillRect(10, 10, 30, 40);
+    
+    // Eyes (Look left/right based on input)
+    let eyeOffset = 0;
+    if(Keys.a || Keys.ArrowLeft || TouchInput.x > 0) eyeOffset = -2;
+    if(Keys.d || Keys.ArrowRight || TouchInput.x < 0) eyeOffset = 2;
+
+    faceCtx.fillStyle = 'white';
+    faceCtx.fillRect(14 + eyeOffset, 20, 8, 6);
+    faceCtx.fillRect(28 + eyeOffset, 20, 8, 6);
+    faceCtx.fillStyle = 'blue';
+    faceCtx.fillRect(16 + eyeOffset, 22, 4, 4);
+    faceCtx.fillRect(30 + eyeOffset, 22, 4, 4);
+
+    // Blood (based on health)
+    if (Player.health < 50) {
+        faceCtx.fillStyle = 'red';
+        faceCtx.fillRect(12, 25, 4, 10);
+        faceCtx.fillRect(30, 40, 6, 4);
+    }
+}
+
+function gameLoop() {
+    update();
+    render();
+    requestAnimationFrame(gameLoop);
+}
+
+/**
+ * --- INPUT HANDLING ---
+ */
+function setupControls() {
+    document.addEventListener('keydown', e => Keys[e.key] =
